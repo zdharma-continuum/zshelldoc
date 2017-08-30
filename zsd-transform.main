@@ -18,6 +18,7 @@ line_count()
     local -a list
     list=( "${(@f)1}" )
     local count=${#list}
+    [[ "$1" = *$'\n' ]] && (( -- count ))
     print -r -- "${(l:3:: :)count}"
 }
 
