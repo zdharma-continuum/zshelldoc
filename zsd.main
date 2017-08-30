@@ -1,0 +1,28 @@
+# Script with path to it, if it works
+local ZERO="${(%):-%N}"
+
+if [[ "$ZERO" != */* ]]; then
+  if [[ -x /usr/local/bin/zsd ]]; then
+    ZERO="/usr/local/bin/zsd"
+  elif [[ -x /usr/bin/zsd ]]; then
+    ZERO="/usr/bin/zsd"
+  elif [[ -x /opt/bin/zsd ]]; then
+    ZERO="/opt/bin/zsd"
+  fi
+fi
+
+local TRANSFORM="${ZERO:h}/zsd-transform" DETECT="${ZERO:h}/zsd-detect"
+
+if [[ -z "$1" ]]; then
+  echo "Argument needed, see -h/--help"
+  return 1
+fi
+
+if [[ ! -f "$1" ]]; then
+  echo "File \`$1' doesn't exist, see -h/--help"
+  return 1
+fi
+
+# Perform conversion to data structures - two pass
+/usr/bin/env "$zsh_control_bin" "$TRANSFORM" "$1"
+/usr/bin/env "$zsh_control_bin" "$DETECT" "$1"

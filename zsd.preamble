@@ -1,0 +1,19 @@
+#!/bin/sh
+# -*- Mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim:ft=zsh:sw=2:sts=2:et
+
+#
+# /bin/sh stage, load configuration to obtain $zsh_control_bin
+#
+
+if [[ -f /usr/local/share/zshelldoc/zsd.config ]]; then
+  . /usr/local/share/zshelldoc/zsd.config
+elif [[ -f /usr/share/zshelldoc/zsd.config ]]; then
+  . /usr/share/zshelldoc/zsd.config
+elif [[ -f /opt/share/zshelldoc/zsd.config ]]; then
+  . /opt/share/zshelldoc/zsd.config
+fi
+
+[ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
+[ -z "$ZSH_VERSION" ] && exec /usr/bin/env "$zsh_control_bin" -f -c "source \"$0\" \"$1\" \"$2\" \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\""
+

@@ -1,19 +1,24 @@
-#!/usr/local/bin/zsh-5.3.1-dev-0
 # vim:ft=zsh
 
 setopt extendedglob
 
 fpath+=( "${0%/*}" )
-autoload zplg-process-buffer
 
 local name="$1"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
+# Function and preamble extraction
 local preamble="" fun_name=""
 local -A funs
-
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
+
+# Call detection
+integer at_command=1
+local -A call_tree
+local -a known_functions
+known_functions=( zsdoc/data/functions/*(N) )
+known_functions=( ${known_functions[@]:t} )
 
 line_count()
 {
@@ -23,18 +28,28 @@ line_count()
     print -r -- "${(l:3:: :)count}"
 }
 
-
-zplg-process-buffer "$doc" 1
-integer i size="${#ZPLG_PB_WORDS}"
+zsd-process-buffer "$doc" 1
+integer i size="${#ZSD_PB_WORDS}"
 
 for (( i=1; i<=size; ++ i )); do
-    token="${ZPLG_PB_WORDS[i]}"
-    spaces="${ZPLG_PB_SPACES[i]}"
-    next_token="${ZPLG_PB_WORDS[i+1]}"
-    next_spaces="${ZPLG_PB_SPACES[i+1]}"
+    token="${ZSD_PB_WORDS[i]}"
+    spaces="${ZSD_PB_SPACES[i]}"
+    next_token="${ZSD_PB_WORDS[i+1]}"
+    next_spaces="${ZSD_PB_SPACES[i+1]}"
     cur_fun=0 prev_fun=0 descentff=0 descentfa=0
 
     (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1 }
+
+    # Detect function call
+    if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
+        at_command=1
+    fi
+    if (( at_command )); then
+        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "${known_functions[(re)$token]}" ]]; then
+            call_tree[$fun_name]+="${(q)token}"
+        fi
+        at_command=0
+    fi
 
     # Explicit future function
     if [[ "$token" = "function" ]]; then
@@ -99,12 +114,11 @@ for (( i=1; i<=size; ++ i )); do
     prev_spaces="$spaces"
 done
 
-for fun_name in "${(ko@)funs}"; do
-    print "Extracted `line_count ${funs[$fun_name]}`-line function \`\e[32m${fun_name}\e[0m'..."
-    {
-        print -r -- "${funs[$fun_name]}"
-    } >| "zplg_functions/$fun_name"
+command mkdir -p zsdoc/data
+command rm -f zsdoc/data/call_tree.zsd
+
+for fun_name in "${(ko@)call_tree}"; do
+    echo "$fun_name: ${call_tree[$fun_name]}" >>| zsdoc/data/call_tree.zsd
 done
 
-print -r -- "$preamble" >| "preamble.zplg"
-print "\e[32mGenerated preamble\e[0m (`line_count $preamble` lines)"
+print "\e[32mWritten call tree\e[0m (${#call_tree} callers)"
