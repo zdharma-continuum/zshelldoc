@@ -101,11 +101,11 @@ done
 command mkdir -p zsdoc/data/functions
 
 for fun_name in "${(ko@)funs}"; do
-    print "Extracted `line_count ${funs[$fun_name]}`-line function \`\e[32m${fun_name}\e[0m'..."
+    print "Extracted `line_count ${funs[$fun_name]}`-line function \`$fg[green]${fun_name}$reset_color'..."
     {
         print -r -- "${funs[$fun_name]}"
     } >| "zsdoc/data/functions/$fun_name"
 done
 
 print -r -- "$preamble" >| zsdoc/data/preamble
-print "\e[32mGenerated preamble\e[0m (`line_count $preamble` lines)"
+print "$fg[green]Generated preamble$reset_color (`line_count $preamble` lines)"

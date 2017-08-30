@@ -1,2 +1,5 @@
 #!/usr/bin/env zsh
 
+local -A colors
+autoload colors
+colors 2>/dev/null
