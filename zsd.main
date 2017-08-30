@@ -11,18 +11,38 @@ if [[ "$ZERO" != */* ]]; then
   fi
 fi
 
+usage() {
+  print "$fg[green]Usage:$reset_color zsd {file}"
+  print "The file will be processed and its documentation will be generated"
+  print "in subdirectory \`zsdoc'. Supported are Bash and Zsh script files."
+}
+
 local TRANSFORM="${ZERO:h}/zsd-transform" DETECT="${ZERO:h}/zsd-detect"
 
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
+local -A opthash
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Improper options given, see help (-h/--help)"; return 1; }
+
+(( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
+(( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
+(( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
+(( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+
+if [[ -n "$OPT_HELP" ]]; then
+  usage
+  return 0
+fi
+
 if [[ -z "$1" ]]; then
-  echo "Argument needed, see -h/--help"
+  echo "Argument needed, see help (-h/--help)"
   return 1
 fi
 
 if [[ ! -f "$1" ]]; then
-  echo "File \`$1' doesn't exist, see -h/--help"
+  echo "File \`$1' doesn't exist, see help (-h/--help)"
   return 1
 fi
 
 # Perform conversion to data structures - two pass
-/usr/bin/env "$zsh_control_bin" "$TRANSFORM" "$1"
-/usr/bin/env "$zsh_control_bin" "$DETECT" "$1"
+/usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$1"
+/usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$1"

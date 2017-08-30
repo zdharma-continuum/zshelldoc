@@ -17,3 +17,5 @@ fi
 [ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
 [ -z "$ZSH_VERSION" ] && exec /usr/bin/env "$zsh_control_bin" -f -c "source \"$0\" \"$1\" \"$2\" \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\""
 
+autoload colors
+colors
