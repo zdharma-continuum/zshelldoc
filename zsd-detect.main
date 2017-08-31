@@ -64,7 +64,7 @@ for (( i=1; i<=size; ++ i )); do
         at_command=0
 
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "${known_functions[(re)$token]}" ]]; then
-            call_tree[$fun_name]+="${(q)token}"
+            call_tree[$fun_name]+="${(q)token} "
         fi
 
         if [[ "$token" = [[:space:]]#\#* ]]; then
@@ -145,7 +145,7 @@ command mkdir -p zsdoc/data
 command rm -f zsdoc/data/call_tree.zsd
 
 for fun_name in "${(ko@)call_tree}"; do
-    echo "$fun_name: ${call_tree[$fun_name]}" >>| zsdoc/data/call_tree.zsd
+    echo "$fun_name: ${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
 done
 
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Written call tree$reset_color (${#call_tree} callers)"
