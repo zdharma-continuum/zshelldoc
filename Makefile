@@ -6,41 +6,44 @@ BIN_DIR?=$(DESTDIR)$(PREFIX)/bin
 SHARE_DIR?=$(DESTDIR)$(PREFIX)/share/$(NAME)
 DOC_DIR?=$(DESTDIR)$(PREFIX)/share/doc/$(NAME)
 
-all: zsd zsd-transform zsd-detect
+all: build/zsd build/zsd-transform build/zsd-detect
 
-zsd: zsd.preamble zsd.main
-	rm -f zsd
-	cat zsd.preamble > zsd
-	echo "" >> zsd
-	cat zsd.main >> zsd
-	chmod +x zsd
+build/zsd: zsd.preamble zsd.main
+	mkdir -p build
+	rm -f build/zsd
+	cat zsd.preamble > build/zsd
+	echo "" >> build/zsd
+	cat zsd.main >> build/zsd
+	chmod +x build/zsd
 
-zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffer
-	rm -f zsd-transform
-	cat zsd-transform.preamble > zsd-transform
-	echo "" >> zsd-transform
-	echo "zsd-process-buffer() {" >> zsd-transform
-	cat zsd-process-buffer >> zsd-transform
-	echo "}" >> zsd-transform
-	echo "" >> zsd-transform
-	cat zsd-transform.main >> zsd-transform
-	chmod +x zsd-transform
+build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffer
+	mkdir -p build
+	rm -f build/zsd-transform
+	cat zsd-transform.preamble > build/zsd-transform
+	echo "" >> build/zsd-transform
+	echo "zsd-process-buffer() {" >> build/zsd-transform
+	cat zsd-process-buffer >> build/zsd-transform
+	echo "}" >> build/zsd-transform
+	echo "" >> build/zsd-transform
+	cat zsd-transform.main >> build/zsd-transform
+	chmod +x build/zsd-transform
 
-zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
-	rm -f zsd-detect
-	cat zsd-detect.preamble > zsd-detect
-	echo "" >> zsd-detect
-	echo "zsd-process-buffer() {" >> zsd-detect
-	cat zsd-process-buffer >> zsd-detect
-	echo "}" >> zsd-detect
-	echo "" >> zsd-detect
-	cat zsd-detect.main >> zsd-detect
-	chmod +x zsd-detect
+build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
+	mkdir -p build
+	rm -f build/zsd-detect
+	cat zsd-detect.preamble > build/zsd-detect
+	echo "" >> build/zsd-detect
+	echo "zsd-process-buffer() {" >> build/zsd-detect
+	cat zsd-process-buffer >> build/zsd-detect
+	echo "}" >> build/zsd-detect
+	echo "" >> build/zsd-detect
+	cat zsd-detect.main >> build/zsd-detect
+	chmod +x build/zsd-detect
 
-install: zsd zsd-detect zsd-transform
+install: build/zsd build/zsd-detect build/zsd-transform
 	$(INSTALL) -d $(SHARE_DIR)
 	$(INSTALL) -d $(DOC_DIR)
-	cp zsd zsd-transform zsd-detect $(BIN_DIR)
+	cp build/zsd build/zsd-transform build/zsd-detect $(BIN_DIR)
 	cp zsd.config README.md NEWS LICENSE $(DOC_DIR)
 
 uninstall:
