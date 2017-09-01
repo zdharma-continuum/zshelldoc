@@ -13,6 +13,8 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Imp
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 
+[[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
+
 ### Code ###
 
 local name="$1"
