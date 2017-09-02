@@ -74,18 +74,18 @@ for fname; do
   (( count ++ ))
 
   [[ -z "$fname" ]] && {
-    [[ -z "$OPT_QUIET" ]] && print "$fg[magenta]Skipping empty file name$reset_color"
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]Skipping empty file name$reset_color"
     continue
   }
 
   if [[ ! -f "$fname" ]]; then
-    print "$fg[magenta]File \`$fname' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$fname' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
     ret=1
     continue
   fi
 
   if [[ ! -r "$fname" ]]; then
-    print "$fg[magenta]File \`$fname' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$fname' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
     ret=1
     continue
   fi
