@@ -14,21 +14,6 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { print "Im
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
-### Functions ###
-
-usage() {
-  print "$fg[green]Usage:$reset_color zsd [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] $fg_bold[magenta]{file}$reset_color"
-  print "The $fg_bold[magenta]file$reset_color will be processed and its documentation will be generated"
-  print "in subdirectory \`zsdoc' (with meta-data in subdirectory \`data')."
-  print "Supported are Bash and Zsh script files."
-  print
-  print "$fg[green]Options:$reset_color"
-  print -- "$fg[magenta]-h/--help$reset_color      Usage information"
-  print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
-  print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
-  print -- "$fg[magenta]-n/--noansi$reset_color    No colors in output"
-}
-
 ### Code ###
 
 # Script with path to it, if it works
