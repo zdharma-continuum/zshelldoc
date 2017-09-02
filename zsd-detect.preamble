@@ -18,3 +18,35 @@ usage() {
     print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
     print -- "$fg[magenta]-n/--noansi$reset_color    No colors in output"
 }
+
+# Obtains node name (function with owning script), checks what functions does
+# it call, recursively entering to those functions and repeating the process.
+# After each call, it first creates directory of the passed node name, and
+# enters it. At exit, it moves to previous parent directory.
+process_node() {
+    local node="$1"
+    if [[ "$node" = "${(q)name}/zsd_script_body" ]]; then
+        command mkdir -p "$name"
+        cd "$name"
+    else
+        if [[ "${node#${(q)name}}" = "${node}" ]]; then
+            local dir="${node/\//_}"
+        else
+            local dir="${node##*/}"
+        fi
+        command mkdir -p "$dir"
+        cd "$dir"
+    fi
+
+    local subfuns="${call_tree[$node]}"
+    local -a asubfuns
+    asubfuns=( "${(z@)subfuns}" )
+
+    local f
+    for f in "${asubfuns[@]}"; do
+        [[ -z "$f" ]] && continue
+        process_node "$f"
+    done
+
+    cd ..
+}
