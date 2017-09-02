@@ -51,8 +51,8 @@ if [[ -n "$OPT_HELP" ]]; then
   return 0
 fi
 
-if [[ -z "$1" ]]; then
-  echo "Argument needed, see help (-h/--help)"
+if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
+  print "Argument needed, see help (-h/--help)"
   return 1
 fi
 
