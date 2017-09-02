@@ -5,7 +5,7 @@
 
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"

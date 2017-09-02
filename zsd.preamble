@@ -15,7 +15,13 @@ elif [[ -f /opt/share/zshelldoc/zsd.config ]]; then
 fi
 
 [ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
-[ -z "$ZSH_VERSION" ] && exec /usr/bin/env "$zsh_control_bin" -f -c "source \"$0\" \"$1\" \"$2\" \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\""
+if [ -z "$ZSH_VERSION" ]; then
+  args="\"$0\""
+  for arg; do
+    args="$args \"$arg\""
+  done
+  exec /usr/bin/env "$zsh_control_bin" -f -c "source $args"
+fi
 
 local -A colors
 autoload colors
