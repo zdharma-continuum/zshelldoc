@@ -111,14 +111,16 @@ for (( i=1; i<=size; ++ i )); do
     prev_spaces="$spaces"
 done
 
-command mkdir -p zsdoc/data/functions
+command mkdir -p zsdoc/data/functions/"$name"
 
 for fun_name in "${(ko@)funs}"; do
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${funs[$fun_name]}`-line function \`$fg[green]${fun_name}$reset_color'..."
     {
         print -r -- "${funs[$fun_name]}"
-    } >| "zsdoc/data/functions/$fun_name"
+    } >| "zsdoc/data/functions/$name/$fun_name"
 done
 
-print -r -- "$preamble" >| zsdoc/data/preamble
-[[ -z "$OPT_QUIET" ]] && print "$fg[green]Generated preamble$reset_color (`line_count $preamble` lines)"
+command mkdir -p zsdoc/data/bodies
+
+print -r -- "$preamble" >| zsdoc/data/bodies/${name}
+[[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Generated body of script \`$name\'$reset_color (`line_count $preamble` lines)"
