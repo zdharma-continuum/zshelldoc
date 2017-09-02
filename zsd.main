@@ -101,9 +101,9 @@ count=0
   print "$fg[cyan]zsd starts second-pass processing (extraction of call-trees and comments)$reset_color"
   local -a storage
   storage=( zsdoc/data/functions/**/*(N) )
-  print "$fg[cyan]Number of functions generated: ${#storage}"
+  print "$fg[cyan]Total number of functions generated: ${#storage}"
   storage=( zsdoc/data/functions/*(N) )
-  print "$fg[cyan]Number of scripts processed: ${#storage}"
+  print "$fg[cyan]Total number of scripts processed: ${#storage}"
 }
 
 for fname; do
