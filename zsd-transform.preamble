@@ -3,3 +3,5 @@
 local -A colors
 autoload colors
 colors 2>/dev/null
+
+setopt extendedglob typesetsilent

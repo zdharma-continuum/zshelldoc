@@ -1,7 +1,5 @@
 # vim:ft=zsh
 
-setopt extendedglob
-
 ### Options ###
 
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
