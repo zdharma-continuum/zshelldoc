@@ -85,12 +85,30 @@ for (( i=1; i<=size; ++ i )); do
     if (( at_command )); then
         at_command=0
 
-        local tokenEx="*${(q)token}" needle="${(q)name}/${(q)fun_name}"
+        local tokenEx="*${(q)token}"
         local found="${known_functions[(r)$tokenEx]}"
+        if [[ -z "$fun_name" ]]; then
+            local needle="${(q)name}/zsd_script_body"
+        else
+            local needle="${(q)name}/${(q)fun_name}"
+        fi
 
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" ]]; then
-            call_tree[${(q)name}/${(q)fun_name}]+="${(q)found} "
-            [[ ${rev_call_tree[${(q)found}]} != *$needle* ]] && rev_call_tree[${(q)found}]+="${(q)name}/${(q)fun_name} "
+            if [[ -z "$fun_name" ]]; then
+                [[ "${call_tree[${(q)name}/zsd_script_body]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
+                    call_tree[${(q)name}/zsd_script_body]+=" ${(q)found} "
+                }
+                [[ "${rev_call_tree[${(q)found}]}" != *[[:blank:]]"$needle"[[:blank:]]* ]] && {
+                    rev_call_tree[${(q)found}]+=" ${(q)name}/zsd_script_body "
+                }
+            else
+                [[ "${call_tree[${(q)name}/${(q)fun_name}]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
+                    call_tree[${(q)name}/${(q)fun_name}]+=" ${(q)found} "
+                }
+                [[ ${rev_call_tree[${(q)found}]} != *[[:blank:]]"$needle"[[:blank:]]* ]] && {
+                    rev_call_tree[${(q)found}]+=" ${(q)name}/${(q)fun_name} "
+                }
+            fi
         fi
 
         if [[ "$token" = [[:space:]]#\#* ]]; then
@@ -172,7 +190,7 @@ command rm -f zsdoc/data/call_tree.zsd
 command rm -f zsdoc/data/rev_call_tree.zsd
 
 for fun_name in "${(ko@)call_tree}"; do
-    echo "$fun_name: ${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
+    echo "$fun_name:${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
 done
 
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Written call tree$reset_color (${#call_tree} callers)"
