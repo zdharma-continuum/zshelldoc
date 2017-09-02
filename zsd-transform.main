@@ -15,6 +15,26 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Imp
 
 [[ -n "$OPT_VERBOSE" ]] && print "$fg[cyan]zsd-transform starting$reset_color"
 
+if [[ -n "$OPT_HELP" ]]; then
+    usage
+    return 0
+fi
+
+if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
+    print "Argument needed, see help (-h/--help)"
+    return 1
+fi
+
+if [[ ! -f "$1" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$1' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    return 1
+fi
+
+if [[ ! -r "$1" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$1' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    return 1
+fi
+
 ### Code ###
 
 local name="$1"
