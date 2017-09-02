@@ -67,7 +67,7 @@ for (( i=1; i<=size; ++ i )); do
         local found="${known_functions[(r)$tokenEx]}"
 
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" ]]; then
-            call_tree[$fun_name]+="${(q)found} "
+            call_tree[$name/$fun_name]+="${(q)found} "
         fi
 
         if [[ "$token" = [[:space:]]#\#* ]]; then
