@@ -32,8 +32,8 @@ local -A cfuns
 integer at_command=1
 local -A call_tree
 local -a known_functions
-known_functions=( zsdoc/data/functions/*(N) )
-known_functions=( ${known_functions[@]:t} )
+known_functions=( zsdoc/data/functions/**/*(N) )
+known_functions=( ${known_functions[@]#zsdoc/data/functions/} )
 
 line_count()
 {
@@ -63,8 +63,11 @@ for (( i=1; i<=size; ++ i )); do
     if (( at_command )); then
         at_command=0
 
-        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "${known_functions[(re)$token]}" ]]; then
-            call_tree[$fun_name]+="${(q)token} "
+        local tokenEx="*${(q)token}"
+        local found="${known_functions[(r)$tokenEx]}"
+
+        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" ]]; then
+            call_tree[$fun_name]+="${(q)found} "
         fi
 
         if [[ "$token" = [[:space:]]#\#* ]]; then
