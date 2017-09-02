@@ -56,11 +56,54 @@ if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
   return 1
 fi
 
-if [[ ! -f "$1" ]]; then
-  echo "File \`$1' doesn't exist, see help (-h/--help)"
-  return 1
-fi
+### First pass ###
 
-# Perform conversion to data structures - two pass
-/usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$1"
-/usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$1"
+local fname
+integer ret=0 count=0
+
+for fname; do
+  (( count ++ ))
+
+  [[ -z "$fname" ]] && {
+    [[ -z "$OPT_QUIET" ]] && print "$fg[magenta]Skipping empty file name$reset_color"
+    continue
+  }
+
+  if [[ ! -f "$fname" ]]; then
+    print "$fg[magenta]File \`$fname' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    print "$fg[magenta]File \`$fname' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    ret=1
+    continue
+  fi
+
+  /usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+done
+
+count=0
+
+### Second pass ###
+
+for fname; do
+  (( count ++ ))
+
+  [[ -z "$fname" ]] && continue
+
+  if [[ ! -f "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+done
+
+return $ret
