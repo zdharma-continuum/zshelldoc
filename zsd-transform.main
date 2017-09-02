@@ -13,6 +13,8 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Imp
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
+[[ -n "$OPT_VERBOSE" ]] && print "$fg[cyan]zsd-transform starting$reset_color"
+
 ### Code ###
 
 local name="$1"

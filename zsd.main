@@ -58,6 +58,15 @@ fi
 
 ### First pass ###
 
+[[ -n "$OPT_VERBOSE" ]] && {
+  print "$fg[cyan]zsd starts first-pass processing (function and script extraction)$reset_color"
+  local -a storage
+  storage=( zsdoc/data/functions/**/*(N) )
+  print "$fg[cyan]Number of functions already generated: ${#storage}"
+  storage=( zsdoc/data/functions/*(N) )
+  print "$fg[cyan]Number of scripts already processed: ${#storage}"
+}
+
 local fname
 integer ret=0 count=0
 
@@ -87,6 +96,15 @@ done
 count=0
 
 ### Second pass ###
+#
+[[ -n "$OPT_VERBOSE" ]] && {
+  print "$fg[cyan]zsd starts second-pass processing (extraction of call-trees and comments)$reset_color"
+  local -a storage
+  storage=( zsdoc/data/functions/**/*(N) )
+  print "$fg[cyan]Number of functions generated: ${#storage}"
+  storage=( zsdoc/data/functions/*(N) )
+  print "$fg[cyan]Number of scripts processed: ${#storage}"
+}
 
 for fname; do
   (( count ++ ))
