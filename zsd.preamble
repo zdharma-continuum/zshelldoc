@@ -27,4 +27,4 @@ local -A colors fg bg fg_bold bg_bold
 autoload colors
 colors
 
-setopt extendedglob
+setopt extendedglob typesetsilent
