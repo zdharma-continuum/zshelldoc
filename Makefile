@@ -16,13 +16,17 @@ build/zsd: zsd.preamble zsd.main
 	cat zsd.main >> build/zsd
 	chmod +x build/zsd
 
-build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffer
+build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffer zsd-trim-indent
 	mkdir -p build
 	rm -f build/zsd-transform
 	cat zsd-transform.preamble > build/zsd-transform
 	echo "" >> build/zsd-transform
 	echo "zsd-process-buffer() {" >> build/zsd-transform
 	cat zsd-process-buffer >> build/zsd-transform
+	echo "}" >> build/zsd-transform
+	echo "" >> build/zsd-transform
+	echo "zsd-trim-indent() {" >> build/zsd-transform
+	cat zsd-trim-indent >> build/zsd-transform
 	echo "}" >> build/zsd-transform
 	echo "" >> build/zsd-transform
 	cat zsd-transform.main >> build/zsd-transform

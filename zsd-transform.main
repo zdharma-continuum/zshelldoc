@@ -137,7 +137,8 @@ command mkdir -p zsdoc/data/functions/"$name"
 for fun_name in "${(ko@)funs}"; do
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${funs[$fun_name]}`-line function \`$fg[green]${fun_name}$reset_color'..."
     {
-        print -r -- "${funs[$fun_name]}"
+        zsd-trim-indent "${funs[$fun_name]}"
+        print -r -- "$REPLY"
     } >| "zsdoc/data/functions/$name/$fun_name"
 done
 
