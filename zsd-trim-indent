@@ -21,9 +21,15 @@ for line in "${lines[@]}"; do
     fi
 done
 
+integer top_spaces=1
 for line in "${lines[@]}"; do
-    line[1,indent]=""
-    new_lines+=( "$line" )
+    if [[ "$line" != [[:space:]]# ]]; then
+        top_spaces=0
+    fi
+    if (( top_spaces == 0 )); then
+        line[1,indent]=""
+        new_lines+=( "$line" )
+    fi
 done
 
 REPLY="${(F)new_lines}"
