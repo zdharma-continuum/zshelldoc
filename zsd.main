@@ -30,7 +30,7 @@ if [[ "$ZERO" != */* ]]; then
   fi
 fi
 
-local TRANSFORM="${ZERO:h}/zsd-transform" DETECT="${ZERO:h}/zsd-detect"
+local TRANSFORM="${ZERO:h}/zsd-transform" DETECT="${ZERO:h}/zsd-detect" TOADOC="${ZERO:h}/zsd-to-adoc"
 
 if [[ -n "$OPT_HELP" ]]; then
   usage
@@ -52,6 +52,8 @@ fi
   storage=( zsdoc/data/functions/*(N) )
   print "$fg[cyan]Number of scripts already processed: ${#storage}"
 }
+
+### TRANSFORM ###
 
 local fname
 integer ret=0 count=0
@@ -79,10 +81,8 @@ for fname; do
   /usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
 done
 
-count=0
-
 ### Second pass ###
-#
+
 [[ -n "$OPT_VERBOSE" ]] && {
   print "$fg[cyan]zsd starts second-pass processing (extraction of call-trees and comments)$reset_color"
   local -a storage
@@ -92,9 +92,9 @@ count=0
   print "$fg[cyan]Total number of scripts processed: ${#storage}"
 }
 
-for fname; do
-  (( count ++ ))
+### Detect ###
 
+for fname; do
   [[ -z "$fname" ]] && continue
 
   if [[ ! -f "$fname" ]]; then
@@ -109,5 +109,24 @@ for fname; do
 
   /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
 done
+
+### ASCIIDOC ###
+
+for fname; do
+  [[ -z "$fname" ]] && continue
+
+  if [[ ! -f "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+done
+
 
 return $ret

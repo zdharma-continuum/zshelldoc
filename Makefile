@@ -44,14 +44,22 @@ build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
 	cat zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
 
-install: build/zsd build/zsd-detect build/zsd-transform
+build/zsd-to-adoc: zsd-to-adoc.preamble zsd-to-adoc.main
+	mkdir -p build
+	rm -f build/zsd-to-adoc
+	cat zsd-to-adoc.preamble > build/zsd-to-adoc
+	echo "" >> build/zsd-to-adoc
+	cat zsd-to-adoc.main >> build/zsd-to-adoc
+	chmod +x build/zsd-to-adoc
+
+install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 	$(INSTALL) -d $(SHARE_DIR)
 	$(INSTALL) -d $(DOC_DIR)
-	cp build/zsd build/zsd-transform build/zsd-detect $(BIN_DIR)
+	cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc $(BIN_DIR)
 	cp zsd.config README.md NEWS LICENSE $(DOC_DIR)
 
 uninstall:
-	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect
+	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect $(BIN_DIR)/zsd-to-adoc
 	rm -f $(DOC_DIR)/zsd.config $(DOC_DIR)/README.md $(DOC_DIR)/NEWS $(DOC_DIR)/LICENSE
 	[ -d $(DOC_DIR) ] && rmdir $(DOC_DIR) || true
 	rm -f $(SHARE_DIR)/*
