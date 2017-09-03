@@ -1,6 +1,7 @@
 #!/bin/sh
 # -*- Mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
 # vim:ft=zsh:sw=2:sts=2:et
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
 #
 # /bin/sh stage, load configuration to obtain $zsh_control_bin
