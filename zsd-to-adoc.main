@@ -38,9 +38,19 @@ fi
 
 ### Code ###
 
-local name="$1" empty tmp
+line_count()
+{
+    local -a list
+    list=( "${(@f)1}" )
+    local count=${#list}
+    [[ "$1" = *$'\n' ]] && (( -- count ))
+    print -r -- "$count"
+}
+
+local name="$1" empty tmp body
 local ofname="${name}.txt" fun
 integer len
+local -a arr
 
 command rm -f -- "$ofname"
 
@@ -78,6 +88,26 @@ command rm -f -- "$ofname"
         echo "$fun"
         len="${#fun}"
         echo "${(r:len::~:)empty}"
+        echo
+    done
+
+    # DETAILS
+    echo "DETAILS"
+    echo "${(r:7::-:)empty}"
+    echo
+
+    for fun in "${funs[@]}"; do
+        echo "$fun"
+        len="${#fun}"
+        echo "${(r:len::~:)empty}"
+        [[ -f zsdoc/data/trees/"$name"/"$fun".tree ]] && {
+            arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/"$fun".tree)"}" )
+            arr=( "${(@)arr[1,-3]}" )
+            arr=( "${arr[@]/(#s)/ }" )
+            echo "${(F)arr}"
+        } || {
+            echo "No functions called"
+        }
         echo
     done
 } >>| "zsdoc/$ofname"

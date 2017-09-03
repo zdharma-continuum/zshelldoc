@@ -67,6 +67,16 @@ line_count()
     print -r -- "${(l:3:: :)count}"
 }
 
+conv_ldrawing()
+{
+    while read line; do
+        line="${line//├──/|--}"
+        line="${line//└──/\`--}"
+        line="${line//│/|}"
+        echo "$line"
+    done
+}
+
 zsd-process-buffer "$doc" 1
 integer i size="${#ZSD_PB_WORDS}"
 
@@ -219,9 +229,9 @@ for fun_name in "${(ko@)call_tree}"; do
     process_node "$fun_name"
     local fun="${fun_name##*/}"
     if [[ "$fun" = "zsd_script_body" ]]; then
-        tree "$name" > "${name}.tree"
+        tree --charset="utf-8" "$name" | conv_ldrawing > "${name}.tree"
     else
-        tree "$fun" > "${fun}.tree"
+        tree --charset="utf-8" "$fun" | conv_ldrawing > "${fun}.tree"
     fi
 done
 
