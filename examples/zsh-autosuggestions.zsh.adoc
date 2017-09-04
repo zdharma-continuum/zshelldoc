@@ -25,6 +25,8 @@ FUNCTIONS
  _zsh_autosuggest_bind_widget
  _zsh_autosuggest_bind_widgets
  _zsh_autosuggest_clear
+ _zsh_autosuggest_disable
+ _zsh_autosuggest_enable
  _zsh_autosuggest_escape_command
  _zsh_autosuggest_execute
  _zsh_autosuggest_feature_detect_zpty_returns_fd
@@ -40,6 +42,7 @@ FUNCTIONS
  _zsh_autosuggest_strategy_default
  _zsh_autosuggest_strategy_match_prev_cmd
  _zsh_autosuggest_suggest
+ _zsh_autosuggest_toggle
 
 DETAILS
 -------
@@ -180,11 +183,44 @@ Calls functions:
 
 Comment:
 
+ # Clear the suggestion
+
+_zsh_autosuggest_disable
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+2 lines
+
+Calls functions:
+
+ _zsh_autosuggest_disable
+ `-- _zsh_autosuggest_clear
+     `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
  #--------------------------------------------------------------------#
  # Autosuggest Widget Implementations                                 #
  #--------------------------------------------------------------------#
  
- # Clear the suggestion
+ # Disable suggestions
+
+_zsh_autosuggest_enable
+~~~~~~~~~~~~~~~~~~~~~~~
+
+5 lines
+
+Calls functions:
+
+ _zsh_autosuggest_enable
+ `-- _zsh_autosuggest_fetch
+     |-- _zsh_autosuggest_async_request
+     `-- _zsh_autosuggest_suggest
+
+
+Comment:
+
+ # Enable suggestions
 
 _zsh_autosuggest_escape_command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,7 +345,7 @@ Comment:
 _zsh_autosuggest_modify
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-24 lines
+31 lines
 
 Calls functions:
 
@@ -425,4 +461,25 @@ No functions called
 Comment:
 
  # Offer a suggestion
+
+_zsh_autosuggest_toggle
+~~~~~~~~~~~~~~~~~~~~~~~
+
+5 lines
+
+Calls functions:
+
+ _zsh_autosuggest_toggle
+ |-- _zsh_autosuggest_disable
+ |   `-- _zsh_autosuggest_clear
+ |       `-- _zsh_autosuggest_invoke_original_widget
+ `-- _zsh_autosuggest_enable
+     `-- _zsh_autosuggest_fetch
+         |-- _zsh_autosuggest_async_request
+         `-- _zsh_autosuggest_suggest
+
+
+Comment:
+
+ # Toggle suggestions (enable/disable)
 
