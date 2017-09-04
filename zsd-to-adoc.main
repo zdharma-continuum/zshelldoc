@@ -101,7 +101,14 @@ command rm -f -- "$ofname"
         echo "$fun"
         len="${#fun}"
         echo "${(r:len::~:)empty}"
+        echo
+        body=$(<zsdoc/data/functions/"$name"/"$fun")
+        echo "`line_count $body` lines"
+        echo
+
         [[ -f zsdoc/data/trees/"$name"/"$fun".tree ]] && {
+            echo "Calls functions:"
+            echo
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/"$fun".tree)"}" )
             arr=( "${(@)arr[1,-3]}" )
             arr=( "${arr[@]/(#s)/ }" )
