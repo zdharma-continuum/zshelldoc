@@ -44,10 +44,14 @@ build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
 	cat zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
 
-build/zsd-to-adoc: zsd-to-adoc.preamble zsd-to-adoc.main
+build/zsd-to-adoc: zsd-to-adoc.preamble zsd-to-adoc.main zsd-trim-indent
 	mkdir -p build
 	rm -f build/zsd-to-adoc
 	cat zsd-to-adoc.preamble > build/zsd-to-adoc
+	echo "" >> build/zsd-to-adoc
+	echo "zsd-trim-indent() {" >> build/zsd-to-adoc
+	cat zsd-trim-indent >> build/zsd-to-adoc
+	echo "}" >> build/zsd-to-adoc
 	echo "" >> build/zsd-to-adoc
 	cat zsd-to-adoc.main >> build/zsd-to-adoc
 	chmod +x build/zsd-to-adoc
