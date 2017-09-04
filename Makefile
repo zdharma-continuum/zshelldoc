@@ -6,7 +6,7 @@ BIN_DIR?=$(DESTDIR)$(PREFIX)/bin
 SHARE_DIR?=$(DESTDIR)$(PREFIX)/share/$(NAME)
 DOC_DIR?=$(DESTDIR)$(PREFIX)/share/doc/$(NAME)
 
-all: build/zsd build/zsd-transform build/zsd-detect
+all: build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc
 
 build/zsd: zsd.preamble zsd.main
 	mkdir -p build
