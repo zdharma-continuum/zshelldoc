@@ -56,65 +56,65 @@ command rm -f -- "$ofname"
 
 {
     # HEADER
-    echo "$name(1)"
+    print "$name(1)"
     len="${#name}+3"
-    echo "${(r:len::=:)empty}"
-    echo "Sebastian Gniazdowski <psprint@zdharma.org>"
-    echo ":compat-mode!:"
-    echo
+    print "${(r:len::=:)empty}"
+    print "Sebastian Gniazdowski <psprint@zdharma.org>"
+    print ":compat-mode!:"
+    print
 
     # NAME
-    echo "NAME"
-    echo "${(r:4::-:)empty}"
-    echo "$name - a shell script"
-    echo
+    print "NAME"
+    print -- "${(r:4::-:)empty}"
+    print -- "$name - a shell script"
+    print
 
     # SYNOPSIS
-    echo "SYNOPSIS"
-    echo "${(r:8::-:)empty}"
-    echo "Documentation automatically generated with \`zshelldoc'"
-    echo
+    print "SYNOPSIS"
+    print -- "${(r:8::-:)empty}"
+    print "Documentation automatically generated with \`zshelldoc'"
+    print
 
     # FUNCTIONS
-    echo "FUNCTIONS"
-    echo "${(r:9::-:)empty}"
-    echo
+    print "FUNCTIONS"
+    print -- "${(r:9::-:)empty}"
+    print
 
     local -a funs
     funs=( zsdoc/data/functions/"$name"/*(N) )
     funs=( "${funs[@]:t}" )
 
     for fun in "${funs[@]}"; do
-        echo " $fun"
+        print -r -- " $fun"
         #len="${#fun}"
-        #echo "${(r:len::~:)empty}"
-        #echo
+        #print -r -- "${(r:len::~:)empty}"
+        #print
     done
 
     # DETAILS
-    echo
-    echo "DETAILS"
-    echo "${(r:7::-:)empty}"
-    echo
+    print
+    print "DETAILS"
+    print -- "${(r:7::-:)empty}"
+    print
 
     for fun in "${funs[@]}"; do
-        echo "$fun"
+        print -r -- "$fun"
         len="${#fun}"
-        echo "${(r:len::~:)empty}"
-        echo
+        print -r -- "${(r:len::~:)empty}"
+        print
         body=$(<zsdoc/data/functions/"$name"/"$fun")
-        echo "`line_count $body` lines"
-        echo
+        print -r -- "`line_count $body` lines"
+        print 
 
         [[ -f zsdoc/data/trees/"$name"/"$fun".tree ]] && {
-            echo "Calls functions:"
-            echo
+            print "Calls functions:"
+            print 
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/"$fun".tree)"}" )
             arr=( "${(@)arr[1,-3]}" )
             arr=( "${arr[@]/(#s)/ }" )
-            echo "${(F)arr}"
+            print -r -- "${(F)arr}"
         } || {
-            echo "No functions called"
+            print "No functions called"
         }
         echo
     done
