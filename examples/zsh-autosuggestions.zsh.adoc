@@ -1,0 +1,428 @@
+zsh-autosuggestions.plugin.zsh(1)
+=================================
+Sebastian Gniazdowski <psprint@zdharma.org>
+:compat-mode!:
+
+NAME
+----
+zsh-autosuggestions.plugin.zsh - a shell script
+
+SYNOPSIS
+--------
+Documentation automatically generated with `zshelldoc'
+
+FUNCTIONS
+---------
+
+ _zsh_autosuggest_accept
+ _zsh_autosuggest_async_pty_create
+ _zsh_autosuggest_async_pty_destroy
+ _zsh_autosuggest_async_pty_recreate
+ _zsh_autosuggest_async_request
+ _zsh_autosuggest_async_response
+ _zsh_autosuggest_async_server
+ _zsh_autosuggest_async_start
+ _zsh_autosuggest_bind_widget
+ _zsh_autosuggest_bind_widgets
+ _zsh_autosuggest_clear
+ _zsh_autosuggest_escape_command
+ _zsh_autosuggest_execute
+ _zsh_autosuggest_feature_detect_zpty_returns_fd
+ _zsh_autosuggest_fetch
+ _zsh_autosuggest_get_bind_count
+ _zsh_autosuggest_highlight_apply
+ _zsh_autosuggest_highlight_reset
+ _zsh_autosuggest_incr_bind_count
+ _zsh_autosuggest_invoke_original_widget
+ _zsh_autosuggest_modify
+ _zsh_autosuggest_partial_accept
+ _zsh_autosuggest_start
+ _zsh_autosuggest_strategy_default
+ _zsh_autosuggest_strategy_match_prev_cmd
+ _zsh_autosuggest_suggest
+
+DETAILS
+-------
+
+_zsh_autosuggest_accept
+~~~~~~~~~~~~~~~~~~~~~~~
+
+11 lines
+
+Calls functions:
+
+ _zsh_autosuggest_accept
+ `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
+ # Accept the entire suggestion
+
+_zsh_autosuggest_async_pty_create
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+13 lines
+
+No functions called
+
+_zsh_autosuggest_async_pty_destroy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+4 lines
+
+No functions called
+
+_zsh_autosuggest_async_pty_recreate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2 lines
+
+Calls functions:
+
+ _zsh_autosuggest_async_pty_recreate
+ |-- _zsh_autosuggest_async_pty_create
+ `-- _zsh_autosuggest_async_pty_destroy
+
+_zsh_autosuggest_async_request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1 lines
+
+No functions called
+
+_zsh_autosuggest_async_response
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+6 lines
+
+No functions called
+
+
+Comment:
+
+ # Called when new data is ready to be read from the pty
+ # First arg will be fd ready for reading
+ # Second arg will be passed in case of error
+
+_zsh_autosuggest_async_server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+21 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Async                                                              #
+ #--------------------------------------------------------------------#
+ 
+ # Zpty process is spawned running this function
+
+_zsh_autosuggest_async_start
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+5 lines
+
+Calls functions:
+
+ _zsh_autosuggest_async_start
+ |-- _zsh_autosuggest_async_pty_recreate
+ |   |-- _zsh_autosuggest_async_pty_create
+ |   `-- _zsh_autosuggest_async_pty_destroy
+ `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+
+_zsh_autosuggest_bind_widget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+29 lines
+
+Calls functions:
+
+ _zsh_autosuggest_bind_widget
+ |-- _zsh_autosuggest_get_bind_count
+ `-- _zsh_autosuggest_incr_bind_count
+
+
+Comment:
+
+ # Bind a single widget to an autosuggest widget, saving a reference to the original widget
+
+_zsh_autosuggest_bind_widgets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+24 lines
+
+Calls functions:
+
+ _zsh_autosuggest_bind_widgets
+ `-- _zsh_autosuggest_bind_widget
+ |-- _zsh_autosuggest_get_bind_count
+ `-- _zsh_autosuggest_incr_bind_count
+
+
+Comment:
+
+ # Map all configured widgets to the right autosuggest widgets
+
+_zsh_autosuggest_clear
+~~~~~~~~~~~~~~~~~~~~~~
+
+3 lines
+
+Calls functions:
+
+ _zsh_autosuggest_clear
+ `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Autosuggest Widget Implementations                                 #
+ #--------------------------------------------------------------------#
+ 
+ # Clear the suggestion
+
+_zsh_autosuggest_escape_command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Utility Functions                                                  #
+ #--------------------------------------------------------------------#
+
+_zsh_autosuggest_execute
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+3 lines
+
+Calls functions:
+
+ _zsh_autosuggest_execute
+ `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
+ # Accept the entire suggestion and execute it
+
+_zsh_autosuggest_feature_detect_zpty_returns_fd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+12 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Feature Detection                                                  #
+ #--------------------------------------------------------------------#
+
+_zsh_autosuggest_fetch
+~~~~~~~~~~~~~~~~~~~~~~
+
+7 lines
+
+Calls functions:
+
+ _zsh_autosuggest_fetch
+ |-- _zsh_autosuggest_async_request
+ `-- _zsh_autosuggest_suggest
+
+
+Comment:
+
+ # Fetch a new suggestion based on what's currently in the buffer
+
+_zsh_autosuggest_get_bind_count
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+5 lines
+
+No functions called
+
+_zsh_autosuggest_highlight_apply
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+8 lines
+
+No functions called
+
+
+Comment:
+
+ # If there's a suggestion, highlight it
+
+_zsh_autosuggest_highlight_reset
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+6 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Highlighting                                                       #
+ #--------------------------------------------------------------------#
+ 
+ # If there was a highlight, remove it
+
+_zsh_autosuggest_incr_bind_count
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+7 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Widget Helpers                                                     #
+ #--------------------------------------------------------------------#
+
+_zsh_autosuggest_invoke_original_widget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+9 lines
+
+No functions called
+
+
+Comment:
+
+ # Given the name of an original widget and args, invoke it, if it exists
+
+_zsh_autosuggest_modify
+~~~~~~~~~~~~~~~~~~~~~~~
+
+24 lines
+
+Calls functions:
+
+ _zsh_autosuggest_modify
+ |-- _zsh_autosuggest_fetch
+ |   |-- _zsh_autosuggest_async_request
+ |   `-- _zsh_autosuggest_suggest
+ `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
+ # Modify the buffer and get a new suggestion
+
+_zsh_autosuggest_partial_accept
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+13 lines
+
+Calls functions:
+
+ _zsh_autosuggest_partial_accept
+ `-- _zsh_autosuggest_invoke_original_widget
+
+
+Comment:
+
+ # Partially accept the suggestion
+
+_zsh_autosuggest_start
+~~~~~~~~~~~~~~~~~~~~~~
+
+8 lines
+
+Calls functions:
+
+ _zsh_autosuggest_start
+ |-- _zsh_autosuggest_async_start
+ |   |-- _zsh_autosuggest_async_pty_recreate
+ |   |   |-- _zsh_autosuggest_async_pty_create
+ |   |   `-- _zsh_autosuggest_async_pty_destroy
+ |   `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ `-- _zsh_autosuggest_bind_widgets
+ `-- _zsh_autosuggest_bind_widget
+ |-- _zsh_autosuggest_get_bind_count
+ `-- _zsh_autosuggest_incr_bind_count
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Start                                                              #
+ #--------------------------------------------------------------------#
+ 
+ # Start the autosuggestion widgets
+
+_zsh_autosuggest_strategy_default
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+4 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Default Suggestion Strategy                                        #
+ #--------------------------------------------------------------------#
+ # Suggests the most recent history item that matches the given
+ # prefix.
+ #
+
+_zsh_autosuggest_strategy_match_prev_cmd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+13 lines
+
+No functions called
+
+
+Comment:
+
+ #--------------------------------------------------------------------#
+ # Match Previous Command Suggestion Strategy                         #
+ #--------------------------------------------------------------------#
+ # Suggests the most recent history item that matches the given
+ # prefix and whose preceding history item also matches the most
+ # recently executed command.
+ #
+ # For example, suppose your history has the following entries:
+ #   - pwd
+ #   - ls foo
+ #   - ls bar
+ #   - pwd
+ #
+ # Given the history list above, when you type 'ls', the suggestion
+ # will be 'ls foo' rather than 'ls bar' because your most recently
+ # executed command (pwd) was previously followed by 'ls foo'.
+ #
+ # Note that this strategy won't work as expected with ZSH options that don't
+ # preserve the history order such as `HIST_IGNORE_ALL_DUPS` or
+ # `HIST_EXPIRE_DUPS_FIRST`.
+
+_zsh_autosuggest_suggest
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+7 lines
+
+No functions called
+
+
+Comment:
+
+ # Offer a suggestion
+
