@@ -117,5 +117,17 @@ command rm -f -- "$ofname"
             print "No functions called"
         }
         echo
+
+        [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
+            zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
+            arr=( "${(@f)REPLY}" )
+            arr=( "${arr[@]/(#s)/ }" )
+            print
+            print "Comment:"
+            print
+            print -rl -- "${arr[@]}"
+            print
+        }
+
     done
 } >>| "zsdoc/$ofname"
