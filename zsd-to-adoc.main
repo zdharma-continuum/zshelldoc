@@ -85,13 +85,14 @@ command rm -f -- "$ofname"
     funs=( "${funs[@]:t}" )
 
     for fun in "${funs[@]}"; do
-        echo "$fun"
-        len="${#fun}"
-        echo "${(r:len::~:)empty}"
-        echo
+        echo " $fun"
+        #len="${#fun}"
+        #echo "${(r:len::~:)empty}"
+        #echo
     done
 
     # DETAILS
+    echo
     echo "DETAILS"
     echo "${(r:7::-:)empty}"
     echo
