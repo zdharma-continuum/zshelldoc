@@ -128,7 +128,7 @@ for (( i=1; i<=size; ++ i )); do
         if [[ "$token" = [[:space:]]#\#* ]]; then
             cproposal+="$token$next_spaces"
         else
-            if [[ "$token" != "function" && ( "$next_token" != "()" || "$spaces" = *$'\n'* ) ]]; then
+            if [[ "$token" != "function" && ( "$next_token" != "()" || "$next_spaces" = *$'\n'* ) ]]; then
                 cproposal=""
             fi
         fi
