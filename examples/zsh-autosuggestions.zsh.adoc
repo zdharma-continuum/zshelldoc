@@ -1,11 +1,11 @@
-zsh-autosuggestions.plugin.zsh(1)
-=================================
+zsh-autosuggestions.zsh(1)
+==========================
 Sebastian Gniazdowski <psprint@zdharma.org>
 :compat-mode!:
 
 NAME
 ----
-zsh-autosuggestions.plugin.zsh - a shell script
+zsh-autosuggestions.zsh - a shell script
 
 SYNOPSIS
 --------
@@ -159,8 +159,8 @@ Calls functions:
 
  _zsh_autosuggest_bind_widgets
  `-- _zsh_autosuggest_bind_widget
- |-- _zsh_autosuggest_get_bind_count
- `-- _zsh_autosuggest_incr_bind_count
+     |-- _zsh_autosuggest_get_bind_count
+     `-- _zsh_autosuggest_incr_bind_count
 
 
 Comment:
@@ -353,9 +353,9 @@ Calls functions:
  |   |   `-- _zsh_autosuggest_async_pty_destroy
  |   `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
  `-- _zsh_autosuggest_bind_widgets
- `-- _zsh_autosuggest_bind_widget
- |-- _zsh_autosuggest_get_bind_count
- `-- _zsh_autosuggest_incr_bind_count
+     `-- _zsh_autosuggest_bind_widget
+         |-- _zsh_autosuggest_get_bind_count
+         `-- _zsh_autosuggest_incr_bind_count
 
 
 Comment:
