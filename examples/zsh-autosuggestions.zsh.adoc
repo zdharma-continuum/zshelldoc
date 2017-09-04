@@ -118,10 +118,6 @@ No functions called
 
 Comment:
 
- #--------------------------------------------------------------------#
- # Async                                                              #
- #--------------------------------------------------------------------#
- 
  # Zpty process is spawned running this function
 
 _zsh_autosuggest_async_start
@@ -199,10 +195,6 @@ Calls functions:
 
 Comment:
 
- #--------------------------------------------------------------------#
- # Autosuggest Widget Implementations                                 #
- #--------------------------------------------------------------------#
- 
  # Disable suggestions
 
 _zsh_autosuggest_enable
@@ -310,10 +302,6 @@ No functions called
 
 Comment:
 
- #--------------------------------------------------------------------#
- # Highlighting                                                       #
- #--------------------------------------------------------------------#
- 
  # If there was a highlight, remove it
 
 _zsh_autosuggest_incr_bind_count
@@ -396,10 +384,6 @@ Calls functions:
 
 Comment:
 
- #--------------------------------------------------------------------#
- # Start                                                              #
- #--------------------------------------------------------------------#
- 
  # Start the autosuggestion widgets
 
 _zsh_autosuggest_strategy_default
