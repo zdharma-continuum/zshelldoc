@@ -42,8 +42,10 @@ local name="$1"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 local preamble="" fun_name=""
-local -A funs
+local -A funs auto_funs
+local -a arr
 
+integer at_command=1 in_autoload=0
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
 
@@ -130,7 +132,32 @@ for (( i=1; i<=size; ++ i )); do
     prev_depth="$depth"
     prev_token="$token"
     prev_spaces="$spaces"
+
+    # Check for introduction of autoload function
+    if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
+        at_command=1
+        in_autoload=0
+    fi
+    if (( at_command )); then
+        at_command=0
+        if [[ "$token" = "autoload" ]]; then
+            in_autoload=1
+        fi
+    elif (( in_autoload )); then
+        if [[ "$token" = "--" ]]; then
+            in_autoload=2
+        elif [[ "$token" != -* || "$in_autoload" -eq "2" ]]; then
+            arr=( $^fpath/$token(N) )
+            if [[ "${#arr}" -ge 1 ]]; then
+                auto_funs[$token]="$(<${arr[1]})"
+            else
+                auto_funs[$token]="Autoload-function source not found"
+            fi
+        fi
+    fi
 done
+
+### OUTPUT: FUNCTIONS
 
 command mkdir -p zsdoc/data/functions/"$name"
 
@@ -141,6 +168,20 @@ for fun_name in "${(ko@)funs}"; do
         print -r -- "$REPLY"
     } >| "zsdoc/data/functions/$name/$fun_name"
 done
+
+### OUTPUT: AUTOLOAD FUNCTIONS
+
+command mkdir -p zsdoc/data/autoload/"$name"
+
+for fun_name in "${(ko@)auto_funs}"; do
+    [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${auto_funs[$fun_name]}`-line $fg[red]AUTOLOAD$reset_color function \`$fg[green]${fun_name}$reset_color'..."
+    {
+        zsd-trim-indent "${auto_funs[$fun_name]}"
+        print -r -- "$REPLY"
+    } >| "zsdoc/data/autoload/$name/$fun_name"
+done
+
+### OUTPUT: SCRIPT BODIES
 
 command mkdir -p zsdoc/data/bodies
 
