@@ -27,8 +27,8 @@ usage() {
 process_node() {
     local node="$1"
     if [[ "$node" = "${(q)name}/zsd_script_body" ]]; then
-        command mkdir -p "$name"
-        cd "$name"
+        command mkdir -p "Script_Body_"
+        cd "Script_Body_"
     else
         if [[ "${node#${(q)name}}" = "${node}" ]]; then
             local dir="${node/\//_}"

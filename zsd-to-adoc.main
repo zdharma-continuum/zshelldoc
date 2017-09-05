@@ -97,6 +97,26 @@ command rm -f -- "zsdoc/$ofname"
     print -- "${(r:7::-:)empty}"
     print
 
+    [[ -f zsdoc/data/bodies/"$name" ]] && {
+        print -r -- "Script Body"
+        print -r -- "${(r:11::~:)empty}"
+        print
+        body=$(<zsdoc/data/bodies/"$name")
+        print -r -- "`line_count $body` lines"
+        print
+        [[ -f zsdoc/data/trees/"$name"/Script_Body_.tree ]] && {
+            print "Calls functions:"
+            print
+            arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/Script_Body_.tree)"}" )
+            arr=( "${(@)arr[1,-3]}" )
+            arr=( "${arr[@]/(#s)/ }" )
+            print -r -- "${(F)arr}"
+        } || {
+            print "No functions called (may attach to Zle or do hooks, etc.)"
+        }
+        print
+    }
+
     for fun in "${funs[@]}"; do
         print -r -- "$fun"
         len="${#fun}"
@@ -116,7 +136,7 @@ command rm -f -- "zsdoc/$ofname"
         } || {
             print "No functions called"
         }
-        echo
+        print
 
         [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
             zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"

@@ -236,7 +236,7 @@ for fun_name in "${(ko@)call_tree}"; do
     process_node "$fun_name"
     local fun="${fun_name##*/}"
     if [[ "$fun" = "zsd_script_body" ]]; then
-        tree --charset="utf-8" "$name" | conv_ldrawing > "${name}.tree"
+        tree --charset="utf-8" "Script_Body_" 2>&1 | conv_ldrawing > "Script_Body_.tree"
     else
         tree --charset="utf-8" "$fun" | conv_ldrawing > "${fun}.tree"
     fi
