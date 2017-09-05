@@ -129,12 +129,8 @@ for (( i=1; i<=size; ++ i )); do
         fi
     fi
 
-    prev_depth="$depth"
-    prev_token="$token"
-    prev_spaces="$spaces"
-
     # Check for introduction of autoload function
-    if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
+    if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
         at_command=1
         in_autoload=0
     fi
@@ -155,6 +151,10 @@ for (( i=1; i<=size; ++ i )); do
             fi
         fi
     fi
+
+    prev_depth="$depth"
+    prev_token="$token"
+    prev_spaces="$spaces"
 done
 
 ### OUTPUT: FUNCTIONS

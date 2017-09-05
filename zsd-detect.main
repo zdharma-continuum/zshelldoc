@@ -80,7 +80,7 @@ for (( i=1; i<=size; ++ i )); do
     (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1 }
 
     # Detect function call
-    if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
+    if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
         at_command=1
     fi
     if (( at_command )); then
@@ -118,6 +118,7 @@ for (( i=1; i<=size; ++ i )); do
             fi
         fi
 
+        # Extract before-function comments
         if [[ "$token" = [[:space:]]#\#* ]]; then
             if [[ "$spaces" = [[:space:]]#$'\n'[[:space:]]#$'\n'* ]]; then
                 cproposal="$token$next_spaces"

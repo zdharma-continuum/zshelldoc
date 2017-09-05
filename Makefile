@@ -29,6 +29,8 @@ build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffe
 	cat zsd-trim-indent >> build/zsd-transform
 	echo "}" >> build/zsd-transform
 	echo "" >> build/zsd-transform
+	cat token-types.mod >> build/zsd-transform
+	echo "" >> build/zsd-transform
 	cat zsd-transform.main >> build/zsd-transform
 	chmod +x build/zsd-transform
 
@@ -42,6 +44,8 @@ build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
 	echo "}" >> build/zsd-detect
 	echo "" >> build/zsd-detect
 	cat run-tree-convert.mod >> build/zsd-detect
+	echo "" >> build/zsd-detect
+	cat token-types.mod >> build/zsd-detect
 	echo "" >> build/zsd-detect
 	cat zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
