@@ -47,6 +47,13 @@ FUNCTIONS
 DETAILS
 -------
 
+Script Body
+~~~~~~~~~~~
+
+71 lines
+
+No functions called (may attach to Zle or do hooks, etc.)
+
 _zsh_autosuggest_accept
 ~~~~~~~~~~~~~~~~~~~~~~~
 
