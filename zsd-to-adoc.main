@@ -48,11 +48,11 @@ line_count()
 }
 
 local name="$1" empty tmp body
-local ofname="${name}.txt" fun
+local ofname="${name}.adoc" fun
 integer len
 local -a arr
 
-command rm -f -- "$ofname"
+command rm -f -- "zsdoc/$ofname"
 
 {
     # HEADER
