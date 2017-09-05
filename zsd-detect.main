@@ -238,7 +238,7 @@ for fun_name in "${(ko@)call_tree}"; do
     if [[ "$fun" = "zsd_script_body" ]]; then
         tree --charset="utf-8" "Script_Body_" 2>&1 | conv_ldrawing > "Script_Body_.tree"
     else
-        tree --charset="utf-8" "$fun" | conv_ldrawing > "${fun}.tree"
+        tree --charset="utf-8" "$fun" 2>&1 | conv_ldrawing > "${fun}.tree"
     fi
 done
 
