@@ -64,6 +64,7 @@ Calls functions:
  _zsh_autosuggest_accept
  `-- _zsh_autosuggest_invoke_original_widget
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -76,12 +77,20 @@ _zsh_autosuggest_async_pty_create
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_async_pty_recreate
+
 _zsh_autosuggest_async_pty_destroy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 4 lines
 
 No functions called
+
+Called by:
+
+ _zsh_autosuggest_async_pty_recreate
 
 _zsh_autosuggest_async_pty_recreate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,12 +103,20 @@ Calls functions:
  |-- _zsh_autosuggest_async_pty_create
  `-- _zsh_autosuggest_async_pty_destroy
 
+Called by:
+
+ _zsh_autosuggest_async_start
+
 _zsh_autosuggest_async_request
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1 lines
 
 No functions called
+
+Called by:
+
+ _zsh_autosuggest_fetch
 
 _zsh_autosuggest_async_response
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,6 +125,7 @@ _zsh_autosuggest_async_response
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -122,6 +140,7 @@ _zsh_autosuggest_async_server
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -140,6 +159,10 @@ Calls functions:
  |   `-- _zsh_autosuggest_async_pty_destroy
  `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
 
+Called by:
+
+ _zsh_autosuggest_start
+
 _zsh_autosuggest_bind_widget
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -151,6 +174,9 @@ Calls functions:
  |-- _zsh_autosuggest_get_bind_count
  `-- _zsh_autosuggest_incr_bind_count
 
+Called by:
+
+ _zsh_autosuggest_bind_widgets
 
 Comment:
 
@@ -168,6 +194,9 @@ Calls functions:
      |-- _zsh_autosuggest_get_bind_count
      `-- _zsh_autosuggest_incr_bind_count
 
+Called by:
+
+ _zsh_autosuggest_start
 
 Comment:
 
@@ -183,6 +212,9 @@ Calls functions:
  _zsh_autosuggest_clear
  `-- _zsh_autosuggest_invoke_original_widget
 
+Called by:
+
+ _zsh_autosuggest_disable
 
 Comment:
 
@@ -199,6 +231,9 @@ Calls functions:
  `-- _zsh_autosuggest_clear
      `-- _zsh_autosuggest_invoke_original_widget
 
+Called by:
+
+ _zsh_autosuggest_toggle
 
 Comment:
 
@@ -216,6 +251,9 @@ Calls functions:
      |-- _zsh_autosuggest_async_request
      `-- _zsh_autosuggest_suggest
 
+Called by:
+
+ _zsh_autosuggest_toggle
 
 Comment:
 
@@ -228,6 +266,7 @@ _zsh_autosuggest_escape_command
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -245,6 +284,7 @@ Calls functions:
  _zsh_autosuggest_execute
  `-- _zsh_autosuggest_invoke_original_widget
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -257,6 +297,9 @@ _zsh_autosuggest_feature_detect_zpty_returns_fd
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_async_start
 
 Comment:
 
@@ -275,6 +318,10 @@ Calls functions:
  |-- _zsh_autosuggest_async_request
  `-- _zsh_autosuggest_suggest
 
+Called by:
+
+ _zsh_autosuggest_enable
+ _zsh_autosuggest_modify
 
 Comment:
 
@@ -287,6 +334,10 @@ _zsh_autosuggest_get_bind_count
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_bind_widget
+
 _zsh_autosuggest_highlight_apply
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -294,6 +345,7 @@ _zsh_autosuggest_highlight_apply
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -306,6 +358,7 @@ _zsh_autosuggest_highlight_reset
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -318,6 +371,9 @@ _zsh_autosuggest_incr_bind_count
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_bind_widget
 
 Comment:
 
@@ -332,6 +388,13 @@ _zsh_autosuggest_invoke_original_widget
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_accept
+ _zsh_autosuggest_clear
+ _zsh_autosuggest_execute
+ _zsh_autosuggest_modify
+ _zsh_autosuggest_partial_accept
 
 Comment:
 
@@ -350,6 +413,7 @@ Calls functions:
  |   `-- _zsh_autosuggest_suggest
  `-- _zsh_autosuggest_invoke_original_widget
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -365,6 +429,7 @@ Calls functions:
  _zsh_autosuggest_partial_accept
  `-- _zsh_autosuggest_invoke_original_widget
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -388,6 +453,7 @@ Calls functions:
          |-- _zsh_autosuggest_get_bind_count
          `-- _zsh_autosuggest_incr_bind_count
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -400,6 +466,7 @@ _zsh_autosuggest_strategy_default
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -417,6 +484,7 @@ _zsh_autosuggest_strategy_match_prev_cmd
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -448,6 +516,9 @@ _zsh_autosuggest_suggest
 
 No functions called
 
+Called by:
+
+ _zsh_autosuggest_fetch
 
 Comment:
 
@@ -469,6 +540,7 @@ Calls functions:
          |-- _zsh_autosuggest_async_request
          `-- _zsh_autosuggest_suggest
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 

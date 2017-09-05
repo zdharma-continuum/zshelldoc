@@ -143,7 +143,7 @@ command rm -f -- "zsdoc/$ofname"
             print "Not called by script or any function, may be a hook or Zle widget, etc."
             print
         else
-            print "Called by: "
+            print "Called by:"
             print
             arr=( "${arr[@]#zsdoc/data/trees/$name/}" )
             arr=( "${arr[@]%/*}" )
