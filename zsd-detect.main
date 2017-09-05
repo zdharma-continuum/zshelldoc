@@ -86,8 +86,14 @@ for (( i=1; i<=size; ++ i )); do
     if (( at_command )); then
         at_command=0
 
-        local tokenEx="*${(q)token}"
+        # Search for this possible function ($token) in current script
+        local tokenEx="${(q)name}/${(q)token}"
         local found="${known_functions[(r)$tokenEx]}"
+        if [[ -z "$found" ]]; then
+            # Search for other scripts calling this possible function
+            tokenEx="*/${(q)token}"
+            found="${known_functions[(r)$tokenEx]}"
+        fi
         if [[ -z "$fun_name" ]]; then
             local needle="${(q)name}/zsd_script_body"
         else
