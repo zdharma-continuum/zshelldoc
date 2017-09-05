@@ -138,11 +138,23 @@ command rm -f -- "zsdoc/$ofname"
         }
         print
 
+        arr=( zsdoc/data/trees/$name/*/$fun(N) )
+        if [[ "${#arr}" -eq "0" ]]; then
+            print "Not called by script or any function, may be a hook or Zle widget, etc."
+            print
+        else
+            print "Called by: "
+            print
+            arr=( "${arr[@]#zsdoc/data/trees/$name/}" )
+            arr=( "${arr[@]%/*}" )
+            print -rl -- "${arr[@]/(#s)/ }"
+            print
+        fi
+
         [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
             zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
             arr=( "${(@f)REPLY}" )
             arr=( "${arr[@]/(#s)/ }" )
-            print
             print "Comment:"
             print
             print -rl -- "${arr[@]}"
