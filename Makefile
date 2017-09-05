@@ -41,6 +41,8 @@ build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
 	cat zsd-process-buffer >> build/zsd-detect
 	echo "}" >> build/zsd-detect
 	echo "" >> build/zsd-detect
+	cat run-tree-convert.mod >> build/zsd-detect
+	echo "" >> build/zsd-detect
 	cat zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
 
