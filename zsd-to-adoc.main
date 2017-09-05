@@ -108,7 +108,7 @@ command rm -f -- "zsdoc/$ofname"
             print "Calls functions:"
             print
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/Script_Body_.tree)"}" )
-            arr=( "${(@)arr[1,-3]}" )
+            [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
             arr=( "${arr[@]/(#s)/ }" )
             print -r -- "${(F)arr}"
         } || {
@@ -130,7 +130,7 @@ command rm -f -- "zsdoc/$ofname"
             print "Calls functions:"
             print 
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/"$fun".tree)"}" )
-            arr=( "${(@)arr[1,-3]}" )
+            [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
             arr=( "${arr[@]/(#s)/ }" )
             print -r -- "${(F)arr}"
         } || {
