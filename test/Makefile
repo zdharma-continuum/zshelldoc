@@ -2,6 +2,7 @@ test: nested real-zsyh
 
 .PHONY: nested
 nested: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-adoc nested.zsh
+	@echo "=== Testing: nested.zsh ==="
 	rm -rf zsdoc
 	../build/zsd -q nested.zsh
 	diff -r zsdoc nested
@@ -14,9 +15,11 @@ nested: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test4" 2>/dev/null || echo "Error compiling function: test4"'
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test5" 2>/dev/null || echo "Error compiling function: test5"'
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test6" 2>/dev/null || echo "Error compiling function: test6"'
+	@echo
 
 .PHONY: real-zsyh
 real-zsyh: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-adoc real-zsyh.zsh
+	@echo "=== Testing: real-zsyh.zsh ==="
 	rm -rf zsdoc
 	../build/zsd -q real-zsyh.zsh
 	diff -r zsdoc real-zsyh
@@ -31,6 +34,7 @@ real-zsyh: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_cursor_moved" 2>/dev/null || echo "Error compiling function: _zsh_highlight_cursor_moved"'
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_load_highlighters" 2>/dev/null || echo "Error compiling function: _zsh_highlight_load_highlighters"'
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_preexec_hook" 2>/dev/null || echo "Error compiling function: _zsh_highlight_preexec_hook"'
+	@echo
 
 .PHONY: clean
 clean:
