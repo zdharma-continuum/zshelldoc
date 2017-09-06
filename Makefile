@@ -34,7 +34,7 @@ build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffe
 	cat zsd-transform.main >> build/zsd-transform
 	chmod +x build/zsd-transform
 
-build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer
+build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer run-tree-convert.mod token-types.mod
 	mkdir -p build
 	rm -f build/zsd-detect
 	cat zsd-detect.preamble > build/zsd-detect
