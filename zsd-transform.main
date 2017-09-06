@@ -45,9 +45,14 @@ local preamble="" fun_name=""
 local -A funs auto_funs
 local -a arr
 
+# Function extraction
 integer at_command=1 in_autoload=0
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
+
+# Nested functions tracking
+integer nested_fun=0 next_nested_fun=0 prev_nested_fun=0
+local -a fun_stack_depths
 
 line_count()
 {
@@ -68,18 +73,26 @@ for (( i=1; i<=size; ++ i )); do
     next_token="${ZSD_PB_WORDS[i+1]}"
     next_spaces="${ZSD_PB_SPACES[i+1]}"
     cur_fun=0 prev_fun=0 descentff=0 descentfa=0
+    nested_fun=0 prev_nested_fun=0
 
-    (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1 }
+    (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1; }
+    (( next_nested_fun )) && { next_nested_fun=0 nested_fun=1 prev_nested_fun=0; }
 
     # Explicit future function
-    if [[ "$token" = "function" ]]; then
+    if [[ "$token" = "function" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
         next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
     # Detect function if not already in function
     elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
-        if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
+        if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
             next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
         else
             next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
+        fi
+    elif [[ "$token" = "function" ]]; then
+        next_nested_fun=1 nested_fun=0 prev_nested_fun=0
+    elif [[ "$token" = "()" && "$nested_fun" -eq 0 && "$depth" -gt "$fun_stack_depths[-1]" ]]; then
+        if [[ "$spaces" != *$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [123] ]]; then
+            next_nested_fun=0 nested_fun=0 prev_nested_fun=1
         fi
     elif [[ "$token" = "{" ]]; then
         (( ++ depth ))
@@ -90,9 +103,15 @@ for (( i=1; i<=size; ++ i )); do
     if (( cur_fun )); then
         fun_name="$token"
         fun_depth="$depth"
+        fun_stack_depths+=( "$depth" )
     elif (( prev_fun )); then
         fun_name="$prev_token"
         fun_depth="$depth"
+        fun_stack_depths+=( "$depth" )
+    fi
+
+    if (( nested_fun + prev_nested_fun )); then
+        fun_stack_depths+=( "$depth" )
     fi
 
     # Ascent to function - skip '{'
@@ -102,6 +121,13 @@ for (( i=1; i<=size; ++ i )); do
     elif (( fun_depth >= 0 && depth > fun_depth )); then
         if [[ "$token" != [[:space:]]#\#* ]]; then
             funs[$fun_name]+="${spaces}${token}"
+        fi
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+            fun_stack_depths[-1]=()
+        fi
+    elif (( anon_depth >= 0 && depth > anon_depth )); then
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+            fun_stack_depths[-1]=()
         fi
     # Descent from function - skip '}'
     elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 )); then
@@ -116,19 +142,6 @@ for (( i=1; i<=size; ++ i )); do
         [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
     fi
 
-    # Late disable of (anon)
-    if (( descentfa )); then
-        anon_depth=-1
-    elif (( descentff )); then
-        fun_name=""
-        fun_depth=-1
-    # No-function printing
-    elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* ]]; then
-            [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
-        fi
-    fi
-
     # Check for introduction of autoload function
     if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
         at_command=1
@@ -136,8 +149,10 @@ for (( i=1; i<=size; ++ i )); do
     fi
     if (( at_command )); then
         at_command=0
-        if [[ "$token" = "autoload" ]]; then
-            in_autoload=1
+        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && "$fun_stack_depths[-1]" -le "0" ]]; then
+            if [[ "$token" = "autoload" ]]; then
+                in_autoload=1
+            fi
         fi
     elif (( in_autoload )); then
         if [[ "$token" = "--" ]]; then
@@ -149,6 +164,21 @@ for (( i=1; i<=size; ++ i )); do
             else
                 auto_funs[$token]="Autoload-function source not found"
             fi
+        fi
+    fi
+
+    # Late disable of anonymous function
+    if (( descentfa )); then
+        anon_depth=-1
+    # Late disable of normal function
+    elif (( descentff )); then
+        fun_name=""
+        fun_depth=-1
+        fun_stack_depths[-1]=()
+    # No-function text gathering
+    elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
+        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = 3 ]]; then
+            [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
         fi
     fi
 

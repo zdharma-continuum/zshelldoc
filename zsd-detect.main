@@ -47,6 +47,10 @@ local -A funs
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
 
+# Nested functions tracking
+integer nested_fun=0 next_nested_fun=0 prev_nested_fun=0
+local -a fun_stack_depths
+
 # Function-comment extraction
 local cproposal=""
 local -A cfuns
@@ -76,21 +80,88 @@ for (( i=1; i<=size; ++ i )); do
     next_token="${ZSD_PB_WORDS[i+1]}"
     next_spaces="${ZSD_PB_SPACES[i+1]}"
     cur_fun=0 prev_fun=0 descentff=0 descentfa=0
+    nested_fun=0 prev_nested_fun=0
 
-    (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1 }
+    (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1; }
+    (( next_nested_fun )) && { next_nested_fun=0 nested_fun=1 prev_nested_fun=0; }
 
-    # Detect function call
+    # Explicit future function
+    if [[ "$token" = "function" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
+        next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
+    # Detect function if not already in function
+    elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
+        if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
+            next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
+        else
+            next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
+        fi
+    elif [[ "$token" = "function" ]]; then
+        next_nested_fun=1 nested_fun=0 prev_nested_fun=0
+    elif [[ "$token" = "()" && "$nested_fun" -eq 0 && "$depth" -gt "$fun_stack_depths[-1]" ]]; then
+        if [[ "$spaces" != *$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [123] ]]; then
+            next_nested_fun=0 nested_fun=0 prev_nested_fun=1
+        fi
+    elif [[ "$token" = "{" ]]; then
+        (( ++ depth ))
+    elif [[ "$token" = "}" ]]; then
+        (( -- depth ))
+    fi
+
+    if (( cur_fun )); then
+        fun_name="$token"
+        fun_depth="$depth"
+        fun_stack_depths+=( "$depth" )
+    elif (( prev_fun )); then
+        fun_name="$prev_token"
+        fun_depth="$depth"
+        fun_stack_depths+=( "$depth" )
+    fi
+
+    if (( nested_fun + prev_nested_fun )); then
+        fun_stack_depths+=( "$depth" )
+    fi
+
+    # Ascent to function - skip '{'
+    if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ "$token" = "{" ]]; then
+        :
+    # In-function
+    elif (( fun_depth >= 0 && depth > fun_depth )); then
+        if [[ "$token" != [[:space:]]#\#* ]]; then
+            funs[$fun_name]+="${spaces}${token}"
+        fi
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+            fun_stack_depths[-1]=()
+        fi
+    elif (( anon_depth >= 0 && depth > anon_depth )); then
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+            fun_stack_depths[-1]=()
+        fi
+    # Descent from function - skip '}'
+    elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 )); then
+        descentff=1
+    # Descent from anon
+    elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 )); then
+        descentfa=1
+    fi
+
+    # Anon function in top-level
+    if (( anon_depth >= 0 && fun_depth < 0 )); then
+        [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
+    fi
+
+    ### Detect function call
     if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
         at_command=1
     fi
     if (( at_command )); then
         at_command=0
 
+        # Prepare call-tree extraction
         # Search for this possible function ($token) in current script
         local tokenEx="${(q)name}/${(q)token}"
         local found="${known_functions[(r)$tokenEx]}"
         if [[ -z "$found" ]]; then
-            # Search for other scripts calling this possible function
+            # Search for other scripts having this possible function
             tokenEx="*/${(q)token}"
             found="${known_functions[(r)$tokenEx]}"
         fi
@@ -100,7 +171,8 @@ for (( i=1; i<=size; ++ i )); do
             local needle="${(q)name}/${(q)fun_name}"
         fi
 
-        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" ]]; then
+        # Extract call-tree and reversed call-tree
+        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" && "$fun_stack_depths[-1]" -le "0" ]]; then
             if [[ -z "$fun_name" ]]; then
                 [[ "${call_tree[${(q)name}/zsd_script_body]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
                     call_tree[${(q)name}/zsd_script_body]+=" ${(q)found} "
@@ -132,62 +204,22 @@ for (( i=1; i<=size; ++ i )); do
         fi
     fi
 
-    # Explicit future function
-    if [[ "$token" = "function" ]]; then
-        next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
-    # Detect function if not already in function
-    elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
-        if [[ "$spaces" = *$'\n'* || -z "$prev_token" ]]; then
-            next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
-        else
-            next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
-        fi
-    elif [[ "$token" = "{" ]]; then
-        (( ++ depth ))
-    elif [[ "$token" = "}" ]]; then
-        (( -- depth ))
-    fi
-
-    if (( cur_fun )); then
-        fun_name="$token"
-        fun_depth="$depth"
-        cfuns[$fun_name]="${cproposal%%$'\n'##}"
-    elif (( prev_fun )); then
-        fun_name="$prev_token"
-        fun_depth="$depth"
+    # Store function comment
+    if (( cur_fun + prev_fun )); then
         cfuns[$fun_name]="${cproposal%%$'\n'##}"
     fi
 
-    # Ascent to function - skip '{'
-    if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ "$token" = "{" ]]; then
-        :
-    # In-function
-    elif (( fun_depth >= 0 && depth > fun_depth )); then
-        if [[ "$token" != [[:space:]]#\#* ]]; then
-            funs[$fun_name]+="${spaces}${token}"
-        fi
-    # Descent from function - skip '}'
-    elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 )); then
-        descentff=1
-    # Descent from anon
-    elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 )); then
-        descentfa=1
-    fi
-
-    # Anon function in top-level
-    if (( anon_depth >= 0 && fun_depth < 0 )); then
-        [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
-    fi
-
-    # Late disable of (anon)
+    # Late disable of anonymous function
     if (( descentfa )); then
         anon_depth=-1
+    # Late disable of normal function
     elif (( descentff )); then
         fun_name=""
         fun_depth=-1
-    # No-function printing
+        fun_stack_depths[-1]=()
+    # No-function text gathering
     elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* ]]; then
+        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = 3 ]]; then
             [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
         fi
     fi
