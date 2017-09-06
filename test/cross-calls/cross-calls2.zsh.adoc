@@ -1,0 +1,53 @@
+cross-calls2.zsh(1)
+===================
+Sebastian Gniazdowski <psprint@zdharma.org>
+:compat-mode!:
+
+NAME
+----
+cross-calls2.zsh - a shell script
+
+SYNOPSIS
+--------
+Documentation automatically generated with `zshelldoc'
+
+FUNCTIONS
+---------
+
+ myfun1
+ myfun3
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+4 lines
+
+Calls functions:
+
+ Script_Body_
+ |-- cross-calls1.zsh/myfun2
+ `-- myfun1
+
+myfun1
+~~~~~~
+
+1 lines
+
+No functions called
+
+Called by:
+
+ Script_Body_
+
+myfun3
+~~~~~~
+
+1 lines
+
+No functions called
+
+Not called by script or any function, may be a hook or Zle widget, etc.
+

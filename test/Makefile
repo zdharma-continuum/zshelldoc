@@ -1,4 +1,4 @@
-test: nested real-zsyh
+test: nested real-zsyh cross-calls
 
 .PHONY: nested
 nested: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-adoc nested.zsh
@@ -36,6 +36,22 @@ real-zsyh: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_preexec_hook" 2>/dev/null || echo "Error compiling function: _zsh_highlight_preexec_hook"'
 	@find zsdoc/data/functions zsdoc/data/bodies -iname '*.zwc' -exec rm -f \{\} \;
 	diff -r zsdoc real-zsyh
+	@echo
+
+.PHONY: cross-calls
+cross-calls: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-adoc cross-calls1.zsh cross-calls2.zsh
+	@echo "=== Testing: cross-calls1.zsh, cross-calls2.zsh ==="
+	rm -rf zsdoc
+	../build/zsd -q cross-calls1.zsh cross-calls2.zsh
+	@zsh -c 'exit 0' || { echo "Zsh unavailable, cannot test if scripts compile (cross-calls*.zsh)"; exit 1; }
+	@zsh -c 'zcompile "zsdoc/data/bodies/cross-calls1.zsh" 2>/dev/null || echo "Error compiling 1st script body"'
+	@zsh -c 'zcompile "zsdoc/data/bodies/cross-calls2.zsh" 2>/dev/null || echo "Error compiling 2nd script body"'
+	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls1.zsh/myfun1" 2>/dev/null || echo "Error compiling function: cross-calls1.zsh/myfun1"'
+	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls1.zsh/myfun2" 2>/dev/null || echo "Error compiling function: cross-calls1.zsh/myfun2"'
+	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls2.zsh/myfun1" 2>/dev/null || echo "Error compiling function: cross-calls2.zsh/myfun1"'
+	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls2.zsh/myfun3" 2>/dev/null || echo "Error compiling function: cross-calls2.zsh/myfun3"'
+	@find zsdoc/data/functions zsdoc/data/bodies -iname '*.zwc' -exec rm -f \{\} \;
+	diff -r zsdoc cross-calls
 	@echo
 
 .PHONY: clean
