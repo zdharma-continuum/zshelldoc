@@ -48,6 +48,9 @@ Calls functions:
  _zsh_highlight
  `-- _zsh_highlight_apply_zle_highlight
 
+Called by:
+
+ _zsh_highlight_call_widget
 
 Comment:
 
@@ -63,6 +66,7 @@ _zsh_highlight_add_highlight
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -78,6 +82,9 @@ _zsh_highlight_apply_zle_highlight
 
 No functions called
 
+Called by:
+
+ _zsh_highlight
 
 Comment:
 
@@ -96,6 +103,9 @@ _zsh_highlight_bind_widgets
 
 No functions called
 
+Called by:
+
+ Script_Body_
 
 Comment:
 
@@ -108,6 +118,7 @@ _zsh_highlight_buffer_modified
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -126,6 +137,7 @@ Calls functions:
  `-- _zsh_highlight
      `-- _zsh_highlight_apply_zle_highlight
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -139,6 +151,7 @@ _zsh_highlight_cursor_moved
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
@@ -153,6 +166,9 @@ _zsh_highlight_load_highlighters
 
 No functions called
 
+Called by:
+
+ Script_Body_
 
 Comment:
 
@@ -168,6 +184,7 @@ _zsh_highlight_preexec_hook
 
 No functions called
 
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 Comment:
 
