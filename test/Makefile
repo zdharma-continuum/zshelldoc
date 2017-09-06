@@ -6,7 +6,7 @@ nested: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-
 	rm -rf zsdoc
 	../build/zsd -q nested.zsh
 	diff -r zsdoc nested
-	@zsh -c 'exit 0' || echo "Zsh unavailable, cannot test if scripts compile (nested.zsh)"
+	@zsh -c 'exit 0' || { echo "Zsh unavailable, cannot test if scripts compile (nested.zsh)"; exit 1; }
 	@zsh -c 'zcompile "zsdoc/data/bodies/nested.zsh" 2>/dev/null || echo "Error compiling script body"'
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/dummy" 2>/dev/null || echo "Error compiling function: dummy"'
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test1" 2>/dev/null || echo "Error compiling function: test1"'
@@ -23,7 +23,7 @@ real-zsyh: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-
 	rm -rf zsdoc
 	../build/zsd -q real-zsyh.zsh
 	diff -r zsdoc real-zsyh
-	@zsh -c 'exit 0' || echo "Zsh unavailable, cannot test if scripts compile (nested.zsh)"
+	@zsh -c 'exit 0' || { echo "Zsh unavailable, cannot test if scripts compile (real-zsyh.zsh)"; exit 1; }
 	@zsh -c 'zcompile "zsdoc/data/bodies/real-zsyh.zsh" 2>/dev/null || echo "Error compiling script body"'
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight" 2>/dev/null || echo "Error compiling function: _zsh_highlight"'
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_add_highlight" 2>/dev/null || echo "Error compiling function: _zsh_highlight_add_highlight"'
