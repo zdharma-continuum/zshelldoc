@@ -31,7 +31,7 @@ process_node() {
         cd "Script_Body_"
     else
         if [[ "${node#${(q)name}}" = "${node}" ]]; then
-            local dir="${node/\//_}"
+            local dir="${node/\//_-_}"
         else
             local dir="${node##*/}"
         fi

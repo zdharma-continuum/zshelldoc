@@ -5,7 +5,7 @@
 
 # Converts tree (STDIN input) with possible
 # special characters to ASCII-only
-conv_ldrawing()
+convert_tree()
 {
     local IFSBKP="$IFS"
     IFS=""
@@ -13,6 +13,7 @@ conv_ldrawing()
         line="${line//├──/|--}"
         line="${line//└──/\`--}"
         line="${line//│/|}"
+        line="${line//_-_//}"
         echo "$line"
     done
     IFS="$IFSBKP"
@@ -21,5 +22,5 @@ conv_ldrawing()
 # Searches for supported tree command,
 # invokes to-ASCII conversion
 zsd-run-tree-convert() {
-    tree --charset="utf-8" "$1" 2>&1 | conv_ldrawing
+    tree --charset="utf-8" "$1" 2>&1 | convert_tree
 }
