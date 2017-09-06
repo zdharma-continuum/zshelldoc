@@ -59,7 +59,6 @@ command rm -f -- "zsdoc/$ofname"
     print "$name(1)"
     len="${#name}+3"
     print "${(r:len::=:)empty}"
-    print "Sebastian Gniazdowski <psprint@zdharma.org>"
     print ":compat-mode!:"
     print
 

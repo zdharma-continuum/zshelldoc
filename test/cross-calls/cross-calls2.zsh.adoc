@@ -1,6 +1,5 @@
 cross-calls2.zsh(1)
 ===================
-Sebastian Gniazdowski <psprint@zdharma.org>
 :compat-mode!:
 
 NAME

@@ -1,6 +1,5 @@
 real-zsyh.zsh(1)
 ================
-Sebastian Gniazdowski <psprint@zdharma.org>
 :compat-mode!:
 
 NAME
