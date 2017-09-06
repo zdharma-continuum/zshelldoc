@@ -1,0 +1,173 @@
+nested.zsh(1)
+=============
+Sebastian Gniazdowski <psprint@zdharma.org>
+:compat-mode!:
+
+NAME
+----
+nested.zsh - a shell script
+
+SYNOPSIS
+--------
+Documentation automatically generated with `zshelldoc'
+
+FUNCTIONS
+---------
+
+ dummy
+ test1
+ test2
+ test3
+ test4
+ test5
+ test6
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+6 lines
+
+No functions called (may attach to Zle or do hooks, etc.)
+
+dummy
+~~~~~
+
+1 lines
+
+No functions called
+
+Called by:
+
+ test6
+
+Comment:
+
+ # Dummy function
+
+test1
+~~~~~
+
+1 lines
+
+Calls functions:
+
+ test1
+ |-- test2
+ |   `-- test3
+ |       `-- test4
+ |           `-- test5
+ |               `-- test6
+ |                   `-- dummy
+ `-- test6
+     `-- dummy
+
+Not called by script or any function, may be a hook or Zle widget, etc.
+
+Comment:
+
+ # Test1 function
+
+test2
+~~~~~
+
+2 lines
+
+Calls functions:
+
+ test2
+ `-- test3
+     `-- test4
+         `-- test5
+             `-- test6
+                 `-- dummy
+
+Called by:
+
+ test1
+
+Comment:
+
+ # Test2 function
+
+test3
+~~~~~
+
+1 lines
+
+Calls functions:
+
+ test3
+ `-- test4
+     `-- test5
+         `-- test6
+             `-- dummy
+
+Called by:
+
+ test2
+
+Comment:
+
+ # Test3 function
+
+test4
+~~~~~
+
+1 lines
+
+Calls functions:
+
+ test4
+ `-- test5
+     `-- test6
+         `-- dummy
+
+Called by:
+
+ test3
+
+Comment:
+
+ # Test4 function
+
+test5
+~~~~~
+
+8 lines
+
+Calls functions:
+
+ test5
+ `-- test6
+     `-- dummy
+
+Called by:
+
+ test4
+
+Comment:
+
+ # Test5 function
+
+test6
+~~~~~
+
+2 lines
+
+Calls functions:
+
+ test6
+ `-- dummy
+
+Called by:
+
+ test1
+ test5
+
+Comment:
+
+ # Test6 function
+

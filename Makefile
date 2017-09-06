@@ -75,4 +75,7 @@ uninstall:
 	rm -f $(SHARE_DIR)/*
 	[ -d $(SHARE_DIR) ] && rmdir $(SHARE_DIR) || true
 
-.PHONY: all install uninstall
+test:
+	make -C test test
+
+.PHONY: all install uninstall test
