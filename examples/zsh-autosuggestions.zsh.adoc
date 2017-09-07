@@ -1,6 +1,5 @@
 zsh-autosuggestions.zsh(1)
 ==========================
-Sebastian Gniazdowski <psprint@zdharma.org>
 :compat-mode!:
 
 NAME
@@ -43,6 +42,7 @@ FUNCTIONS
  _zsh_autosuggest_strategy_match_prev_cmd
  _zsh_autosuggest_suggest
  _zsh_autosuggest_toggle
+AUTOLOAD add-zsh-hook
 
 DETAILS
 -------
@@ -52,7 +52,10 @@ Script Body
 
 71 lines
 
-No functions called (may attach to Zle or do hooks, etc.)
+Calls functions:
+
+ Script_Body_
+ `-- add-zsh-hook
 
 _zsh_autosuggest_accept
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,7 +160,8 @@ Calls functions:
  |-- _zsh_autosuggest_async_pty_recreate
  |   |-- _zsh_autosuggest_async_pty_create
  |   `-- _zsh_autosuggest_async_pty_destroy
- `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ |-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ `-- add-zsh-hook
 
 Called by:
 
@@ -447,11 +451,13 @@ Calls functions:
  |   |-- _zsh_autosuggest_async_pty_recreate
  |   |   |-- _zsh_autosuggest_async_pty_create
  |   |   `-- _zsh_autosuggest_async_pty_destroy
- |   `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
- `-- _zsh_autosuggest_bind_widgets
-     `-- _zsh_autosuggest_bind_widget
-         |-- _zsh_autosuggest_get_bind_count
-         `-- _zsh_autosuggest_incr_bind_count
+ |   |-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ |   `-- add-zsh-hook
+ |-- _zsh_autosuggest_bind_widgets
+ |   `-- _zsh_autosuggest_bind_widget
+ |       |-- _zsh_autosuggest_get_bind_count
+ |       `-- _zsh_autosuggest_incr_bind_count
+ `-- add-zsh-hook
 
 Not called by script or any function, may be a hook or Zle widget, etc.
 
@@ -545,4 +551,17 @@ Not called by script or any function, may be a hook or Zle widget, etc.
 Comment:
 
  # Toggle suggestions (enable/disable)
+
+add-zsh-hook
+~~~~~~~~~~~~
+
+91 lines
+
+No functions called
+
+Called by:
+
+ Script_Body_
+ _zsh_autosuggest_async_start
+ _zsh_autosuggest_start
 

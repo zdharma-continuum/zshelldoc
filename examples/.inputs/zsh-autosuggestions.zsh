@@ -30,7 +30,7 @@
 #--------------------------------------------------------------------#
 
 # Precmd hooks for initializing the library and starting pty's
-(( 1 )) && autoload -Uz add-zsh-hook
+autoload -Uz add-zsh-hook
 
 # Asynchronous suggestions are generated in a pty
 zmodload zsh/zpty

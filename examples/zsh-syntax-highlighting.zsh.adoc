@@ -1,6 +1,5 @@
 zsh-syntax-highlighting.zsh(1)
 ==============================
-Sebastian Gniazdowski <psprint@zdharma.org>
 :compat-mode!:
 
 NAME
@@ -23,6 +22,8 @@ FUNCTIONS
  _zsh_highlight_cursor_moved
  _zsh_highlight_load_highlighters
  _zsh_highlight_preexec_hook
+AUTOLOAD add-zsh-hook
+AUTOLOAD is-at-least
 
 DETAILS
 -------
@@ -36,7 +37,9 @@ Calls functions:
 
  Script_Body_
  |-- _zsh_highlight_bind_widgets
- `-- _zsh_highlight_load_highlighters
+ |-- _zsh_highlight_load_highlighters
+ |-- add-zsh-hook
+ `-- is-at-least
 
 _zsh_highlight
 ~~~~~~~~~~~~~~
@@ -189,4 +192,26 @@ Not called by script or any function, may be a hook or Zle widget, etc.
 Comment:
 
  # Reset scratch variables when commandline is done.
+
+add-zsh-hook
+~~~~~~~~~~~~
+
+91 lines
+
+No functions called
+
+Called by:
+
+ Script_Body_
+
+is-at-least
+~~~~~~~~~~~
+
+38 lines
+
+No functions called
+
+Called by:
+
+ Script_Body_
 
