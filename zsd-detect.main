@@ -39,7 +39,7 @@ fi
 ### Code ###
 
 local name="$1"
-local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
+local doc="$(<zsdoc/data/extended/$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 # Function and preamble extraction
 local preamble="" fun_name=""
@@ -59,8 +59,9 @@ local -A cfuns
 integer at_command=1
 local -A call_tree rev_call_tree
 local -a known_functions
-known_functions=( zsdoc/data/functions/**/*(N) )
+known_functions=( zsdoc/data/functions/**/*(N) zsdoc/data/autoload/**/*(N) )
 known_functions=( ${known_functions[@]#zsdoc/data/functions/} )
+known_functions=( ${known_functions[@]#zsdoc/data/autoload/} )
 
 line_count()
 {

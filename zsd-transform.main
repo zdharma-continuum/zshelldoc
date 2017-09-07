@@ -199,16 +199,26 @@ for fun_name in "${(ko@)funs}"; do
     } >| "zsdoc/data/functions/$name/$fun_name"
 done
 
-### OUTPUT: AUTOLOAD FUNCTIONS
+### OUTPUT: EXTENDED BODY
+
+command mkdir -p zsdoc/data/extended
+command rm -f zsdoc/data/extended/"$name"
+echo "$doc" >| zsdoc/data/extended/"$name"
+
+### OUTPUT: AUTOLOAD FUNCTIONS AND EXTENDED BODY
 
 command mkdir -p zsdoc/data/autoload/"$name"
 
 for fun_name in "${(ko@)auto_funs}"; do
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${auto_funs[$fun_name]}`-line $fg[red]AUTOLOAD$reset_color function \`$fg[green]${fun_name}$reset_color'..."
-    {
-        zsd-trim-indent "${auto_funs[$fun_name]}"
-        print -r -- "$REPLY"
-    } >| "zsdoc/data/autoload/$name/$fun_name"
+    # Autoload function
+    zsd-trim-indent "${auto_funs[$fun_name]}"
+    print -r -- "$REPLY" >| "zsdoc/data/autoload/$name/$fun_name"
+
+    # Appendix of the function to extended body
+    print -r -- "${fun_name}() {" >>| "zsdoc/data/extended/$name"
+    print -r -- "$REPLY" >>| "zsdoc/data/extended/$name"
+    print -r -- "}" >>| "zsdoc/data/extended/$name"
 done
 
 ### OUTPUT: SCRIPT BODIES

@@ -85,9 +85,13 @@ command rm -f -- "zsdoc/$ofname"
 
     for fun in "${funs[@]}"; do
         print -r -- " $fun"
-        #len="${#fun}"
-        #print -r -- "${(r:len::~:)empty}"
-        #print
+    done
+
+    funs=( zsdoc/data/autoload/"$name"/*(N) )
+    funs=( "${funs[@]:t}" )
+
+    for fun in "${funs[@]}"; do
+        print -r -- "AUTOLOAD $fun"
     done
 
     # DETAILS
@@ -116,12 +120,16 @@ command rm -f -- "zsdoc/$ofname"
         print
     }
 
+    funs=( zsdoc/data/functions/"$name"/*(N) zsdoc/data/autoload/"$name"/*(N) )
+    funs=( "${funs[@]:t}" )
+
     for fun in "${funs[@]}"; do
         print -r -- "$fun"
         len="${#fun}"
         print -r -- "${(r:len::~:)empty}"
         print
-        body=$(<zsdoc/data/functions/"$name"/"$fun")
+        { body=$(<zsdoc/data/functions/"$name"/"$fun"); } 2>/dev/null
+        [[ -z "$body" ]] && body=$(<zsdoc/data/autoload/"$name"/"$fun")
         print -r -- "`line_count $body` lines"
         print 
 
