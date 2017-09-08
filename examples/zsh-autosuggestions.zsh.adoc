@@ -54,7 +54,7 @@ Script Body
 
 Calls functions:
 
- Script_Body_
+ Script-Body
  `-- add-zsh-hook
 
 _zsh_autosuggest_accept

@@ -35,7 +35,7 @@ Script Body
 
 Calls functions:
 
- Script_Body_
+ Script-Body
  |-- _zsh_highlight_bind_widgets
  |-- _zsh_highlight_load_highlighters
  |-- add-zsh-hook

@@ -26,7 +26,7 @@ Script Body
 
 Calls functions:
 
- Script_Body_
+ Script-Body
  |-- cross-calls2.zsh/myfun3
  `-- myfun1
 
