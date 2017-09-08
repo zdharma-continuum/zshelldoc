@@ -481,7 +481,6 @@ Comment:
  #--------------------------------------------------------------------#
  # Suggests the most recent history item that matches the given
  # prefix.
- #
 
 _zsh_autosuggest_strategy_match_prev_cmd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

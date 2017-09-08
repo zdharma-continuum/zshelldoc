@@ -163,6 +163,7 @@ command rm -f -- "zsdoc/$ofname"
         [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
             zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
             arr=( "${(@f)REPLY}" )
+            [[ "${arr[-1]}" = [[:space:]]#\#[[:space:]]# ]] && arr[-1]=()
             arr=( "${arr[@]/(#s)/ }" )
             print "Comment:"
             print
