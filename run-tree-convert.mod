@@ -22,5 +22,14 @@ convert_tree()
 # Searches for supported tree command,
 # invokes to-ASCII conversion
 zsd-run-tree-convert() {
-    tree --charset="utf-8" "$1" 2>&1 | convert_tree
+    if type tree 2>/dev/null 1>&2; then
+        tree -n --charset="utf-8" "$1" 2>&1 | convert_tree
+    else
+        {
+            print "$fg[red]No \`tree' program, it is required$reset_color"
+            print "Download from: http://mama.indstate.edu/users/ice/tree/"
+            print "It is also probably in all distributions and Homebrew, as package \`tree'"
+            exit 1
+        } >&2
+    fi
 }
