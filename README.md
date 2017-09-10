@@ -7,6 +7,8 @@ Parses Zsh and Bash scripts, outputs Asciidoc document with:
 
 Call trees support cross-files invocations, i.e. when a script calls functiion defined in other file.
 
+Written in Zshell language.
+
 # Usage
 
 ```
