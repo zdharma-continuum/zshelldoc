@@ -24,3 +24,8 @@ Options:
 # Installation
 
 Download and issue `make && make install`.
+
+# Examples
+
+See [example1](https://github.com/zdharma/zshelldoc/examples/zsh-syntax-highlighting.adoc),
+[example2](https://github.com/zdharma/zshelldoc/examples/zsh-autosuggestions.adoc).
