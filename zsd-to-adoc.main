@@ -156,6 +156,7 @@ command rm -f -- "zsdoc/$ofname"
             print
             arr=( "${arr[@]#zsdoc/data/trees/$name/}" )
             arr=( "${arr[@]%/*}" )
+            arr=( "${arr[@]/Script_Body_/Script-Body}" )
             print -rl -- "${arr[@]/(#s)/ }"
             print
         fi

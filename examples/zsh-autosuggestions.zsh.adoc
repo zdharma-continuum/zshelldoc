@@ -560,7 +560,7 @@ No functions called
 
 Called by:
 
- Script_Body_
+ Script-Body
  _zsh_autosuggest_async_start
  _zsh_autosuggest_start
 
