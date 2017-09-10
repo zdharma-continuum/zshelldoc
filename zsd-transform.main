@@ -38,7 +38,7 @@ fi
 
 ### Code ###
 
-local name="$1"
+local name="${1:t}"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 local preamble="" fun_name=""

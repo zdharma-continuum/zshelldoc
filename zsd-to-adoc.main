@@ -47,7 +47,7 @@ line_count()
     print -r -- "$count"
 }
 
-local name="$1" empty tmp body
+local name="${1:t}" empty tmp body
 local ofname="${name}.adoc" fun
 integer len
 local -a arr

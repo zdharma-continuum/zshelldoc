@@ -38,7 +38,7 @@ fi
 
 ### Code ###
 
-local name="$1"
+local name="${1:t}"
 local doc="$(<zsdoc/data/extended/$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 # Function and preamble extraction
