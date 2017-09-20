@@ -27,7 +27,7 @@ usage() {
 process_node() {
     local node="$1"
     if [[ "$node" = "${(q)name}/zsd_script_body" ]]; then
-        command mkdir -p "Script_Body_"
+        command mkdir -p -- "Script_Body_"
         cd "Script_Body_"
     else
         if [[ "${node#${(q)name}}" = "${node}" ]]; then
@@ -35,8 +35,8 @@ process_node() {
         else
             local dir="${node##*/}"
         fi
-        command mkdir -p "$dir"
-        cd "$dir"
+        command mkdir -p -- "$dir"
+        cd -- "$dir"
     fi
 
     local subfuns="${call_tree[$node]}"

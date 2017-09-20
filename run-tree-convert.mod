@@ -23,7 +23,7 @@ convert_tree()
 # invokes to-ASCII conversion
 zsd-run-tree-convert() {
     if type tree 2>/dev/null 1>&2; then
-        tree -n --charset="utf-8" "$1" 2>&1 | convert_tree
+        tree -n --charset="utf-8" -- "$1" 2>&1 | convert_tree
     else
         {
             print "$fg[red]No \`tree' program, it is required$reset_color"
