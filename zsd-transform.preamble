@@ -17,5 +17,5 @@ usage() {
     print -- "$fg[magenta]-h/--help$reset_color      Usage information"
     print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
     print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
-    print -- "$fg[magenta]-n/--noansi$reset_color    No colors in output"
+    print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
 }
