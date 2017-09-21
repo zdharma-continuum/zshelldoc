@@ -3,14 +3,15 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: || { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+(( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -194,9 +195,16 @@ for (( i=1; i<=size; ++ i )); do
         # Extract before-function comments
         if [[ "$token" = [[:space:]]#\#* ]]; then
             if [[ "$spaces" = [[:space:]]#$'\n'[[:space:]]#$'\n'* ]]; then
-                cproposal="$token$next_spaces"
+                if [[ -n "$OPT_CIGNORE" && "$token" = ${~OPT_CIGNORE} ]]; then
+                    cproposal=""
+                else
+                    cproposal="$token$next_spaces"
+                fi
             else
-                cproposal+="$token$next_spaces"
+                if [[ -z "$OPT_CIGNORE" || "$token" != ${~OPT_CIGNORE} ]]; then
+                    [[ "$token" = \#*FUNCTION:*{{{* ]] && echo added matching "|$OPT_CIGNORE|", "|$token|",
+                    cproposal+="$token$next_spaces"
+                fi
             fi
         else
             if [[ "$token" != "function" && ( "$next_token" != "()" || "$next_spaces" = *$'\n'* ) ]]; then

@@ -4,14 +4,15 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { print "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: || { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+(( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -107,7 +108,10 @@ for fname; do
     continue
   fi
 
-  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+  local cignore="" ciarg=""
+  [[ -n "$OPT_CIGNORE" ]] && { cignore="--cignore" ciarg="$OPT_CIGNORE"; }
+
+  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $cignore $ciarg "$fname"
 done
 
 ### ASCIIDOC ###
