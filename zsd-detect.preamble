@@ -20,7 +20,7 @@ usage() {
     print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
     print -- "$fg[magenta]--cignore$reset_color      Specify which comment lines should be ignored"
     print
-    print -- "Example --cignore option:"
+    print -- "Example --cignore options:"
     print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"
     print -- "--cignore '(\\#*FUNCTION:*{{{*|\\#*FUN:*{{{*)'   - also ignore comments like: $fg[green]# FUN: usage {{{$reset_color"
 }
