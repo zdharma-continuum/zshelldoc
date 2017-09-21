@@ -9,7 +9,7 @@ setopt extendedglob typesetsilent
 
 usage() {
     print "ZSD INTERNAL SCRIPT"
-    print "$fg[green]Usage:$reset_color zsd-detect [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] $fg_bold[magenta]{file}$reset_color"
+    print "$fg[green]Usage:$reset_color zsd-detect [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] [--cignore <pattern>] $fg_bold[magenta]{file}$reset_color"
     print "The $fg_bold[magenta]file$reset_color will be processed to gather function comments and call trees."
     print "Data extracted by \`zsd-transform' is needed. Supported are Bash and Zsh scripts."
     print
@@ -18,6 +18,11 @@ usage() {
     print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
     print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
     print -- "$fg[magenta]-n/--noansi$reset_color    No colors in output"
+    print -- "$fg[magenta]--cignore$reset_color      Specify which comment lines should be ignored"
+    print
+    print -- "Example --cignore option:"
+    print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"
+    print -- "--cignore '(\\#*FUNCTION:*{{{*|\\#*FUN:*{{{*)'   - also ignore comments like: $fg[green]# FUN: usage {{{$reset_color"
 }
 
 # Obtains node name (function with owning script), checks what functions does
