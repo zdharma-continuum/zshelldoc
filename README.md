@@ -24,8 +24,8 @@ Options:
 --cignore      Specify which comment lines should be ignored
 
 Example --cignore options:
---cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{$reset_color"
---cignore '(\#*FUNCTION:*{{{*|\#*FUN:*{{{*)'  - also ignore comments like: # FUN: usage {{{$reset_color"
+--cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{
+--cignore '(\#*FUNCTION:*{{{*|\#*FUN:*{{{*)'  - also ignore comments like: # FUN: usage {{{
 ```
 
 # Installation
