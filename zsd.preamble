@@ -33,7 +33,7 @@ setopt extendedglob typesetsilent
 ### Functions ###
 
 usage() {
-  print "$fg[green]Usage:$reset_color zsd [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] $fg_bold[magenta]{file1} [file2] ...$reset_color"
+  print "$fg[green]Usage:$reset_color zsd [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] [--cignore <pattern>] $fg_bold[magenta]{file1} [file2] ...$reset_color"
   print "The files will be processed and their documentation will be generated"
   print "in subdirectory \`zsdoc' (with meta-data in subdirectory \`data')."
   print "Supported are Bash and Zsh scripts."
