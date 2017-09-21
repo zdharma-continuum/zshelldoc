@@ -21,6 +21,11 @@ Options:
 -v/--verbose   More verbose operation-status output
 -q/--quiet     No status messages
 -n/--noansi    No colors in terminal output
+--cignore      Specify which comment lines should be ignored
+
+Example --cignore options:
+--cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{$reset_color"
+--cignore '(\#*FUNCTION:*{{{*|\#*FUN:*{{{*)'  - also ignore comments like: # FUN: usage {{{$reset_color"
 ```
 
 # Installation
