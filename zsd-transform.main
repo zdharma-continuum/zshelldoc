@@ -161,8 +161,8 @@ for (( i=1; i<=size; ++ i )); do
             arr=( $^fpath/$token(N) )
             if [[ "${#arr}" -ge 1 ]]; then
                 auto_funs[$token]="$(<${arr[1]})"
-            else
-                auto_funs[$token]="Autoload-function source not found"
+            #else
+            #    auto_funs[$token]="Autoload-function source not found"
             fi
         fi
     fi
