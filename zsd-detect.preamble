@@ -42,6 +42,7 @@ process_node() {
         fi
         command mkdir -p -- "$dir"
         cd -- "$dir"
+        PROCESSED+=( "$node" )
     fi
 
     local subfuns="${call_tree[$node]}"
@@ -51,6 +52,7 @@ process_node() {
     local f
     for f in "${asubfuns[@]}"; do
         [[ -z "$f" ]] && continue
+        [[ -n "${PROCESSED[(r)$f]}" ]] && continue
         process_node "$f"
     done
 

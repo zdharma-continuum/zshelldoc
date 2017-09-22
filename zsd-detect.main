@@ -266,8 +266,10 @@ command mkdir -p "zsdoc/data/trees/$name"
 local PWDBKP="$PWD"
 cd "zsdoc/data/trees/$name"
 integer count=0
+local -a PROCESSED
 for fun_name in "${(ko@)call_tree}"; do
     (( ++ count ))
+    PROCESSED=()
     process_node "$fun_name"
     local fun="${fun_name##*/}"
     if [[ "$fun" = "zsd_script_body" ]]; then
