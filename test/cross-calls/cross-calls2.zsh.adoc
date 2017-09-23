@@ -22,9 +22,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-4 lines
-
-Calls functions:
+Has 4 lines. Calls functions:
 
  Script-Body
  |-- cross-calls1.zsh/myfun2
@@ -33,9 +31,7 @@ Calls functions:
 myfun1
 ~~~~~~
 
-1 lines
-
-No functions called
+Has 1 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -44,9 +40,9 @@ Called by:
 myfun3
 ~~~~~~
 
-1 lines
+Has 1 line(s). Doesn't call other functions.
 
-No functions called
+Called by:
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+ cross-calls1.zsh/Script-Body
 

@@ -31,9 +31,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-36 lines
-
-Calls functions:
+Has 36 lines. Calls functions:
 
  Script-Body
  |-- _zsh_highlight_bind_widgets
@@ -44,9 +42,14 @@ Calls functions:
 _zsh_highlight
 ~~~~~~~~~~~~~~
 
-65 lines
+____
+ # Update ZLE buffer syntax highlighting.
+ #
+ # Invokes each highlighter that needs updating.
+ # This function is supposed to be called whenever the ZLE state changes.
+____
 
-Calls functions:
+Has 65 line(s). Calls functions:
 
  _zsh_highlight
  `-- _zsh_highlight_apply_zle_highlight
@@ -55,42 +58,24 @@ Called by:
 
  _zsh_highlight_call_widget
 
-Comment:
-
- # Update ZLE buffer syntax highlighting.
- #
- # Invokes each highlighter that needs updating.
- # This function is supposed to be called whenever the ZLE state changes.
-
 _zsh_highlight_add_highlight
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-11 lines
-
-No functions called
-
-Not called by script or any function, may be a hook or Zle widget, etc.
-
-Comment:
-
+____
  # Add a highlight defined by ZSH_HIGHLIGHT_STYLES.
  #
  # Should be used by all highlighters aside from 'pattern' (cf. ZSH_HIGHLIGHT_PATTERN).
  # Overwritten in tests/test-highlighting.zsh when testing.
+____
+
+Has 11 line(s). Doesn't call other functions.
+
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 _zsh_highlight_apply_zle_highlight
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-20 lines
-
-No functions called
-
-Called by:
-
- _zsh_highlight
-
-Comment:
-
+____
  # Apply highlighting based on entries in the zle_highlight array.
  # This function takes four arguments:
  # 1. The exact entry (no patterns) in the zle_highlight array:
@@ -98,43 +83,49 @@ Comment:
  # 2. The default highlighting that should be applied if the entry is unset
  # 3. and 4. Two integer values describing the beginning and end of the
  #    range. The order does not matter.
+____
+
+Has 20 line(s). Doesn't call other functions.
+
+Called by:
+
+ _zsh_highlight
 
 _zsh_highlight_bind_widgets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-34 lines
+____
+ # Rebind all ZLE widgets to make them invoke _zsh_highlights.
+____
 
-No functions called
+Has 34 line(s). Doesn't call other functions.
 
 Called by:
 
  Script-Body
 
-Comment:
-
- # Rebind all ZLE widgets to make them invoke _zsh_highlights.
-
 _zsh_highlight_buffer_modified
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1 lines
-
-No functions called
-
-Not called by script or any function, may be a hook or Zle widget, etc.
-
-Comment:
-
+____
  # Whether the command line buffer has been modified or not.
  #
  # Returns 0 if the buffer has changed since _zsh_highlight was last called.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 _zsh_highlight_call_widget
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2 lines
+____
+ # Helper for _zsh_highlight_bind_widgets
+ # $1 is name of widget to call
+____
 
-Calls functions:
+Has 2 line(s). Calls functions:
 
  _zsh_highlight_call_widget
  `-- _zsh_highlight
@@ -142,63 +133,50 @@ Calls functions:
 
 Not called by script or any function, may be a hook or Zle widget, etc.
 
-Comment:
-
- # Helper for _zsh_highlight_bind_widgets
- # $1 is name of widget to call
-
 _zsh_highlight_cursor_moved
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1 lines
-
-No functions called
-
-Not called by script or any function, may be a hook or Zle widget, etc.
-
-Comment:
-
+____
  # Whether the cursor has moved or not.
  #
  # Returns 0 if the cursor has moved since _zsh_highlight was last called.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function, may be a hook or Zle widget, etc.
 
 _zsh_highlight_load_highlighters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-25 lines
+____
+ # Load highlighters from directory.
+ #
+ # Arguments:
+ #   1) Path to the highlighters directory.
+____
 
-No functions called
+Has 25 line(s). Doesn't call other functions.
 
 Called by:
 
  Script-Body
 
-Comment:
-
- # Load highlighters from directory.
- #
- # Arguments:
- #   1) Path to the highlighters directory.
-
 _zsh_highlight_preexec_hook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2 lines
+____
+ # Reset scratch variables when commandline is done.
+____
 
-No functions called
+Has 2 line(s). Doesn't call other functions.
 
 Not called by script or any function, may be a hook or Zle widget, etc.
-
-Comment:
-
- # Reset scratch variables when commandline is done.
 
 add-zsh-hook
 ~~~~~~~~~~~~
 
-91 lines
-
-No functions called
+Has 91 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -207,9 +185,7 @@ Called by:
 is-at-least
 ~~~~~~~~~~~
 
-38 lines
-
-No functions called
+Has 38 line(s). Doesn't call other functions.
 
 Called by:
 

@@ -27,54 +27,48 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-6 lines
-
-No functions called (may attach to Zle or do hooks, etc.)
+Has 6 lines. No functions are called (may attach to Zle or do hooks, etc.).
 
 dummy
 ~~~~~
 
-1 lines
+____
+ # Dummy function
+____
 
-No functions called
+Has 1 line(s). Doesn't call other functions.
 
 Called by:
 
  test6
 
-Comment:
-
- # Dummy function
-
 test1
 ~~~~~
 
-1 lines
+____
+ # Test1 function
+____
 
-Calls functions:
+Has 1 line(s). Calls functions:
 
  test1
- |-- test2
- |   `-- test3
- |       `-- test4
- |           `-- test5
- |               `-- test6
- |                   `-- dummy
- `-- test6
-     `-- dummy
+ `-- test2
+     `-- test3
+         `-- test4
+             `-- test5
+                 `-- test6
+                     `-- dummy
 
 Not called by script or any function, may be a hook or Zle widget, etc.
-
-Comment:
-
- # Test1 function
 
 test2
 ~~~~~
 
-2 lines
+____
+ # Test2 function
+____
 
-Calls functions:
+Has 2 line(s). Calls functions:
 
  test2
  `-- test3
@@ -87,16 +81,14 @@ Called by:
 
  test1
 
-Comment:
-
- # Test2 function
-
 test3
 ~~~~~
 
-1 lines
+____
+ # Test3 function
+____
 
-Calls functions:
+Has 1 line(s). Calls functions:
 
  test3
  `-- test4
@@ -108,16 +100,14 @@ Called by:
 
  test2
 
-Comment:
-
- # Test3 function
-
 test4
 ~~~~~
 
-1 lines
+____
+ # Test4 function
+____
 
-Calls functions:
+Has 1 line(s). Calls functions:
 
  test4
  `-- test5
@@ -128,16 +118,14 @@ Called by:
 
  test3
 
-Comment:
-
- # Test4 function
-
 test5
 ~~~~~
 
-8 lines
+____
+ # Test5 function
+____
 
-Calls functions:
+Has 8 line(s). Calls functions:
 
  test5
  `-- test6
@@ -147,26 +135,19 @@ Called by:
 
  test4
 
-Comment:
-
- # Test5 function
-
 test6
 ~~~~~
 
-2 lines
+____
+ # Test6 function
+____
 
-Calls functions:
+Has 2 line(s). Calls functions:
 
  test6
  `-- dummy
 
 Called by:
 
- test1
  test5
-
-Comment:
-
- # Test6 function
 
