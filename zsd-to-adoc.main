@@ -34,7 +34,7 @@ if [[ ! -r "$1" ]]; then
     return 1
 fi
 
-[[ -z "$OPT_QUIET" ]] && print "$fg[cyan]zsd-to-adoc starting for file \`$fg_bold[yellow]$1$fg_no_bold[cyan]' (3rd pass)$reset_color"
+[[ -z "$OPT_QUIET" ]] && print "$fg[cyan]== zsd-to-adoc starting for file \`$fg_bold[yellow]$1$fg_no_bold[cyan]' (3rd pass)$reset_color"
 
 ### Code ###
 
