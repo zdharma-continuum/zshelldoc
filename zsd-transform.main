@@ -216,6 +216,7 @@ for fun_name in "${(ko@)auto_funs}"; do
     print -r -- "$REPLY" >| "zsdoc/data/autoload/$name/$fun_name"
 
     # Appendix of the function to extended body
+    print >>| "zsdoc/data/extended/$name"
     print -r -- "${fun_name}() {" >>| "zsdoc/data/extended/$name"
     print -r -- "$REPLY" >>| "zsdoc/data/extended/$name"
     print -r -- "}" >>| "zsdoc/data/extended/$name"
