@@ -106,7 +106,7 @@ command rm -f -- "zsdoc/$ofname"
         print
         body=$(<zsdoc/data/bodies/"$name")
         [[ -f zsdoc/data/trees/"$name"/Script_Body_.tree ]] && {
-            print -r -- "Has `line_count $body` lines. Calls functions:"
+            print -r -- "Has `line_count $body` line(s). Calls functions:"
             print
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/Script_Body_.tree)"}" )
             [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
@@ -114,7 +114,7 @@ command rm -f -- "zsdoc/$ofname"
             arr=( "${arr[@]/(#s)/ }" )
             print -r -- "${(F)arr}"
         } || {
-            print -r -- "Has `line_count $body` lines. No functions are called (may attach to Zle or do hooks, etc.)."
+            print -r -- "Has `line_count $body` line(s). No functions are called (may attach to Zle or do hooks, etc.)."
         }
         print
     }
