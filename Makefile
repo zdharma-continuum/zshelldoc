@@ -66,7 +66,8 @@ install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 	$(INSTALL) -d $(SHARE_DIR)
 	$(INSTALL) -d $(DOC_DIR)
 	cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc $(BIN_DIR)
-	cp zsd.config README.md NEWS LICENSE $(DOC_DIR)
+	cp README.md NEWS LICENSE $(DOC_DIR)
+	cp zsd.config $(SHARE_DIR)
 
 uninstall:
 	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect $(BIN_DIR)/zsd-to-adoc
