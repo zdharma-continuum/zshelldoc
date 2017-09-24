@@ -16,6 +16,8 @@ elif [[ -f /opt/share/zshelldoc/zsd.config ]]; then
 fi
 
 [ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
+print "Zsh control bin is: \`$zsh_control_bin'"
+
 if [ -z "$ZSH_VERSION" ]; then
   args="\"$0\""
   for arg; do
