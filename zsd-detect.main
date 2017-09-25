@@ -194,7 +194,7 @@ for (( i=1; i<=size; ++ i )); do
 
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && "$fun_stack_depths[-1]" -le "0" ]]; then
             # Features
-            if [[ "$token" = (eval|source|zle|bindkey|alias|unalias|unfunction|autoload|sched|zmodload|stat|zprof|export|jobs|kill|trap|type|vared|wait|zcompile|zformat|zparseopts|zpty|zstyle|zsocket|bash) ]]; then
+            if [[ "$token" = (eval|source|zle|bindkey|alias|unalias|unfunction|autoload|sched|zmodload|stat|zprof|export|jobs|kill|trap|type|vared|wait|zcompile|zformat|zparseopts|zpty|zstyle|zsocket|read|bash) ]]; then
                 [[ -z "$fun_name" ]] && local fkey="zsd_script_body" || local fkey="$fun_name"
                 [[ "${features[$fkey]}" != *[[:blank:]]"$token"[[:blank:]]* ]] && features[$fkey]+=" $token "
             fi
