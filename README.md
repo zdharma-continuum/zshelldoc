@@ -4,6 +4,7 @@ Parses Zsh and Bash scripts, outputs Asciidoc document with:
 - list of functions, including autoload functions
 - call trees of functions and script body
 - comments for functions
+- features used for each function and for script body (features like: `eval`, `zmodload`, `vared`, etc.)
 
 Call trees support cross-files invocations, i.e. when a script calls functiion defined in other file.
 
@@ -80,7 +81,11 @@ For other, in-place examples see:
 Few rules helping to use `Zshelldoc` in your project:
 
  1. Write function comments before function. Empty lines between comment and function are allowed.
+ 1. If you use special comments, e.g. `vim` (or `emacs-origami`) **folds**, you can ignore these lines with `--cignore` (see [Usage](https://github.com/zdharma/zshelldoc#usage)).
  1. If it's possible to avoid `eval`, then do that – `Zshelldoc` will analyze more code.
  1. Currently, functions defined in functions are ignored, but this will change shortly.
- 1. I've greatly optimized new `Zsh` version (`5.4.2`), `Zshelldoc` parses long sources very fast from that version.
- 1. Be aware that to convert group of scripts, you just need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically.
+ 1. I've greatly optimized new `Zsh` version (`5.4.2`) for data processing – `Zshelldoc` parses long sources very fast from that version.
+ 1. Be aware that to convert a group of scripts, you just need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically.
+ 1. Create `Makefile` with `doc` target, that does `zsd -v file1.zsh ...`, documentation will land in `zsdoc` directory.
+ 1. Obtain PDFs with `Asciidoctor` package via: `asciidoctor -b pdf -r asciidoctor-pdf file1.zsh.adoc`. Install `Asciidoctor` with: `gem install asciidoctor-pdf --pre`.
+ 1. Obtain manual pages with `Asciidoc` package, via: `a2x -L --doctype manpage --format manpage file1.zsh.adoc` (`asciidoc` is a common package; `a2x` is little slow).
