@@ -31,7 +31,7 @@ Example --cignore options:
 
 # Installation
 
-Download and issue `make && make install`. Default install path-prefix is `/usr/local`, you
+Clone and issue `make && make install`. Default install path-prefix is `/usr/local`, you
 can change it by setting `PREFIX` `make` variable:
 
 ```SystemVerilog
@@ -85,9 +85,10 @@ Few rules helping to use `Zshelldoc` in your project:
  1. If it's possible to avoid `eval`, then do that – `Zshelldoc` will analyze more code.
  1. Currently, functions defined in functions are ignored, but this will change shortly.
  1. I've greatly optimized new `Zsh` version (`5.4.2`) for data processing – `Zshelldoc` parses long sources very fast from that `Zsh` version.
- 1. If you have multiple `Zsh` installed, then (for example) set "zsh_control_bin='/usr/local/bin/zsh-5.4.2'" in `/usr/local/share/zshelldoc/zsd.config`.
- 1. Be aware that to convert a group of scripts, you simply need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically.
- 1. Create `Makefile` with `doc` target, that does `rm -rf zsdoc/data; zsd -v file1.zsh ...`, documentation will land in `zsdoc` directory.
- 1. Directory `zsdoc/data` holds meta-data used to create `asciidoc` documents. You can remove it or analyze it yourself.
+ 1. If you have multiple `Zsh` installed, then (for example) set `zsh_control_bin="/usr/local/bin/zsh-5.4.2"` in `/usr/local/share/zshelldoc/zsd.config`.
+ 1. Be aware that to convert a group of scripts, you simply need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically, and multiple `*.adoc` files will be created.
+ 1. Create `Makefile` with `doc` target, that does `rm -rf zsdoc/data; zsd -v file1.zsh ...`. Documentation will land in `zsdoc` directory.
+ 1. Directory `zsdoc/data` holds meta-data used to create `asciidoc` documents (`*.adoc` files). You can remove it or analyze it yourself.
  1. Obtain **PDFs** with [Asciidoctor](http://asciidoctor.org/) package via: `asciidoctor -b pdf -r asciidoctor-pdf file1.zsh.adoc`. Install `Asciidoctor` with: `gem install asciidoctor-pdf --pre`. (Check out [Zplugin's Makefile](https://github.com/zdharma/zplugin/blob/master/zsdoc/Makefile).)
- 1. Obtain manual pages with `Asciidoc` package, via: `a2x -L --doctype manpage --format manpage file1.zsh.adoc` (`asciidoc` is a common package; its `a2x` command is little slow).
+ 1. Obtain manual pages with `Asciidoc` package via: `a2x -L --doctype manpage --format manpage file1.zsh.adoc` (`asciidoc` is a common package; its `a2x` command is little slow).
+ 1. Github supports `Asciidoc` documents and renders them automatically.
