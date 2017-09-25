@@ -50,7 +50,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 71 lines. Calls functions:
+Has 71 line(s). Calls functions:
 
  Script-Body
  `-- add-zsh-hook
@@ -74,6 +74,8 @@ _zsh_autosuggest_async_pty_create
 
 Has 13 line(s). Doesn't call other functions.
 
+Uses features: _zle_, _zpty_
+
 Called by:
 
  _zsh_autosuggest_async_pty_recreate
@@ -82,6 +84,8 @@ _zsh_autosuggest_async_pty_destroy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Has 4 line(s). Doesn't call other functions.
+
+Uses features: _zle_, _zpty_
 
 Called by:
 
@@ -105,6 +109,8 @@ _zsh_autosuggest_async_request
 
 Has 1 line(s). Doesn't call other functions.
 
+Uses features: _zpty_
+
 Called by:
 
  _zsh_autosuggest_fetch
@@ -120,6 +126,8 @@ ____
 
 Has 6 line(s). Doesn't call other functions.
 
+Uses features: _zle_, _zpty_
+
 Not called by script or any function, may be a hook or Zle widget, etc.
 
 _zsh_autosuggest_async_server
@@ -130,6 +138,8 @@ ____
 ____
 
 Has 21 line(s). Doesn't call other functions.
+
+Uses features: _kill_
 
 Not called by script or any function, may be a hook or Zle widget, etc.
 
@@ -161,6 +171,8 @@ Has 29 line(s). Calls functions:
  _zsh_autosuggest_bind_widget
  |-- _zsh_autosuggest_get_bind_count
  `-- _zsh_autosuggest_incr_bind_count
+
+Uses features: _eval_, _zle_
 
 Called by:
 
@@ -273,6 +285,8 @@ ____
 
 Has 12 line(s). Doesn't call other functions.
 
+Uses features: _zpty_
+
 Called by:
 
  _zsh_autosuggest_async_start
@@ -289,6 +303,8 @@ Has 7 line(s). Calls functions:
  _zsh_autosuggest_fetch
  |-- _zsh_autosuggest_async_request
  `-- _zsh_autosuggest_suggest
+
+Uses features: _zpty_
 
 Called by:
 
@@ -350,6 +366,8 @@ ____
 
 Has 9 line(s). Doesn't call other functions.
 
+Uses features: _zle_
+
 Called by:
 
  _zsh_autosuggest_accept
@@ -403,7 +421,8 @@ Has 8 line(s). Calls functions:
  |   |-- _zsh_autosuggest_async_pty_recreate
  |   |   |-- _zsh_autosuggest_async_pty_create
  |   |   `-- _zsh_autosuggest_async_pty_destroy
- |   `-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ |   |-- _zsh_autosuggest_feature_detect_zpty_returns_fd
+ |   `-- add-zsh-hook
  |-- _zsh_autosuggest_bind_widgets
  |   `-- _zsh_autosuggest_bind_widget
  |       |-- _zsh_autosuggest_get_bind_count
@@ -493,7 +512,9 @@ Not called by script or any function, may be a hook or Zle widget, etc.
 add-zsh-hook
 ~~~~~~~~~~~~
 
-Has 91 line(s). Doesn't call other functions.
+Has 93 line(s). Doesn't call other functions.
+
+Uses features: _autoload_
 
 Called by:
 

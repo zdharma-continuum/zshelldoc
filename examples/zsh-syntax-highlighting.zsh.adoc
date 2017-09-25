@@ -31,7 +31,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 36 lines. Calls functions:
+Has 36 line(s). Calls functions:
 
  Script-Body
  |-- _zsh_highlight_bind_widgets
@@ -53,6 +53,8 @@ Has 65 line(s). Calls functions:
 
  _zsh_highlight
  `-- _zsh_highlight_apply_zle_highlight
+
+Uses features: _eval_, _type_
 
 Called by:
 
@@ -100,6 +102,8 @@ ____
 
 Has 34 line(s). Doesn't call other functions.
 
+Uses features: _eval_, _zle_, _zmodload_
+
 Called by:
 
  Script-Body
@@ -131,6 +135,8 @@ Has 2 line(s). Calls functions:
  `-- _zsh_highlight
      `-- _zsh_highlight_apply_zle_highlight
 
+Uses features: _zle_
+
 Not called by script or any function, may be a hook or Zle widget, etc.
 
 _zsh_highlight_cursor_moved
@@ -158,6 +164,8 @@ ____
 
 Has 25 line(s). Doesn't call other functions.
 
+Uses features: _eval_, _type_
+
 Called by:
 
  Script-Body
@@ -176,7 +184,9 @@ Not called by script or any function, may be a hook or Zle widget, etc.
 add-zsh-hook
 ~~~~~~~~~~~~
 
-Has 91 line(s). Doesn't call other functions.
+Has 93 line(s). Doesn't call other functions.
+
+Uses features: _autoload_
 
 Called by:
 
@@ -185,7 +195,7 @@ Called by:
 is-at-least
 ~~~~~~~~~~~
 
-Has 38 line(s). Doesn't call other functions.
+Has 56 line(s). Doesn't call other functions.
 
 Called by:
 
