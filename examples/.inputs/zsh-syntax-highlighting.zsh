@@ -2,6 +2,8 @@
 # Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
+# The only licensing for this file follows.
+#
 # Redistribution and use in source and binary forms, with or without modification, are permitted
 # provided that the following conditions are met:
 #
