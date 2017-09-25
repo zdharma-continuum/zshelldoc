@@ -30,7 +30,34 @@ Example --cignore options:
 
 # Installation
 
-Download and issue `make && make install`.
+Download and issue `make && make install`. Default install path-prefix is `/usr/local', you
+can change it by setting `PREFIX` Makefile variable:
+
+```SystemVerilog
+% make install PREFIX=~/opt/local
+install -c -d ~/opt/local/share/zshelldoc
+install -c -d ~/opt/local/share/doc/zshelldoc
+cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc ~/opt/local/bin
+cp README.md NEWS LICENSE ~/opt/local/share/doc/zshelldoc
+cp zsd.config ~/opt/local/share/zshelldoc
+
+% tree ~/opt
+/Users/sgniazdowski/opt
+└── local
+    ├── bin
+    │   ├── zsd
+    │   ├── zsd-detect
+    │   ├── zsd-to-adoc
+    │   └── zsd-transform
+    └── share
+        ├── doc
+        │   └── zshelldoc
+        │       ├── LICENSE
+        │       ├── NEWS
+        │       └── README.md
+        └── zshelldoc
+            └── zsd.config
+```
 
 # Examples
 
