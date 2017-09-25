@@ -165,7 +165,8 @@ command rm -f -- "zsdoc/$ofname"
 
         ## Features
 
-        local -a features=( zsdoc/data/features/$name/$fun/*(N) )
+        local -a features
+        features=( zsdoc/data/features/$name/$fun/*(N) )
         features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
