@@ -88,5 +88,5 @@ Few rules helping to use `Zshelldoc` in your project:
  1. Be aware that to convert a group of scripts, you simply need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically.
  1. Create `Makefile` with `doc` target, that does `zsd -v file1.zsh ...`, documentation will land in `zsdoc` directory.
  1. Directory `zsdoc/data` holds meta-data used to create `asciidoc` documents. You can remove it or analyze it yourself.
- 1. Obtain **PDFs** with `Asciidoctor` package via: `asciidoctor -b pdf -r asciidoctor-pdf file1.zsh.adoc`. Install `Asciidoctor` with: `gem install asciidoctor-pdf --pre`.
+ 1. Obtain **PDFs** with `Asciidoctor` package via: `asciidoctor -b pdf -r asciidoctor-pdf file1.zsh.adoc`. Install `Asciidoctor` with: `gem install asciidoctor-pdf --pre`. (Check out [Zplugin's Makefile](https://github.com/zdharma/zplugin/blob/master/zsdoc/Makefile).)
  1. Obtain manual pages with `Asciidoc` package, via: `a2x -L --doctype manpage --format manpage file1.zsh.adoc` (`asciidoc` is a common package; its `a2x` command is little slow).
