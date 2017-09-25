@@ -19,7 +19,7 @@ hooktypes=(
   chpwd precmd preexec periodic zshaddhistory zshexit
   zsh_directory_name
 )
-local usage="Usage: $0 hook function\nValid hooks are:\n  $hooktypes"
+local usage="Usage: add-zsh-hook hook function\nValid hooks are:\n  $hooktypes"
 
 local opt
 local -a autoopts
@@ -82,9 +82,11 @@ if (( del )); then
 else
   if (( ${(P)+hook} )); then
     if (( ${${(P)hook}[(I)$fn]} == 0 )); then
+      typeset -ga $hook
       set -A $hook ${(P)hook} $fn
     fi
   else
+    typeset -ga $hook
     set -A $hook $fn
   fi
   autoload $autoopts -- $fn

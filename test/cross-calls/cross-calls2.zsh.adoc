@@ -22,7 +22,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 4 lines. Calls functions:
+Has 4 line(s). Calls functions:
 
  Script-Body
  |-- cross-calls1.zsh/myfun2
