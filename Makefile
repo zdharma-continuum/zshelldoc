@@ -71,9 +71,8 @@ install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 
 uninstall:
 	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect $(BIN_DIR)/zsd-to-adoc
-	rm -f $(DOC_DIR)/zsd.config $(DOC_DIR)/README.md $(DOC_DIR)/NEWS $(DOC_DIR)/LICENSE
+	rm -f $(SHARE_DIR)/zsd.config $(DOC_DIR)/README.md $(DOC_DIR)/NEWS $(DOC_DIR)/LICENSE
 	[ -d $(DOC_DIR) ] && rmdir $(DOC_DIR) || true
-	rm -f $(SHARE_DIR)/*
 	[ -d $(SHARE_DIR) ] && rmdir $(SHARE_DIR) || true
 
 test:
