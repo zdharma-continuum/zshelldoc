@@ -16,6 +16,8 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: || {
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
+[[ -z "$OPT_QUIET" ]] && echo "Zsh control binary is: \`$zsh_control_bin'"
+
 ### Code ###
 
 # Script with path to it, if it works
