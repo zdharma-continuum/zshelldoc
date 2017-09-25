@@ -169,7 +169,7 @@ command rm -f -- "zsdoc/$ofname"
         features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
-            print "Uses features: _${(oj:_, _:)features}_"
+            print "Uses feature(s): _${(oj:_, _:)features}_"
             print
         fi
 
