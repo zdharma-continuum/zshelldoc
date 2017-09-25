@@ -58,7 +58,7 @@ local -A cfuns
 
 # Call-tree extraction
 integer at_command=1
-local -A call_tree rev_call_tree
+local -A call_tree rev_call_tree features
 local -a known_functions
 known_functions=( zsdoc/data/functions/**/*(N) zsdoc/data/autoload/**/*(N) )
 known_functions=( ${known_functions[@]#zsdoc/data/functions/} )
@@ -173,7 +173,7 @@ for (( i=1; i<=size; ++ i )); do
             local needle="${(q)name}/${(q)fun_name}"
         fi
 
-        # Extract call-tree and reversed call-tree
+        # Extract call-tree and reversed call-tree, and also features
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && -n "$found" && "$fun_stack_depths[-1]" -le "0" ]]; then
             if [[ -z "$fun_name" ]]; then
                 [[ "${call_tree[${(q)name}/zsd_script_body]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
@@ -189,6 +189,14 @@ for (( i=1; i<=size; ++ i )); do
                 [[ ${rev_call_tree[${(q)found}]} != *[[:blank:]]"$needle"[[:blank:]]* ]] && {
                     rev_call_tree[${(q)found}]+=" ${(q)name}/${(q)fun_name} "
                 }
+            fi
+        fi
+
+        if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && "$fun_stack_depths[-1]" -le "0" ]]; then
+            # Features
+            if [[ "$token" = (eval|source|zle|bindkey|alias|unalias|unfunction|autoload|sched|zmodload|stat|zprof|export|jobs|kill|trap|type|vared|wait|zcompile|zformat|zparseopts|zpty|zstyle|zsocket|bash) ]]; then
+                [[ -z "$fun_name" ]] && local fkey="zsd_script_body" || local fkey="$fun_name"
+                [[ "${features[$fkey]}" != *[[:blank:]]"$token"[[:blank:]]* ]] && features[$fkey]+=" $token "
             fi
         fi
 
@@ -242,17 +250,29 @@ command mkdir -p zsdoc/data
 command rm -f zsdoc/data/call_tree.zsd
 command rm -f zsdoc/data/rev_call_tree.zsd
 
+#
+# Call-tree file
+#
+
 for fun_name in "${(ko@)call_tree}"; do
     echo "$fun_name:${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
 done
 
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Written call tree$reset_color (${#call_tree} callers)"
 
+#
+# Reverse call-tree file
+#
+
 for fun_name in "${(ko@)rev_call_tree}"; do
     echo "$fun_name: ${rev_call_tree[$fun_name]% }" >>| zsdoc/data/rev_call_tree.zsd
 done
 
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Written reverse call tree$reset_color (${#rev_call_tree} called functions)"
+
+#
+# Comments
+#
 
 command mkdir -p "zsdoc/data/descriptions/$name"
 
@@ -261,6 +281,10 @@ for fun_name in "${(ko@)cfuns}"; do
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${cfuns[$fun_name]}`-line comment of \`$fg[green]${fun_name}$reset_color'..."
     echo "${cfuns[$fun_name]}" >| "zsdoc/data/descriptions/$name/$fun_name"
 done
+
+#
+# Trees
+#
 
 command mkdir -p "zsdoc/data/trees/$name"
 local PWDBKP="$PWD"
@@ -282,3 +306,25 @@ done
 cd "$PWDBKP"
 
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Generated $count trees$reset_color"
+
+#
+# Features
+#
+
+command mkdir -p "zsdoc/data/features/$name"
+local -a feats
+local feat holder
+for fun_name in "${(ko@)features}"; do
+    if [[ "$fun_name" = "zsd_script_body" ]]; then
+        holder="zsdoc/data/features/$name/Script_Body_"
+    else
+        holder="zsdoc/data/features/$name/$fun_name"
+    fi
+
+    command mkdir -p "$holder"
+
+    feats=( "${(z@)features[$fun_name]}" )
+    for feat in "${(o)feats[@]}"; do
+        echo >| "$holder/$feat"
+    done
+done
