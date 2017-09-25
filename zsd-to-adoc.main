@@ -100,6 +100,8 @@ command rm -f -- "zsdoc/$ofname"
     print -- "${(r:7::-:)empty}"
     print
 
+    # SCRIPT BODY
+
     [[ -f zsdoc/data/bodies/"$name" ]] && {
         print -r -- "Script Body"
         print -r -- "${(r:11::~:)empty}"
@@ -119,6 +121,8 @@ command rm -f -- "zsdoc/$ofname"
         print
     }
 
+    # FUNCTIONS
+
     funs=( zsdoc/data/functions/"$name"/*(N) zsdoc/data/autoload/"$name"/*(N) )
     funs=( "${funs[@]:t}" )
 
@@ -127,6 +131,8 @@ command rm -f -- "zsdoc/$ofname"
         len="${#fun}"
         print -r -- "${(r:len::~:)empty}"
         print
+
+        ## Comment
 
         [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
             zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
@@ -139,6 +145,7 @@ command rm -f -- "zsdoc/$ofname"
             print
         }
 
+        ## Number of lines information and call tree
 
         { body=$(<zsdoc/data/functions/"$name"/"$fun"); } 2>/dev/null
         [[ -z "$body" ]] && body=$(<zsdoc/data/autoload/"$name"/"$fun")
@@ -155,6 +162,18 @@ command rm -f -- "zsdoc/$ofname"
             print "Has `line_count $body` line(s). Doesn't call other functions."
         }
         print
+
+        ## Features
+
+        local -a features=( zsdoc/data/features/$name/$fun/*(N) )
+        features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
+
+        if [[ "${#features}" -gt 0 ]]; then
+            print "Uses features: _${(oj:_, _:)features}_"
+            print
+        fi
+
+        ## Reverse call tree
 
         arr=( zsdoc/data/trees/$name/*/$fun(N) zsdoc/data/trees/*/*/*_-_$fun(N) )
         if [[ "${#arr}" -eq "0" ]]; then
