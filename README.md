@@ -1,4 +1,4 @@
-# zshelldoc - Doxygen for shell scripts
+# Zshelldoc - Doxygen For Shell Scripts
 
 Parses Zsh and Bash scripts, outputs Asciidoc document with:
 - list of functions, including autoload functions
@@ -74,3 +74,13 @@ For other, in-place examples see:
 (also in **PDF**:
 [example 1](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-syntax-highlighting.zsh.pdf),
 [example 2](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-autosuggestions.zsh.pdf)).
+
+# Few Rules
+
+Few rules helping to use `Zshelldoc` in your project:
+
+ 1. Write function comments before function. Empty lines between comment and function are allowed.
+ 1. If it's possible to avoid `eval`, then do that – `Zshelldoc` will analyze more code.
+ 1. Currently, functions defined in functions are ignored, but this will change shortly.
+ 1. I've greatly optimized new `Zsh` version (`5.4.2`), `Zshelldoc` parses long sources very fast from that version.
+ 1. Be aware that to convert group of scripts, you just need `zsd file1.zsh file2.zsh ...` – cross-file function invocations will work automatically.
