@@ -64,8 +64,13 @@ Other available `make` variables are: `INSTALL` (to customize install command),
 
 # Examples
 
-See [example 1](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-syntax-highlighting.zsh.adoc),
-[example 2](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-autosuggestions.zsh.adoc) (also
-in **PDF**:
+`Zshelldoc` highly motivates to document code, I did many iterations on `Zplugin's` source uplifting
+documentation comments. `Zplugin` docs also show rich cross-file invocations.
+[Check out Zplugin's code documentation](https://github.com/zdharma/zplugin/tree/master/zsdoc).
+
+For other, in-place examples see:
+[example 1](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-syntax-highlighting.zsh.adoc),
+[example 2](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-autosuggestions.zsh.adoc)
+(also in **PDF**:
 [example 1](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-syntax-highlighting.zsh.pdf),
 [example 2](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-autosuggestions.zsh.pdf)).
