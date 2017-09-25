@@ -8,58 +8,58 @@ DOC_DIR?=$(DESTDIR)$(PREFIX)/share/doc/$(NAME)
 
 all: build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc
 
-build/zsd: zsd.preamble zsd.main
+build/zsd: src/zsd.preamble src/zsd.main
 	mkdir -p build
 	rm -f build/zsd
-	cat zsd.preamble > build/zsd
+	cat src/zsd.preamble > build/zsd
 	echo "" >> build/zsd
-	cat zsd.main >> build/zsd
+	cat src/zsd.main >> build/zsd
 	chmod +x build/zsd
 
-build/zsd-transform: zsd-transform.preamble zsd-transform.main zsd-process-buffer zsd-trim-indent
+build/zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-process-buffer src/zsd-trim-indent
 	mkdir -p build
 	rm -f build/zsd-transform
-	cat zsd-transform.preamble > build/zsd-transform
+	cat src/zsd-transform.preamble > build/zsd-transform
 	echo "" >> build/zsd-transform
 	echo "zsd-process-buffer() {" >> build/zsd-transform
-	cat zsd-process-buffer >> build/zsd-transform
+	cat src/zsd-process-buffer >> build/zsd-transform
 	echo "}" >> build/zsd-transform
 	echo "" >> build/zsd-transform
 	echo "zsd-trim-indent() {" >> build/zsd-transform
-	cat zsd-trim-indent >> build/zsd-transform
+	cat src/zsd-trim-indent >> build/zsd-transform
 	echo "}" >> build/zsd-transform
 	echo "" >> build/zsd-transform
-	cat token-types.mod >> build/zsd-transform
+	cat src/token-types.mod >> build/zsd-transform
 	echo "" >> build/zsd-transform
-	cat zsd-transform.main >> build/zsd-transform
+	cat src/zsd-transform.main >> build/zsd-transform
 	chmod +x build/zsd-transform
 
-build/zsd-detect: zsd-detect.preamble zsd-detect.main zsd-process-buffer run-tree-convert.mod token-types.mod
+build/zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-buffer src/run-tree-convert.mod src/token-types.mod
 	mkdir -p build
 	rm -f build/zsd-detect
-	cat zsd-detect.preamble > build/zsd-detect
+	cat src/zsd-detect.preamble > build/zsd-detect
 	echo "" >> build/zsd-detect
 	echo "zsd-process-buffer() {" >> build/zsd-detect
-	cat zsd-process-buffer >> build/zsd-detect
+	cat src/zsd-process-buffer >> build/zsd-detect
 	echo "}" >> build/zsd-detect
 	echo "" >> build/zsd-detect
-	cat run-tree-convert.mod >> build/zsd-detect
+	cat src/run-tree-convert.mod >> build/zsd-detect
 	echo "" >> build/zsd-detect
-	cat token-types.mod >> build/zsd-detect
+	cat src/token-types.mod >> build/zsd-detect
 	echo "" >> build/zsd-detect
-	cat zsd-detect.main >> build/zsd-detect
+	cat src/zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
 
-build/zsd-to-adoc: zsd-to-adoc.preamble zsd-to-adoc.main zsd-trim-indent
+build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-indent
 	mkdir -p build
 	rm -f build/zsd-to-adoc
-	cat zsd-to-adoc.preamble > build/zsd-to-adoc
+	cat src/zsd-to-adoc.preamble > build/zsd-to-adoc
 	echo "" >> build/zsd-to-adoc
 	echo "zsd-trim-indent() {" >> build/zsd-to-adoc
-	cat zsd-trim-indent >> build/zsd-to-adoc
+	cat src/zsd-trim-indent >> build/zsd-to-adoc
 	echo "}" >> build/zsd-to-adoc
 	echo "" >> build/zsd-to-adoc
-	cat zsd-to-adoc.main >> build/zsd-to-adoc
+	cat src/zsd-to-adoc.main >> build/zsd-to-adoc
 	chmod +x build/zsd-to-adoc
 
 install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
