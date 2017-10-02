@@ -4,15 +4,17 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: || { print "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: f: -fpath: || { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 (( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
+(( ${+opthash[-f]} ))                           && OPT_FPATH="${opthash[-f]}"
+(( ${+opthash[--fpath]} ))                      && OPT_FPATH="${opthash[--fpath]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -43,6 +45,12 @@ fi
 if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
   print "Argument needed, see help (-h/--help)"
   return 1
+fi
+
+### FPATH ###
+
+if [[ -n "$OPT_FPATH" ]]; then
+  export FPATH="$OPT_FPATH:$FPATH"
 fi
 
 ### First pass ###
