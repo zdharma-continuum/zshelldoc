@@ -228,3 +228,5 @@ command mkdir -p zsdoc/data/bodies
 
 print -r -- "$preamble" >| zsdoc/data/bodies/${name}
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Generated body of script \`$name\'$reset_color (`line_count $preamble` lines)"
+
+return 0

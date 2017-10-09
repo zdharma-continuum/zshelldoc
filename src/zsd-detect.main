@@ -328,3 +328,5 @@ for fun_name in "${(ko@)features}"; do
         echo >| "$holder/$feat"
     done
 done
+
+return 0
