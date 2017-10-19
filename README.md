@@ -23,6 +23,7 @@ Options:
 -q/--quiet     No status messages
 -n/--noansi    No colors in terminal output
 --cignore      Specify which comment lines should be ignored
+-f/--fpath     Paths separated by : pointing to directories with functions
 
 Example --cignore options:
 --cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{
