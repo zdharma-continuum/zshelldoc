@@ -221,14 +221,14 @@ done
 command mkdir -p zsdoc/data/hooks/"$name"
 
 for hook in "${(k)myhooks[@]}"; do
-    echo "${myhooks[$hook]}" >| zsdoc/data/hooks/"$name"/"$hook"
+    print -r -- "${myhooks[$hook]}" >| zsdoc/data/hooks/"$name"/"$hook"
 done
 
 ### OUTPUT: EXTENDED BODY
 
 command mkdir -p zsdoc/data/extended
 command rm -f zsdoc/data/extended/"$name"
-echo "$doc" >| zsdoc/data/extended/"$name"
+print -r -- "$doc" >| zsdoc/data/extended/"$name"
 
 ### OUTPUT: AUTOLOAD FUNCTIONS AND EXTENDED BODY
 
