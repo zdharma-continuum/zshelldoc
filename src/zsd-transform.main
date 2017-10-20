@@ -41,12 +41,12 @@ fi
 local name="${1:t}"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
-local preamble="" fun_name=""
-local -A funs auto_funs
+local preamble="" fun_name="" hook=""
+local -A funs auto_funs myhooks
 local -a arr
 
 # Function extraction
-integer at_command=1 in_autoload=0
+integer at_command=1 in_autoload=0 in_azh=0
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
 
@@ -146,12 +146,15 @@ for (( i=1; i<=size; ++ i )); do
     if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
         at_command=1
         in_autoload=0
+        in_azh=0
     fi
     if (( at_command )); then
         at_command=0
         if [[ "$cur_fun" -eq 0 && "$next_token" != "()" && "$fun_stack_depths[-1]" -le "0" ]]; then
             if [[ "$token" = "autoload" ]]; then
                 in_autoload=1
+            elif [[ "$token" = "add-zsh-hook" ]]; then
+                in_azh=1
             fi
         fi
     elif (( in_autoload )); then
@@ -164,6 +167,20 @@ for (( i=1; i<=size; ++ i )); do
             #else
             #    auto_funs[$token]="Autoload-function source not found"
             fi
+        fi
+    elif (( in_azh )); then
+        if (( in_azh == 1 )); then
+            if [[ "$token" = "--" ]]; then
+                # Defer increment of in_azh
+                :
+            elif [[ "$token" = -* ]]; then
+                in_azh=0
+            else
+                in_azh=2
+            fi
+        else
+            myhooks[${token%$'\r'}]="$prev_token"
+            in_azh=0
         fi
     fi
 
@@ -197,6 +214,14 @@ for fun_name in "${(ko@)funs}"; do
         zsd-trim-indent "${funs[$fun_name]}"
         print -r -- "$REPLY"
     } >| "zsdoc/data/functions/$name/$fun_name"
+done
+
+### OUTPUT: HOOKS
+
+command mkdir -p zsdoc/data/hooks/"$name"
+
+for hook in "${(k)myhooks[@]}"; do
+    echo "${myhooks[$hook]}" >| zsdoc/data/hooks/"$name"/"$hook"
 done
 
 ### OUTPUT: EXTENDED BODY
