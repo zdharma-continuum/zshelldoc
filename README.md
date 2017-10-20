@@ -4,7 +4,8 @@ Parses `Zsh` and `Bash` scripts, outputs `Asciidoc` document with:
 - list of functions, including autoload functions,
 - call trees of functions and script body,
 - comments for functions,
-- features used for each function and for script body (features like: `eval`, `zmodload`, `vared`, etc.).
+- features used for each function and for script body (features like: `eval`, `zmodload`, `vared`, etc.),
+- distinct marks for hooks registered with `add-zsh-hook`.
 
 Call trees support cross-file invocations, i.e. when a script calls functiion defined in other file.
 
