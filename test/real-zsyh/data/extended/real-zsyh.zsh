@@ -2,6 +2,8 @@
 # Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
+# The only licensing for this file follows.
+#
 # Redistribution and use in source and binary forms, with or without modification, are permitted
 # provided that the following conditions are met:
 #
@@ -144,8 +146,7 @@ _zsh_highlight()
       _zsh_highlight_apply_zle_highlight region standout "$MARK" "$CURSOR"
     elif (( REGION_ACTIVE == 2 )); then
       () {
-        local needle=$'
-'
+        local needle=$'\n'
         integer min max
         if (( MARK > CURSOR )) ; then
           min=$CURSOR max=$MARK

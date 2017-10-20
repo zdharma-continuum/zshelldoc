@@ -15,6 +15,7 @@ nested: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-to-
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test5" 2>/dev/null || echo "Error compiling function: test5"'
 	@zsh -c 'zcompile "zsdoc/data/functions/nested.zsh/test6" 2>/dev/null || echo "Error compiling function: test6"'
 	@find zsdoc/data/functions zsdoc/data/bodies -iname '*.zwc' -exec rm -f \{\} \;
+	@mkdir -p nested/data/hooks/nested.zsh
 	diff -r zsdoc nested
 	@echo
 
@@ -35,6 +36,7 @@ real-zsyh: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zsd-
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_load_highlighters" 2>/dev/null || echo "Error compiling function: _zsh_highlight_load_highlighters"'
 	@zsh -c 'zcompile "zsdoc/data/functions/real-zsyh.zsh/_zsh_highlight_preexec_hook" 2>/dev/null || echo "Error compiling function: _zsh_highlight_preexec_hook"'
 	@find zsdoc/data/functions zsdoc/data/bodies -iname '*.zwc' -exec rm -f \{\} \;
+	@mkdir -p real-zsyh/data/hooks/real-zsyh.zsh
 	diff -r zsdoc real-zsyh
 	@echo
 
@@ -51,6 +53,7 @@ cross-calls: ../build/zsd ../build/zsd-transform ../build/zsd-detect ../build/zs
 	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls2.zsh/myfun1" 2>/dev/null || echo "Error compiling function: cross-calls2.zsh/myfun1"'
 	@zsh -c 'zcompile "zsdoc/data/functions/cross-calls2.zsh/myfun3" 2>/dev/null || echo "Error compiling function: cross-calls2.zsh/myfun3"'
 	@find zsdoc/data/functions zsdoc/data/bodies -iname '*.zwc' -exec rm -f \{\} \;
+	@mkdir -p cross-calls/data/hooks/cross-calls1.zsh cross-calls/data/hooks/cross-calls2.zsh
 	diff -r zsdoc cross-calls
 	@echo
 

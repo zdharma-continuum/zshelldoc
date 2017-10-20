@@ -54,7 +54,7 @@ Has 65 line(s). Calls functions:
  _zsh_highlight
  `-- _zsh_highlight_apply_zle_highlight
 
-Uses features: _eval_, _type_
+Uses feature(s): _eval_, _type_
 
 Called by:
 
@@ -102,7 +102,7 @@ ____
 
 Has 34 line(s). Doesn't call other functions.
 
-Uses features: _eval_, _zle_, _zmodload_
+Uses feature(s): _eval_, _zle_, _zmodload_
 
 Called by:
 
@@ -135,7 +135,7 @@ Has 2 line(s). Calls functions:
  `-- _zsh_highlight
      `-- _zsh_highlight_apply_zle_highlight
 
-Uses features: _zle_
+Uses feature(s): _zle_
 
 Not called by script or any function, may be a hook or Zle widget, etc.
 
@@ -164,7 +164,7 @@ ____
 
 Has 25 line(s). Doesn't call other functions.
 
-Uses features: _eval_, _type_
+Uses feature(s): _eval_, _type_
 
 Called by:
 
@@ -186,7 +186,7 @@ add-zsh-hook
 
 Has 93 line(s). Doesn't call other functions.
 
-Uses features: _autoload_
+Uses feature(s): _autoload_
 
 Called by:
 
