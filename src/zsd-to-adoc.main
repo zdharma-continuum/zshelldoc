@@ -79,19 +79,32 @@ command rm -f -- "zsdoc/$ofname"
     print -- "${(r:9::-:)empty}"
     print
 
-    local -a funs
+    local -a funs hooks
     funs=( zsdoc/data/functions/"$name"/*(N) )
     funs=( "${funs[@]:t}" )
+    hooks=( zsdoc/data/hooks/"$name"/*(N) )
+    hooks=( "${hooks[@]:t}" )
 
+    # Not hooks, not autoloads
     for fun in "${funs[@]}"; do
-        print -r -- " $fun"
+        if [[ -n "${hooks[(r)$fun]}" ]]; then
+            continue
+        else
+            print -r -- " $fun"
+        fi
     done
 
+    # Autoloads
     funs=( zsdoc/data/autoload/"$name"/*(N) )
     funs=( "${funs[@]:t}" )
 
     for fun in "${funs[@]}"; do
         print -r -- "AUTOLOAD $fun"
+    done
+
+    # Hooks
+    for fun in "${hooks[@]}"; do
+        print -r -- "${(U)$(<zsdoc/data/hooks/$name/$fun)}-HOOK $fun"
     done
 
     # DETAILS
@@ -155,11 +168,19 @@ command rm -f -- "zsdoc/$ofname"
             [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
             arr=( "${arr[@]/Script_Body_/Script-Body}" )
             arr=( "${arr[@]/(#s)/ }" )
-            print -r -- "Has `line_count $body` line(s). Calls functions:"
+            if [[ -n "${hooks[(r)$fun]}" ]]; then
+                print -r -- "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Calls functions:"
+            else
+                print -r -- "Has `line_count $body` line(s). Calls functions:"
+            fi
             print
             print -r -- "${(F)arr}"
         } || {
-            print "Has `line_count $body` line(s). Doesn't call other functions."
+            if [[ -n "${hooks[(r)$fun]}" ]]; then
+                print "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Doesn't call other functions."
+            else
+                print "Has `line_count $body` line(s). Doesn't call other functions."
+            fi
         }
         print
 
