@@ -16,13 +16,11 @@ FUNCTIONS
  _zsh_autosuggest_accept
  _zsh_autosuggest_async_pty_create
  _zsh_autosuggest_async_pty_destroy
- _zsh_autosuggest_async_pty_recreate (precmd hook)
  _zsh_autosuggest_async_request
  _zsh_autosuggest_async_response
  _zsh_autosuggest_async_server
  _zsh_autosuggest_async_start
  _zsh_autosuggest_bind_widget
- _zsh_autosuggest_bind_widgets (precmd hook)
  _zsh_autosuggest_clear
  _zsh_autosuggest_disable
  _zsh_autosuggest_enable
@@ -37,12 +35,14 @@ FUNCTIONS
  _zsh_autosuggest_invoke_original_widget
  _zsh_autosuggest_modify
  _zsh_autosuggest_partial_accept
- _zsh_autosuggest_start (precmd hook)
  _zsh_autosuggest_strategy_default
  _zsh_autosuggest_strategy_match_prev_cmd
  _zsh_autosuggest_suggest
  _zsh_autosuggest_toggle
 AUTOLOAD add-zsh-hook
+PRECMD HOOK _zsh_autosuggest_async_pty_recreate
+PRECMD HOOK _zsh_autosuggest_bind_widgets
+PRECMD HOOK _zsh_autosuggest_start
 
 DETAILS
 -------
