@@ -40,9 +40,9 @@ FUNCTIONS
  _zsh_autosuggest_suggest
  _zsh_autosuggest_toggle
 AUTOLOAD add-zsh-hook
-PRECMD HOOK _zsh_autosuggest_async_pty_recreate
-PRECMD HOOK _zsh_autosuggest_bind_widgets
-PRECMD HOOK _zsh_autosuggest_start
+PRECMD-HOOK _zsh_autosuggest_async_pty_recreate
+PRECMD-HOOK _zsh_autosuggest_bind_widgets
+PRECMD-HOOK _zsh_autosuggest_start
 
 DETAILS
 -------

@@ -23,7 +23,7 @@ FUNCTIONS
  _zsh_highlight_load_highlighters
 AUTOLOAD add-zsh-hook
 AUTOLOAD is-at-least
-PREEXEC HOOK _zsh_highlight_preexec_hook
+PREEXEC-HOOK _zsh_highlight_preexec_hook
 
 DETAILS
 -------
