@@ -76,7 +76,10 @@ uninstall:
 	[ -d $(DOC_DIR) ] && rmdir $(DOC_DIR) || true
 	[ -d $(SHARE_DIR) ] && rmdir $(SHARE_DIR) || true
 
+clean:
+	rm -rf build/*
+
 test:
 	make -C test test
 
-.PHONY: all install uninstall test
+.PHONY: all install uninstall test clean
