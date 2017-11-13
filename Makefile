@@ -65,6 +65,7 @@ build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-in
 install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 	$(INSTALL) -d $(SHARE_DIR)
 	$(INSTALL) -d $(DOC_DIR)
+	$(INSTALL) -d $(BIN_DIR)
 	cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc $(BIN_DIR)
 	cp README.md NEWS LICENSE $(DOC_DIR)
 	cp zsd.config $(SHARE_DIR)
