@@ -28,7 +28,7 @@ zsd-run-tree-convert() {
         {
             print "$fg[red]No \`tree' program, it is required$reset_color"
             print "Download from: http://mama.indstate.edu/users/ice/tree/"
-            print "It is also probably in all distributions and Homebrew, as package \`tree'"
+            print "It is also available probably in all distributions and Homebrew, as package \`tree'"
             exit 1
         } >&2
     fi
