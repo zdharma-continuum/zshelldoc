@@ -56,9 +56,15 @@ command rm -f -- "zsdoc/$ofname"
 
 {
     # HEADER
-    print "$name(1)"
-    len="${#name}+3"
-    print "${(r:len::=:)empty}"
+    if [[ "${name[1]}" = "." ]]; then
+        print " $name(1)"
+        len="${#name}+4"
+        print "${(r:len::=:)empty}"
+    else
+        print "$name(1)"
+        len="${#name}+3"
+        print "${(r:len::=:)empty}"
+    fi
     print ":compat-mode!:"
     print
 
