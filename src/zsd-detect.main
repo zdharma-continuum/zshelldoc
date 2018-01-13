@@ -60,7 +60,7 @@ local -A cfuns
 integer at_command=1
 local -A call_tree rev_call_tree features
 local -a known_functions
-known_functions=( zsdoc/data/functions/**/*(N) zsdoc/data/autoload/**/*(N) )
+known_functions=( zsdoc/data/functions/**/*(ND) zsdoc/data/autoload/**/*(ND) )
 known_functions=( ${known_functions[@]#zsdoc/data/functions/} )
 known_functions=( ${known_functions[@]#zsdoc/data/autoload/} )
 

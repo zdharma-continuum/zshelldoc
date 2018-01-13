@@ -70,8 +70,13 @@ command rm -f -- "zsdoc/$ofname"
 
     # NAME
     print "NAME"
-    print -- "${(r:4::-:)empty}"
-    print -- "$name - a shell script"
+    if [[ "${name[1]}" = "." ]]; then
+        print -- "${(r:5::-:)empty}"
+        print -- " $name - a shell script"
+    else
+        print -- "${(r:4::-:)empty}"
+        print -- "$name - a shell script"
+    fi
     print
 
     # SYNOPSIS
