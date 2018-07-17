@@ -46,6 +46,7 @@ usage() {
   print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
   print -- "$fg[magenta]--cignore$reset_color      Specify which comment lines should be ignored"
   print -- "$fg[magenta]-f/--fpath$reset_color     Paths separated by : pointing to directories with functions"
+  print -r -- "$fg[magenta]--synopsis$reset_color     Text to be used in SYNOPSIS section. Line break \"... +\n\", paragraph \"...\n\n\""
   print
   print -- "Example --cignore options:"
   print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"

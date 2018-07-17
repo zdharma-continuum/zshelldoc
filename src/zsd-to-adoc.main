@@ -3,14 +3,15 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -synopsis: || { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+(( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -82,7 +83,11 @@ command rm -f -- "zsdoc/$ofname"
     # SYNOPSIS
     print "SYNOPSIS"
     print -- "${(r:8::-:)empty}"
-    print "Documentation automatically generated with \`zshelldoc'"
+    if [[ -n "$OPT_SYNOPSIS" ]]; then
+        print -- "$OPT_SYNOPSIS"
+    else
+        print "Documentation automatically generated with \`zshelldoc'"
+    fi
     print
 
     # FUNCTIONS
