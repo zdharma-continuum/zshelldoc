@@ -80,6 +80,11 @@ feature_list=(
     compopt caller
 )
 
+# Arguments passed to `source' are gathered in this array.
+# Then, it is used to choose better candidate from possible
+# external files, in which functions are called.
+local -a sourced_files
+
 line_count()
 {
     local -a list
@@ -213,6 +218,7 @@ for (( i=1; i<=size; ++ i )); do
             if [[ "$token" = ${(~j:|:)feature_list} ]]; then
                 [[ -z "$fun_name" ]] && local fkey="zsd_script_body" || local fkey="$fun_name"
                 [[ "${features[$fkey]}" != *[[:blank:]]"$token"[[:blank:]]* ]] && features[$fkey]+=" $token "
+                [[ "$token" = "source" ]] && sourced_files+=( "$next_token" )
             fi
         fi
 
