@@ -4,9 +4,9 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: f: -fpath: -synopsis: || { print "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: f: -fpath: -synopsis: -blocka: -blockb: || { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
@@ -16,6 +16,8 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: f: -
 (( ${+opthash[-f]} ))                           && OPT_FPATH="${opthash[-f]}"
 (( ${+opthash[--fpath]} ))                      && OPT_FPATH="${opthash[--fpath]}"
 (( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
+(( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
+(( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -149,8 +151,12 @@ for fname; do
 
   local synopsis="" syarg=""
   [[ -n "$OPT_SYNOPSIS" ]] && { synopsis="--synopsis" syarg="$OPT_SYNOPSIS"; }
+  local blocka="" baarg="" blockb="" bbarg=""
+  [[ -n "$OPT_BLOCKA" ]] && { blocka="--blocka"; baarg="$OPT_BLOCKA"; }
+  [[ -n "$OPT_BLOCKB" ]] && { blockb="--blockb"; bbarg="$OPT_BLOCKB"; }
 
-  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg "$fname"
+  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg \
+               $blocka $baarg $blockb $bbarg "$fname"
 done
 
 

@@ -3,15 +3,17 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -synopsis: || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -synopsis: -blocka: -blockb: || { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 (( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
+(( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
+(( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -48,7 +50,7 @@ line_count()
     print -r -- "$count"
 }
 
-local name="${1:t}" empty tmp body
+local name="${1:t}" empty tmp script_body body_comments body nl=$'\n'
 local ofname="${name}.adoc" fun
 integer len
 local -a arr
@@ -56,6 +58,9 @@ local -a arr
 command rm -f -- "zsdoc/$ofname"
 
 {
+    # Load body of the script
+    script_body=$(<zsdoc/data/bodies/"$name")
+
     # HEADER
     if [[ "${name[1]}" = "." ]]; then
         print " $name(1)"
@@ -86,7 +91,14 @@ command rm -f -- "zsdoc/$ofname"
     if [[ -n "$OPT_SYNOPSIS" ]]; then
         print -- "$OPT_SYNOPSIS"
     else
-        print "Documentation automatically generated with \`zshelldoc'"
+        # Load body of the script
+        body_comments=$(<zsdoc/data/bodies/"$name".comments)
+
+        if [[ "$body_comments" = (#bi)*synopsis*${OPT_BLOCKA:-\{\{\{}(*)${OPT_BLOCKB:-\}\}\}}* ]]; then
+            print -r -- "${match[1]//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
+        else
+            print "Documentation automatically generated with \`zshelldoc'"
+        fi
     fi
     print
 
@@ -135,9 +147,8 @@ command rm -f -- "zsdoc/$ofname"
         print -r -- "Script Body"
         print -r -- "${(r:11::~:)empty}"
         print
-        body=$(<zsdoc/data/bodies/"$name")
         [[ -f zsdoc/data/trees/"$name"/Script_Body_.tree ]] && {
-            print -r -- "Has `line_count $body` line(s). Calls functions:"
+            print -r -- "Has `line_count $script_body` line(s). Calls functions:"
             print
             arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/Script_Body_.tree)"}" )
             [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
@@ -145,7 +156,7 @@ command rm -f -- "zsdoc/$ofname"
             arr=( "${arr[@]/(#s)/ }" )
             print -r -- "${(F)arr}"
         } || {
-            print -r -- "Has `line_count $body` line(s). No functions are called (may attach to Zle or do hooks, etc.)."
+            print -r -- "Has `line_count $script_body` line(s). No functions are called (may attach to Zle or do hooks, etc.)."
         }
         print
     }

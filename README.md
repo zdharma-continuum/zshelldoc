@@ -30,6 +30,11 @@ Options:
 Example --cignore options:
 --cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{
 --cignore '(\#*FUNCTION:*{{{*|\#*FUN:*{{{*)'  - also ignore comments like: # FUN: usage {{{
+
+File is parsed for synopsis block, which can be e.g.:
+# synopsis {{{my synopsis, can be multi-line}}}
+Change the default brace delimeters with --blocka, --blockb. Block body should be AsciiDoc.
+
 ```
 
 # Installation
