@@ -39,6 +39,8 @@ Has 36 line(s). Calls functions:
  |-- add-zsh-hook
  `-- is-at-least
 
+Uses feature(s): _autoload_, _eval_, _unalias_, _zmodload_
+
 _zsh_highlight
 ~~~~~~~~~~~~~~
 

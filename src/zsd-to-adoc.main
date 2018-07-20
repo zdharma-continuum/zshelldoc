@@ -168,6 +168,15 @@ command rm -f -- "zsdoc/$ofname"
             fi
         }
         print
+
+        local -a features
+        features=( zsdoc/data/features/$name/Script_Body_/*(N) )
+        features=( "${(@)features#zsdoc/data/features/$name/Script_Body_/}" )
+
+        if [[ "${#features}" -gt 0 ]]; then
+            print "Uses feature(s): _${(oj:_, _:)features}_"
+            print
+        fi
     }
 
     # FUNCTIONS
