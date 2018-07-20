@@ -41,7 +41,7 @@ fi
 local name="${1:t}"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
-local preamble="" fun_name="" hook=""
+local preamble="" preamble_comment="" fun_name="" hook=""
 local -A funs auto_funs myhooks
 local -a arr
 
@@ -139,7 +139,7 @@ for (( i=1; i<=size; ++ i )); do
 
     # Anon function in top-level
     if (( anon_depth >= 0 && fun_depth < 0 )); then
-        [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
+        [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}" || preamble_comment+="${spaces}${token}"
     fi
 
     # Check for introduction of autoload function
@@ -195,7 +195,7 @@ for (( i=1; i<=size; ++ i )); do
     # No-function text gathering
     elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
         if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = 3 ]]; then
-            [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
+            [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}" || preamble_comment+="${spaces}${token}"
         fi
     fi
 
@@ -252,6 +252,7 @@ done
 command mkdir -p zsdoc/data/bodies
 
 print -r -- "$preamble" >| zsdoc/data/bodies/${name}
+print -r -- "$preamble_comment" >| zsdoc/data/bodies/${name}.comments
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Generated body of script \`$name\'$reset_color (`line_count $preamble` lines)"
 
 return 0
