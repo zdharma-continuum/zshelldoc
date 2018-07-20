@@ -94,7 +94,8 @@ command rm -f -- "zsdoc/$ofname"
         # Load body of the script
         body_comments=$(<zsdoc/data/bodies/"$name".comments)
 
-        if [[ "$body_comments" = (#bi)*synopsis*${OPT_BLOCKA:-\{\{\{}(*)${OPT_BLOCKB:-\}\}\}}* ]]; then
+        body="${(S)body_comments/(#bi)*synopsis*${OPT_BLOCKA:-\{\{\{}(*)${OPT_BLOCKB:-\}\}\}}*/${match[1]}}";
+        if [[ "$body_comments" != "$body" ]]; then
             print -r -- "${match[1]//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
         else
             print "Documentation automatically generated with \`zshelldoc'"
