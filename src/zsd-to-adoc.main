@@ -3,9 +3,11 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -synopsis: -blocka: -blockb: || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi \
+           -synopsis: -blocka: -blockb: -scomm || \
+                { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
@@ -14,6 +16,7 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -synopsis: -bl
 (( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
 (( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
 (( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
+(( ${+opthash[--scomm]} ))                      && OPT_SCOMM="--scomm"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -177,6 +180,7 @@ command rm -f -- "zsdoc/$ofname"
 
         [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
             zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
+            [[ -n "$OPT_SCOMM" ]] && REPLY="${REPLY//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
             arr=( "${(@f)REPLY}" )
             [[ "${arr[-1]}" = [[:space:]]#\#[[:space:]]# ]] && arr[-1]=()
             arr=( "${arr[@]/(#s)/ }" )
