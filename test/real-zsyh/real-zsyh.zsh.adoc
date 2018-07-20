@@ -72,7 +72,7 @@ ____
 
 Has 11 line(s). Doesn't call other functions.
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _zsh_highlight_apply_zle_highlight
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,7 +119,7 @@ ____
 
 Has 1 line(s). Doesn't call other functions.
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _zsh_highlight_call_widget
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +137,7 @@ Has 2 line(s). Calls functions:
 
 Uses feature(s): _zle_
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _zsh_highlight_cursor_moved
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,7 +150,7 @@ ____
 
 Has 1 line(s). Doesn't call other functions.
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _zsh_highlight_load_highlighters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,14 +179,14 @@ ____
 
 Has 2 line(s). *Is a preexec hook*. Doesn't call other functions.
 
-Not called by script or any function, may be a hook or Zle widget, etc.
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 add-zsh-hook
 ~~~~~~~~~~~~
 
 Has 93 line(s). Doesn't call other functions.
 
-Uses feature(s): _autoload_
+Uses feature(s): _autoload_, _getopts_
 
 Called by:
 
