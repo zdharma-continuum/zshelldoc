@@ -27,6 +27,7 @@ Options:
 -f/--fpath     Paths separated by : pointing to directories with functions
 --synopsis     Text to be used in SYNOPSIS section. Line break "... +\n", paragraph "...\n\n"
 --scomm        Strip comment char "#" from function comments
+--bash         Output slightly tailored to Bash specifics (instead of Zsh specifics)
 
 Example --cignore options:
 --cignore '\#*FUNCTION:*{{{*'                 - ignore comments like: # FUNCTION: usage {{{

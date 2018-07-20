@@ -50,6 +50,7 @@ usage() {
   print -r -- "$fg[magenta]--blocka$reset_color       String used as block-begin, default: {{{"
   print -r -- "$fg[magenta]--blockb$reset_color       String used as block-end, default: }}}"
   print -r -- "$fg[magenta]--scomm$reset_color        Strip comment char \"#\" from function comments"
+  print -r -- "$fg[magenta]--bash$reset_color         Output slightly tailored to Bash specifics (instead of Zsh specifics)"
   print
   print -- "Example --cignore options:"
   print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"

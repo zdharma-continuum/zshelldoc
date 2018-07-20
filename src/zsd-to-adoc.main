@@ -3,10 +3,10 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
 local -A opthash
 zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi \
-           -synopsis: -blocka: -blockb: -scomm || \
+           -synopsis: -blocka: -blockb: -scomm -bash || \
                 { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
@@ -17,6 +17,7 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi \
 (( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
 (( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
 (( ${+opthash[--scomm]} ))                      && OPT_SCOMM="--scomm"
+(( ${+opthash[--bash]} ))                       && OPT_BASH="--bash"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -160,7 +161,11 @@ command rm -f -- "zsdoc/$ofname"
             arr=( "${arr[@]/(#s)/ }" )
             print -r -- "${(F)arr}"
         } || {
-            print -r -- "Has `line_count $script_body` line(s). No functions are called (may attach to Zle or do hooks, etc.)."
+            if [[ -n "$OPT_BASH" ]]; then
+                print -r -- "Has `line_count $script_body` line(s). No functions are called (may set up e.g. command_not_found_handle or call a function indirectly in other way)."
+            else
+                print -r -- "Has `line_count $script_body` line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.)."
+            fi
         }
         print
     }
@@ -231,7 +236,11 @@ command rm -f -- "zsdoc/$ofname"
 
         arr=( zsdoc/data/trees/$name/*/$fun(N) zsdoc/data/trees/*/*/*_-_$fun(N) )
         if [[ "${#arr}" -eq "0" ]]; then
-            print "Not called by script or any function, may be a hook or Zle widget, etc."
+            if [[ -n "$OPT_BASH" ]]; then
+                print -r -- "Has `line_count $script_body` line(s). Not called by script or any function (may be e.g. command_not_found_handle or called indirectly in other way)."
+            else
+                print -r -- "Has `line_count $script_body` line(s). Not called by script or any function (may be e.g. a hook, a Zle widget, etc.)."
+            fi
             print
         else
             print "Called by:"

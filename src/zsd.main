@@ -4,10 +4,11 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS \
+      OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
 local -A opthash
 zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: \
-           f: -fpath: -synopsis: -blocka: -blockb: -scomm || \
+           f: -fpath: -synopsis: -blocka: -blockb: -scomm -bash || \
               { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
@@ -21,6 +22,7 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: \
 (( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
 (( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
 (( ${+opthash[--scomm]} ))                      && OPT_SCOMM="--scomm"
+(( ${+opthash[--bash]} ))                       && OPT_BASH="--bash"
 
 [[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
 
@@ -158,7 +160,7 @@ for fname; do
   [[ -n "$OPT_BLOCKA" ]] && { blocka="--blocka"; baarg="$OPT_BLOCKA"; }
   [[ -n "$OPT_BLOCKB" ]] && { blockb="--blockb"; bbarg="$OPT_BLOCKB"; }
 
-  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg \
+  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_BASH $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg \
                $blocka $baarg $blockb $bbarg $OPT_SCOMM "$fname"
 done
 
