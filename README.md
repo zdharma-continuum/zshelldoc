@@ -4,7 +4,7 @@ Parses `Zsh` and `Bash` scripts, outputs `Asciidoc` document with:
 - list of functions, including autoload functions,
 - call trees of functions and script body,
 - comments for functions,
-- features used for each function and for script body (features like: `eval`, `read`, `vared`, etc.),
+- features used for each function and for script body (features like: `eval`, `read`, `vared`, `shopt`, etc.),
 - distinct marks for hooks registered with `add-zsh-hook` (Zsh).
 
 Call trees support cross-file invocations, i.e. when a script calls functiion defined in other file.
@@ -100,5 +100,6 @@ Few rules helping to use `Zshelldoc` in your project:
  1. Create `Makefile` with `doc` target, that does `rm -rf zsdoc/data; zsd -v file1.zsh ...`. Documentation will land in `zsdoc` directory.
  1. Directory `zsdoc/data` holds meta-data used to create `asciidoc` documents (`*.adoc` files). You can remove it or analyze it yourself.
  1. Obtain **PDFs** with [Asciidoctor](http://asciidoctor.org/) tool via: `asciidoctor -b pdf -r asciidoctor-pdf file1.zsh.adoc`. Install `Asciidoctor` with: `gem install asciidoctor-pdf --pre`. (Check out [Zplugin's Makefile](https://github.com/zdharma/zplugin/blob/master/zsdoc/Makefile).)
+ 1. HTML: `asciidoctor script.adoc`.
  1. Obtain manual pages with `Asciidoc` package via: `a2x -L --doctype manpage --format manpage file1.zsh.adoc` (`asciidoc` is a common package; its `a2x` command is little slow).
  1. Github supports `Asciidoc` documents and renders them automatically.
