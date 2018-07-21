@@ -182,11 +182,23 @@ for (( i=1; i<=size; ++ i )); do
         # Prepare call-tree extraction
         # Search for this possible function ($token) in current script
         local tokenEx="${(q)name}/${(q)token}"
-        local found="${known_functions[(r)$tokenEx]}"
+        local found="${known_functions[(r)$tokenEx]}" candidate="" last_candidate=""
+        integer nth=1
         if [[ -z "$found" ]]; then
             # Search for other scripts having this possible function
             tokenEx="*/${(q)token}"
-            found="${known_functions[(r)$tokenEx]}"
+            while (( 1 )); do
+                candidate="${known_functions[(rn:nth:)$tokenEx]}"
+                if [[ -n "$candidate" ]]; then
+                    last_candidate="$candidate"
+                    found="${sourced_files[(r)*${candidate:h}*]}"
+                    [[ -n "$found" ]] && break
+                else
+                    break
+                fi
+                (( ++ nth ))
+            done
+            found="$last_candidate"
         fi
         if [[ -z "$fun_name" ]]; then
             local needle="${(q)name}/zsd_script_body"

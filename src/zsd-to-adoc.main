@@ -259,6 +259,7 @@ command rm -f -- "zsdoc/$ofname"
             arr=( "${arr[@]%/*}" )
             arr=( "${arr[@]//_-_//}" )
             arr=( "${arr[@]/Script_Body_/Script-Body}" )
+            arr=( "${(u)arr[@]}" )
             print -rl -- "${arr[@]/(#s)/ }"
             print
         fi
