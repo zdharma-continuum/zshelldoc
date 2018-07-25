@@ -244,7 +244,6 @@ for (( i=1; i<=size; ++ i )); do
                 fi
             else
                 if [[ -z "$OPT_CIGNORE" || "$token" != ${~OPT_CIGNORE} ]]; then
-                    [[ "$token" = \#*FUNCTION:*{{{* ]] && echo added matching "|$OPT_CIGNORE|", "|$token|",
                     cproposal+="$token$next_spaces"
                 fi
             fi
