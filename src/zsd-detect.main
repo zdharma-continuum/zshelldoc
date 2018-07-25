@@ -124,7 +124,7 @@ find-variables()
             _mybuf="${match[7]:1}"
         } || {
             _mybuf="${match[8]}"
-            [[ "${match[1]}" = \$* ]] && reply+=( "${match[3]:-${match[5]}}" )
+            [[ "${match[1]}" = \$?## ]] && reply+=( "${match[3]:-${match[5]}}" )
         }
     done
     return 0
