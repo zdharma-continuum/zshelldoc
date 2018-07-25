@@ -42,11 +42,11 @@ local name="${1:t}"
 local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 local preamble="" preamble_comment="" fun_name="" hook=""
-local -A funs auto_funs myhooks
+local -A funs auto_funs myhooks myexports
 local -a arr
 
 # Function extraction
-integer at_command=1 in_autoload=0 in_azh=0
+integer at_command=1 in_autoload=0 in_azh=0 in_export=0
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
 
@@ -147,6 +147,7 @@ for (( i=1; i<=size; ++ i )); do
         at_command=1
         in_autoload=0
         in_azh=0
+        in_export=0
     fi
     if (( at_command )); then
         at_command=0
@@ -155,6 +156,8 @@ for (( i=1; i<=size; ++ i )); do
                 in_autoload=1
             elif [[ "$token" = "add-zsh-hook" ]]; then
                 in_azh=1
+            elif [[ "$token" = "export" ]]; then
+                in_export=1
             fi
         fi
     elif (( in_autoload )); then
@@ -181,6 +184,11 @@ for (( i=1; i<=size; ++ i )); do
         else
             myhooks[${token%$'\r'}]="$prev_token"
             in_azh=0
+        fi
+    elif (( in_export )); then
+        if [[ "$token" = (#b)([a-zA-Z_][a-zA-Z0-9_]#)(=(*))(#c0,1) ]]; then
+            [[ -z "$fun_name" ]] && local fkey="zsd_script_body" || local fkey="$fun_name"
+            [[ "${myexports[$fkey]}" != *[[:blank:]]"${match[1]}"[[:blank:]]* ]] && myexports[$fkey]+=" ${match[1]} "
         fi
     fi
 
@@ -254,5 +262,26 @@ command mkdir -p zsdoc/data/bodies
 print -r -- "$preamble" >| zsdoc/data/bodies/${name}
 print -r -- "$preamble_comment" >| zsdoc/data/bodies/${name}.comments
 [[ -z "$OPT_QUIET" ]] && print "$fg[yellow]Generated body of script \`$name\'$reset_color (`line_count $preamble` lines)"
+
+### OUTPUT: EXPORTED VARS
+
+command mkdir -p "zsdoc/data/exports/$name"
+
+local -a exps
+local exp holder
+for fun_name in "${(ko@)myexports}"; do
+    if [[ "$fun_name" = "zsd_script_body" ]]; then
+        holder="zsdoc/data/exports/$name/Script_Body_"
+    else
+        holder="zsdoc/data/exports/$name/$fun_name"
+    fi
+
+    command mkdir -p "$holder"
+
+    exps=( "${(z@)myexports[$fun_name]}" )
+    for exp in "${(o)exps[@]}"; do
+        echo >| "$holder/$exp"
+    done
+done
 
 return 0
