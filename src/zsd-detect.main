@@ -85,6 +85,10 @@ feature_list=(
 # external files, in which functions are called.
 local -a sourced_files
 
+#
+# Functions
+#
+
 line_count()
 {
     local -a list
@@ -93,6 +97,42 @@ line_count()
     [[ "$1" = *$'\n' ]] && (( -- count ))
     print -r -- "${(l:3:: :)count}"
 }
+
+# Finds variables in given string, returns their names.
+#
+# $1 - the string to search in
+#
+# The while [[ ... ]] pattern is logically ((A)|(B)|(C)|(D)|(E))(*), where:
+# - A matches $var[abc]
+# - B matches ${(...)var[abc]}
+# - C matches $
+# - D matches \$ or \" or \'
+# - E matches \*
+#
+# and the first condition -n ${match[7] uses D to continue searching when
+# backslash-something (not ' or " or $) is occured.
+#
+# Returns names of all variables in reply.
+find-variables()
+{
+    local _mybuf="$1"
+    reply=()
+
+    while [[ "$_mybuf" = (#b)[^\$\\]#((\$([a-zA-Z_:][a-zA-Z0-9_:]#|[0-9]##)(#B)(\[[^\]]#\])(#c0,1))|(\$[{](#B)(\([a-zA-Z0-9_:@%#]##\))(#c0,1)(#b)([a-zA-Z0-9_:#]##)(\[[^\]]#\])(#c0,1)[}])|\$|[\\][\'\"\$]|[\\](*))(*) ]]; do
+        [[ -n "${match[7]}" ]] && {
+            # Skip following char – it is quoted
+            _mybuf="${match[7]:1}"
+        } || {
+            _mybuf="${match[8]}"
+            [[ "${match[1]}" = \$* ]] && reply+=( "${match[3]:-${match[5]}}" )
+        }
+    done
+    return 0
+}
+
+#
+# Main code
+#
 
 zsd-process-buffer "$doc" 1
 integer i size="${#ZSD_PB_WORDS}"
