@@ -5,11 +5,15 @@ Parses `Zsh` and `Bash` scripts, outputs `Asciidoc` document with:
 - call trees of functions and script body,
 - comments for functions,
 - features used for each function and for script body (features like: `eval`, `read`, `vared`, `shopt`, etc.),
-- distinct marks for hooks registered with `add-zsh-hook` (Zsh).
+- distinct marks for hooks registered with `add-zsh-hook` (Zsh),
+- list of exported variables,
+- list of used exported variables, together with the variable's origin (i.e. possibly other script).
 
 Call trees support cross-file invocations, i.e. when a script calls functiion defined in other file.
 
 Written in `Zshell` language.
+
+![image](https://raw.githubusercontent.com/zdharma/zshelldoc/images/env_feat_demo.png)
 
 # Usage
 
