@@ -43,7 +43,7 @@ local name="${1:t}"
 local doc="$(<zsdoc/data/extended/$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 # Function and preamble extraction
-local preamble="" fun_name=""
+local preamble="" fun_name="" env_var=""
 local -A funs
 integer next_fun=0 cur_fun=0 prev_fun=0
 integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
@@ -58,11 +58,13 @@ local -A cfuns
 
 # Call-tree extraction
 integer at_command=1
-local -A call_tree rev_call_tree features
-local -a known_functions
+local -A call_tree rev_call_tree features env_list
+local -a known_functions known_env
 known_functions=( zsdoc/data/functions/**/*(ND) zsdoc/data/autoload/**/*(ND) )
 known_functions=( ${known_functions[@]#zsdoc/data/functions/} )
 known_functions=( ${known_functions[@]#zsdoc/data/autoload/} )
+known_env=( zsdoc/data/exports/**/*(ND) )
+known_env=( ${known_env[@]#zsdoc/data/exports/} )
 
 local -a feature_list
 feature_list=(
@@ -294,6 +296,47 @@ for (( i=1; i<=size; ++ i )); do
         fi
     fi
 
+    ### Use of environment START
+
+    reply=()
+    [[ "$token" != [[:blank:]]#\#* ]] && find-variables "$token"
+    for env_var in "${reply[@]}"; do
+        # First search if current script exports the env_var
+        local env_var_Ext="${(q)name}/${(q)env_var}"
+        local found="${known_env[(r)$env_var_Ext]}" candidate="" last_candidate=""
+        integer nth=1
+        if [[ -z "$found" ]]; then
+            # Search for other scripts exporting this env_var
+            env_var_Ext="*/${(q)env_var}"
+            while (( 1 )); do
+                candidate="${known_env[(rn:nth:)$env_var_Ext]}"
+                if [[ -n "$candidate" ]]; then
+                    last_candidate="$candidate"
+                    found="${sourced_files[(r)*${candidate:h:h}*]}"
+                    [[ -n "$found" ]] && break
+                else
+                    break
+                fi
+                (( ++ nth ))
+            done
+            found="$last_candidate"
+        fi
+
+        [[ -n "$found" ]] && {
+            if [[ -z "$fun_name" ]]; then
+                [[ "${env_list[${(q)name}/zsd_script_body]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
+                    env_list[${(q)name}/zsd_script_body]+=" ${(q)found} "
+                }
+            else
+                [[ "${env_list[${(q)name}/${(q)fun_name}]}" != *[[:blank:]]"${(q)found}"[[:blank:]]* ]] && {
+                    env_list[${(q)name}/${(q)fun_name}]+=" ${(q)found} "
+                }
+            fi
+        }
+    done
+
+    ### Use of environment END
+
     # Store function comment
     if (( cur_fun + prev_fun )); then
         cfuns[$fun_name]="${cproposal%%$'\n'##}"
@@ -399,6 +442,24 @@ for fun_name in "${(ko@)features}"; do
     feats=( "${(z@)features[$fun_name]}" )
     for feat in "${(o)feats[@]}"; do
         echo >| "$holder/$feat"
+    done
+done
+
+#
+# Use of environment
+#
+
+command mkdir -p "zsdoc/data/env-use/$name"
+local -a used_envs
+local myenv
+for fun_name in "${(ko@)env_list}"; do
+    used_envs=( "${(z@)env_list[$fun_name]}" )
+    [[ -z "${used_envs[1]}" ]] && continue
+
+    for myenv in "${used_envs[@]}"; do
+        # env-use/of-script-$name/in-its-function-${fun_name:t}/exported-in-script-.../in-function-.../the-varname-...
+        command mkdir -p "zsdoc/data/env-use/$name/${fun_name:t}/${myenv:h}"
+        command touch "zsdoc/data/env-use/$name/${fun_name:t}/$myenv"
     done
 done
 
