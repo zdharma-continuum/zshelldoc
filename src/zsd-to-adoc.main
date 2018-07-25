@@ -177,6 +177,15 @@ command rm -f -- "zsdoc/$ofname"
             print "Uses feature(s): _${(oj:_, _:)features}_"
             print
         fi
+
+        local -a exports
+        exports=( zsdoc/data/exports/$name/Script_Body_/*(N) )
+        exports=( "${(@)exports#zsdoc/data/exports/$name/Script_Body_/}" )
+
+        if [[ "${#exports}" -gt 0 ]]; then
+            print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print
+        fi
     }
 
     # FUNCTIONS
@@ -264,6 +273,16 @@ command rm -f -- "zsdoc/$ofname"
             print
         fi
 
+        ## Exports
+
+        local -a exports
+        exports=( zsdoc/data/exports/$name/$fun/*(N) )
+        exports=( "${(@)exports#zsdoc/data/exports/$name/$fun/}" )
+
+        if [[ "${#exports}" -gt 0 ]]; then
+            print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print
+        fi
     done
 } >>| "zsdoc/$ofname"
 
