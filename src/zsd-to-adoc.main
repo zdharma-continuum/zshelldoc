@@ -277,10 +277,23 @@ command rm -f -- "zsdoc/$ofname"
 
         local -a exports
         exports=( zsdoc/data/exports/$name/$fun/*(N) )
-        exports=( "${(@)exports#zsdoc/data/exports/$name/$fun/}" )
+        exports=( "${exports[@]#zsdoc/data/exports/$name/$fun/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
             print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print
+        fi
+
+        ## Use of environment variables
+
+        local -a env_uses
+        env_uses=( zsdoc/data/env-use/$name/$fun/*/*/*(N) )
+        env_uses=( "${env_uses[@]#zsdoc/data/env-use/$name/$fun/}" )
+        env_uses=( "${env_uses[@]//(#b)([^\/]##)\/[^\/]##\/(*)/${match[1]} -> ${match[2]}}" )
+        env_uses=( "${env_uses[@]/$name -> /}" )
+
+        if [[ "${#env_uses}" -gt 0 ]]; then
+            print "_Environment variables used:_ ${(oj: [big]*//* :)env_uses}"
             print
         fi
     done
