@@ -280,7 +280,7 @@ command rm -f -- "zsdoc/$ofname"
         exports=( "${exports[@]#zsdoc/data/exports/$name/$fun/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
-            print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print "_List of exports (to environment):_ ${(oj: [big]*//* :)exports}"
             print
         fi
 
