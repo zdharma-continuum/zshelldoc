@@ -140,6 +140,26 @@ command rm -f -- "zsdoc/$ofname"
         print -r -- "${(U)$(<zsdoc/data/hooks/$name/$fun)}-HOOK $fun"
     done
 
+    # PREPARE ENVIRONMENT VARS' DESCRIPTIONS
+    local env_desc="${(S)body_comments/(#bi)*env-vars*${OPT_BLOCKA:-\{\{\{}(*)${OPT_BLOCKB:-\}\}\}}*/${match[1]}}";
+    if [[ "$body_comments" != "$env_desc" ]]; then
+        local -a sorted fixed_env_descs
+        sorted=( "${(@s:->:)match[1]}" )
+        integer sidx ssize=${#sorted}
+        for (( sidx=2; sidx <= ssize; ++ sidx )); do
+            [[ ${sorted[sidx-1]} = (#b)*((#s)|$nl)([^$nl]#)(#e) ]] && {
+                fixed_env_descs[(sidx-1)*2-1]="${${match[2]##\#[[:space:]]#}%%[[:space:]]#}"
+                fixed_env_descs[(sidx-1)*2]="${sorted[sidx]}"
+                (( sidx > 2 )) && fixed_env_descs[(sidx-2)*2]="${fixed_env_descs[(sidx-2)*2]%${match[2]}}"
+            }
+        done
+
+        ssize=${#fixed_env_descs}
+        for (( sidx=1; sidx <= ssize; ++ sidx )); do
+            fixed_env_descs[sidx]="${${${fixed_env_descs[sidx]//((#s)|$nl)[[:blank:]]#\##[[:blank:]]#/$nl}%$nl}#$nl}"
+        done
+    fi
+
     # DETAILS
     print
     print "DETAILS"
