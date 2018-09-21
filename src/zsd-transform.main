@@ -39,7 +39,7 @@ fi
 ### Code ###
 
 local name="${1:t}"
-local doc="$(<$name)" token prev_token="" spaces prev_spaces="" next_token next_spaces
+local doc="$(<$1)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 local preamble="" preamble_comment="" fun_name="" hook=""
 local -A funs auto_funs myhooks myexports
