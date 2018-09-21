@@ -160,6 +160,21 @@ command rm -f -- "zsdoc/$ofname"
         done
     fi
 
+    if (( ${#fixed_env_descs} > 0 )); then
+        local -A fixed_env_descs_hash
+        fixed_env_descs_hash=( "${fixed_env_descs[@]}" )
+        print
+        print "ENVIRONMENT VARIABLES"
+        print -- "${(r:21::-:)empty}"
+        print '[width="80%",cols="4,10"]'
+        print "|======"
+        local key
+        for key in "${(kon)fixed_env_descs_hash[@]}"; do
+            print "|$key|${fixed_env_descs_hash[$key]}"
+        done
+        print "|======"
+    fi
+
     # DETAILS
     print
     print "DETAILS"
