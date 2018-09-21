@@ -58,5 +58,12 @@ usage() {
   print
   print -- "File is parsed for synopsis block, which can be e.g.:"
   print -- "# synopsis {{{my synopsis, can be multi-line}}}"
-  print -- "Change the default brace delimeters with --blocka, --blockb. Block body should be AsciiDoc."
+  print
+  print -- "Other block that is parsed is commenting on environment variables. It consists of multiple"
+  print -- '"VAR_NAME -> var description" lines and results in a table in the output AsciiDoc document, e.g.:'
+  print -- "# env-vars {{{"
+  print -- "# PATH -> paths to executables"
+  print -- "# MANPATH -> paths to manuals }}}"
+  print
+  print -- "Change the default brace block-delimeters with --blocka, --blockb. Block body should be AsciiDoc."
 }

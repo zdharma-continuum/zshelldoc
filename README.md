@@ -46,8 +46,14 @@ Example --cignore options:
 
 File is parsed for synopsis block, which can be e.g.:
 # synopsis {{{my synopsis, can be multi-line}}}
-Change the default brace delimeters with --blocka, --blockb. Block body should be AsciiDoc.
 
+Other block that is parsed is commenting on environment variables. It consists of multiple
+"VAR_NAME -> var description" lines and results in a table in the output AsciiDoc document, e.g.:
+# env-vars {{{
+# PATH -> paths to executables
+# MANPATH -> paths to manuals }}}
+
+Change the default brace block-delimeters with --blocka, --blockb. Block body should be AsciiDoc.
 ```
 
 # Installation
