@@ -25,7 +25,7 @@ ZSD_DIR="${ZERO%/*}"
     fi
 
     [ "x$ZSD_CONFIG" != "x" ] && {
-        echo "Reading configuration from: ${ZSD_CONFIG/$HOME/~}"
+        echo "Reading configuration from: $ZSD_CONFIG"
         export ZSD_CONFIG
         [ -f "$ZSD_CONFIG" ] && . "$ZSD_CONFIG"
     }
