@@ -7,13 +7,31 @@
 # /bin/sh stage, load configuration to obtain $zsh_control_bin
 #
 
-if [[ -f /usr/local/share/zshelldoc/zsd.config ]]; then
-  . /usr/local/share/zshelldoc/zsd.config
-elif [[ -f /usr/share/zshelldoc/zsd.config ]]; then
-  . /usr/share/zshelldoc/zsd.config
-elif [[ -f /opt/share/zshelldoc/zsd.config ]]; then
-  . /opt/share/zshelldoc/zsd.config
-fi
+ZERO="$0"
+ZSD_DIR="${ZERO%/*}"
+[ "$ZSD_DIR" = "${ZSD_DIR#/}" ] && ZSD_DIR="$PWD/$ZSD_DIR"
+
+[ "x$ZSD_CONFIG" = "x" ] && {
+    if [ -f ${XDG_CONFIG_HOME:-$HOME/.config}/zshelldoc/zsd.config ]; then
+        ZSD_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/zshelldoc/zsd.config"
+    elif [ -f "${ZSD_DIR}/zsd.config" ]; then
+        ZSD_CONFIG="${ZSD_DIR}/zsd.config"
+    elif [ -f /usr/local/share/zshelldoc/zsd.config ]; then
+        ZSD_CONFIG="/usr/local/share/zshelldoc/zsd.config"
+    elif [ -f /usr/share/zshelldoc/zsd.config ]; then
+        ZSD_CONFIG="/usr/share/zshelldoc/zsd.config"
+    elif [ -f /opt/share/zshelldoc/zsd.config ]; then
+        ZSD_CONFIG="/opt/share/zshelldoc/zsd.config"
+    fi
+
+    [ "x$ZSD_CONFIG" != "x" ] && {
+        echo "Reading configuration from: ${ZSD_CONFIG/$HOME/~}"
+        export ZSD_CONFIG
+        [ -f "$ZSD_CONFIG" ] && . "$ZSD_CONFIG"
+    }
+} || {
+    [ -f "$ZSD_CONFIG" ] && . "$ZSD_CONFIG"
+}
 
 [ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
 
