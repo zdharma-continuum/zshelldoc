@@ -56,7 +56,7 @@ line_count()
 
 local name="${1:t}" empty tmp script_body body_comments body nl=$'\n'
 local ofname="${name}.adoc" fun
-integer len
+integer len env_vars_count=0 empty_env_vars_count=0
 local -a arr
 
 command rm -f -- "zsdoc/$ofname"
@@ -156,6 +156,8 @@ command rm -f -- "zsdoc/$ofname"
                 (( sidx > 2 )) && fixed_env_descs[fixed_envs_offset+(sidx-2)*2]="${fixed_env_descs[fixed_envs_offset+(sidx-2)*2]%${match[2]}}"
             fi
         done
+
+        (( ssize >= 2 )) && env_vars_count+=1 || empty_env_vars_count+=1
 
         ssize=${#fixed_env_descs}
         for (( sidx=fixed_envs_offset+1; sidx <= ssize; ++ sidx )); do
@@ -343,4 +345,7 @@ command rm -f -- "zsdoc/$ofname"
     done
 } >>| "zsdoc/$ofname"
 
+print "AsciiDoc generated under \`zsdoc/$ofname'. Found $env_vars_count env-vars sections${${${empty_env_vars_count:#0}:+ (+$empty_env_vars_count empty ones).}:-.}"
+print "You can run \`asciidoctor $ofname' to generate HTML or commit"
+print "$ofname into GitHub (GitHub does render *.adoc files)."
 return 0
