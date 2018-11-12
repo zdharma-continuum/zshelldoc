@@ -77,8 +77,9 @@ usage() {
   print -- "File is parsed for synopsis block, which can be e.g.:"
   print -- "# synopsis {{{my synopsis, can be multi-line}}}"
   print
-  print -- "Other block that is parsed is commenting on environment variables. It consists of multiple"
-  print -- '"VAR_NAME -> var description" lines and results in a table in the output AsciiDoc document, e.g.:'
+  print -- "Other block that is parsed is commenting on environment variables. There can be multiple such blocks,"
+  print -- "their content will be merged. Single block consists of multiple $fg[green]'VAR_NAME -> var-description'$reset_color lines"
+  print -- 'and results in a table in the output AsciiDoc document. An example block:'
   print -- "# env-vars {{{"
   print -- "# PATH -> paths to executables"
   print -- "# MANPATH -> paths to manuals }}}"
