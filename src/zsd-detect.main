@@ -53,7 +53,7 @@ integer nested_fun=0 next_nested_fun=0 prev_nested_fun=0
 local -a fun_stack_depths
 
 # Function-comment extraction
-local cproposal=""
+local cproposal="" given_fun_name=""
 local -A cfuns
 
 # Call-tree extraction
@@ -86,6 +86,9 @@ feature_list=(
 # Then, it is used to choose better candidate from possible
 # external files, in which functions are called.
 local -a sourced_files
+
+# Patterns
+local pattern_give_function_name="{function:([^}]##)}"
 
 #
 # Functions
@@ -279,17 +282,36 @@ for (( i=1; i<=size; ++ i )); do
         # Extract before-function comments
         if [[ "$token" = [[:space:]]#\#* ]]; then
             if [[ "$spaces" = [[:space:]]#$'\n'[[:space:]]#$'\n'* ]]; then
+                # Store comment in case of the {function:<name.}
+                # has been given
+                [[ -n "${cproposal%%$'\n'##}" && -n "$given_fun_name" ]] && {
+                    cfuns[$given_fun_name]="${${cproposal//$~pattern_give_function_name/}%%$'\n'##}"
+                    given_fun_name=""
+                }
+
+                # Comment reset
                 if [[ -n "$OPT_CIGNORE" && "$token" = ${~OPT_CIGNORE} ]]; then
                     cproposal=""
                 else
                     cproposal="$token$next_spaces"
                 fi
+                given_fun_name=""
             else
+                # Comment extension
                 if [[ -z "$OPT_CIGNORE" || "$token" != ${~OPT_CIGNORE} ]]; then
                     cproposal+="$token$next_spaces"
                 fi
             fi
+            # Detect the {function:<NAME>} bit that sets the function
+            # to which the comment belongs
+            if [[ "$token" = (#b)*${~pattern_give_function_name}* ]]; then
+                given_fun_name="${match[1]}"
+            fi
         else
+            [[ -n "${cproposal%%$'\n'##}" && -n "$given_fun_name" ]] && {
+                cfuns[$given_fun_name]="${${cproposal//$~pattern_give_function_name/}%%$'\n'##}"
+                given_fun_name=""
+            }
             if [[ "$token" != "function" && ( "$next_token" != "()" || "$next_spaces" = *$'\n'* ) ]]; then
                 cproposal=""
             fi
@@ -339,7 +361,7 @@ for (( i=1; i<=size; ++ i )); do
 
     # Store function comment
     if (( cur_fun + prev_fun )); then
-        cfuns[$fun_name]="${cproposal%%$'\n'##}"
+        [[ -n "${cproposal%%$'\n'##}" ]] && cfuns[$fun_name]="${cproposal%%$'\n'##}"
     fi
 
     # Late disable of anonymous function
