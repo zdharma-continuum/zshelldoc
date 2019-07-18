@@ -159,7 +159,7 @@ for (( i=1; i<=size; ++ i )); do
         next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
     # Detect top-level prev-function differentiating from anonymous function
     elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
-        if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
+        if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
             next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
         else
             next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
@@ -178,6 +178,7 @@ for (( i=1; i<=size; ++ i )); do
         (( -- depth ))
     fi
 
+    # Check if any final function-flag is raised
     if (( cur_fun )); then
         fun_name="$token"
         fun_depth="$depth"
