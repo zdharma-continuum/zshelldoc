@@ -147,26 +147,29 @@ for (( i=1; i<=size; ++ i )); do
     spaces="${ZSD_PB_SPACES[i]}"
     next_token="${ZSD_PB_WORDS[i+1]}"
     next_spaces="${ZSD_PB_SPACES[i+1]}"
+
     cur_fun=0 prev_fun=0 descentff=0 descentfa=0
     nested_fun=0 prev_nested_fun=0
 
     (( next_fun )) && { next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1; }
     (( next_nested_fun )) && { next_nested_fun=0 nested_fun=1 prev_nested_fun=0; }
 
-    # Explicit future function
+    # Explicit future-function
     if [[ "$token" = "function" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
         next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
-    # Detect function if not already in function
+    # Detect top-level prev-function differentiating from anonymous function
     elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
         if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
             next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
         else
             next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
         fi
+    # Must be a nested future-function
     elif [[ "$token" = "function" ]]; then
         next_nested_fun=1 nested_fun=0 prev_nested_fun=0
+    # Is it a nested prev-function?
     elif [[ "$token" = "()" && "$nested_fun" -eq 0 && "$depth" -gt "$fun_stack_depths[-1]" ]]; then
-        if [[ "$spaces" != *$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [123] ]]; then
+        if [[ "$spaces" != *$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [1234] ]]; then
             next_nested_fun=0 nested_fun=0 prev_nested_fun=1
         fi
     elif [[ "$token" = "{" ]]; then
@@ -185,6 +188,7 @@ for (( i=1; i<=size; ++ i )); do
         fun_stack_depths+=( "$depth" )
     fi
 
+    # Track nested functions
     if (( nested_fun + prev_nested_fun )); then
         fun_stack_depths+=( "$depth" )
     fi
@@ -192,14 +196,16 @@ for (( i=1; i<=size; ++ i )); do
     # Ascent to function - skip '{'
     if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ "$token" = "{" ]]; then
         :
-    # In-function
+    # In function
     elif (( fun_depth >= 0 && depth > fun_depth )); then
-        if [[ "$token" != [[:space:]]#\#* ]]; then
+        if [[ "$token" != [[:blank:]]#\#* ]]; then
             funs[$fun_name]+="${spaces}${token}"
         fi
+        # Handle descent from nested function
         if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
             fun_stack_depths[-1]=()
         fi
+    # In anonymous-function
     elif (( anon_depth >= 0 && depth > anon_depth )); then
         if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
             fun_stack_depths[-1]=()
@@ -214,11 +220,11 @@ for (( i=1; i<=size; ++ i )); do
 
     # Anon function in top-level
     if (( anon_depth >= 0 && fun_depth < 0 )); then
-        [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
+        [[ "$token" != [[:blank:]]#\#* ]] && preamble+="${spaces}${token}"
     fi
 
     ### Detect function call
-    if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [123] ]]; then
+    if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
         at_command=1
     fi
     if (( at_command )); then
@@ -374,11 +380,12 @@ for (( i=1; i<=size; ++ i )); do
         fun_stack_depths[-1]=()
     # No-function text gathering
     elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = 3 ]]; then
-            [[ "$token" != [[:space:]]#\#* ]] && preamble+="${spaces}${token}"
+        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = [34] ]]; then
+            [[ "$token" != [[:blank:]]#\#* ]] && preamble+="${spaces}${token}"
         fi
     fi
 
+    # History of state
     prev_depth="$depth"
     prev_token="$token"
     prev_spaces="$spaces"

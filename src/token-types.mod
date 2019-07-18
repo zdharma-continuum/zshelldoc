@@ -11,15 +11,14 @@ TOKEN_TYPES=(
   'exec'        1
   'nocorrect'   1
   'noglob'      1
-  'pkexec'      1 # immune to #121 because it's usually not passed --option flags
+  'pkexec'      1
 
   # Control flow
-  # Tokens that at "command position" are followed by a command position.
-  # All of these are reserved words.
+  # Tokens that at "command position" are followed by a command
 
-  $'\x7b'   2 # block
-  $'\x28'   2 # subshell
-  '()'      2 # anonymous function
+  $'\x7b'   2 # {
+  $'\x28'   2 # (
+  '()'      2
   'while'   2
   'until'   2
   'if'      2
@@ -35,13 +34,11 @@ TOKEN_TYPES=(
 
   '|'   3
   '||'  3
-  ';'   3
-  '&'   3
   '&&'  3
-  '|&'  3
-  '&!'  3
-  '&|'  3
 
-  # ### 'case' syntax, but followed by a pattern, not by a command
-  # ';;' ';&' ';|'
+  '|&'  4
+  '&!'  4
+  '&|'  4
+  '&'   4
+  ';'   4
 )
