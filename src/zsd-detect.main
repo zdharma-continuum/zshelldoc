@@ -75,7 +75,7 @@ feature_list=(
 
     # Zsh specific ones
     zmodload zprof vared zcompile zformat autoload
-    sched zparseopts zstyle zpty zsocket
+    sched zparseopts zstyle zpty zsocket setopt
 
     # Bash specific ones
     bash getopts mapfile shopt readarray compgen complete
