@@ -5,13 +5,14 @@
 
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi \
-           -synopsis: -blocka: -blockb: -scomm -bash || \
+zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet \
+           n -noansi -synopsis: -blocka: -blockb: -scomm -bash || \
                 { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
+(( ${+opthash[-r]} + ${+opthash[--really-quiet]} )) && { OPT_QUIET="-q"; OPT_RQUIET="-r"; }
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 (( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
 (( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
@@ -346,6 +347,6 @@ command rm -f -- "zsdoc/$ofname"
 } >>| "zsdoc/$ofname"
 
 print "AsciiDoc generated under \`zsdoc/$ofname'. Found $env_vars_count env-vars sections${${${empty_env_vars_count:#0}:+ (+$empty_env_vars_count empty ones).}:-.}"
-print "You can run \`asciidoctor $ofname' to generate HTML or commit"
-print "$ofname into GitHub (GitHub does render *.adoc files)."
+[[ -z "$OPT_RQUIET" ]] && print "You can run \`asciidoctor $ofname' to generate HTML or commit"
+[[ -z "$OPT_RQUIET" ]] && print "$ofname into GitHub (GitHub does render *.adoc files)."
 return 0

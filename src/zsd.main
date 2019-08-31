@@ -4,16 +4,18 @@
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS \
-      OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_RQUIET OPT_NOANSI OPT_CIGNORE \
+      OPT_FPATH OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: \
-           f: -fpath: -synopsis: -blocka: -blockb: -scomm -bash || \
+zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet \
+            n -noansi -cignore: f: -fpath: -synopsis: -blocka: -blockb: \
+            -scomm -bash || \
               { print "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
+(( ${+opthash[-r]} + ${+opthash[--really-quiet]} )) && { OPT_QUIET="-q"; OPT_RQUIET="-r"; }
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 (( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
 (( ${+opthash[-f]} ))                           && OPT_FPATH="${opthash[-f]}"
@@ -98,7 +100,7 @@ for fname; do
     continue
   fi
 
-  /usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+  /usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_RQUIET $OPT_NOANSI "$fname"
 done
 
 ### Second pass ###
@@ -131,7 +133,7 @@ for fname; do
   local cignore="" ciarg=""
   [[ -n "$OPT_CIGNORE" ]] && { cignore="--cignore" ciarg="$OPT_CIGNORE"; }
 
-  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $cignore $ciarg "$fname"
+  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_RQUIET $OPT_NOANSI $cignore $ciarg "$fname"
 done
 
 ### ASCIIDOC ###
@@ -160,7 +162,7 @@ for fname; do
   [[ -n "$OPT_BLOCKA" ]] && { blocka="--blocka"; baarg="$OPT_BLOCKA"; }
   [[ -n "$OPT_BLOCKB" ]] && { blockb="--blockb"; bbarg="$OPT_BLOCKB"; }
 
-  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_BASH $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg \
+  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_BASH $OPT_VERBOSE $OPT_QUIET $OPT_RQUIET $OPT_NOANSI $synopsis $syarg \
                $blocka $baarg $blockb $bbarg $OPT_SCOMM "$fname"
 done
 

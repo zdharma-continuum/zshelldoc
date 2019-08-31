@@ -5,10 +5,11 @@
 
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet n -noansi || { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
+(( ${+opthash[-r]} + ${+opthash[--really-quiet]} )) && { OPT_QUIET="-q"; OPT_RQUIET="-r"; }
 (( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
 (( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
 (( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
