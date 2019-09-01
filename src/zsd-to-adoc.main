@@ -28,21 +28,21 @@ if [[ -n "$OPT_HELP" ]]; then
 fi
 
 if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
-    print "zsd-to-adoc: Argument needed, see help (-h/--help)"
+    print -- "zsd-to-adoc: Argument needed, see help (-h/--help)"
     return 1
 fi
 
 if [[ ! -f "$1" ]]; then
-    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]zsd-to-adoc: File \`$1' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print -- "$fg[magenta]zsd-to-adoc: File \`$1' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
     return 1
 fi
 
 if [[ ! -r "$1" ]]; then
-    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]zsd-to-adoc: File \`$1' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print -- "$fg[magenta]zsd-to-adoc: File \`$1' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
     return 1
 fi
 
-[[ -z "$OPT_QUIET" ]] && print "$fg[cyan]== zsd-to-adoc starting for file \`$fg_bold[yellow]$1$fg_no_bold[cyan]' (3rd pass)$reset_color"
+[[ -z "$OPT_QUIET" ]] && print -- "$fg[cyan]== zsd-to-adoc starting for file \`$fg_bold[yellow]$1$fg_no_bold[cyan]' (3rd pass)$reset_color"
 
 ### Code ###
 
@@ -68,19 +68,19 @@ command rm -f -- "zsdoc/$ofname"
 
     # HEADER
     if [[ "${name[1]}" = "." ]]; then
-        print " $name(1)"
+        print -- " $name(1)"
         len="${#name}+4"
-        print "${(r:len::=:)empty}"
+        print -- "${(r:len::=:)empty}"
     else
-        print "$name(1)"
+        print -- "$name(1)"
         len="${#name}+3"
-        print "${(r:len::=:)empty}"
+        print -- "${(r:len::=:)empty}"
     fi
-    print ":compat-mode!:"
-    print
+    print -- ":compat-mode!:"
+    print --
 
     # NAME
-    print "NAME"
+    print -- "NAME"
     if [[ "${name[1]}" = "." ]]; then
         print -- "${(r:5::-:)empty}"
         print -- " $name - a shell script"
@@ -91,7 +91,7 @@ command rm -f -- "zsdoc/$ofname"
     print
 
     # SYNOPSIS
-    print "SYNOPSIS"
+    print -- "SYNOPSIS"
     print -- "${(r:8::-:)empty}"
     if [[ -n "$OPT_SYNOPSIS" ]]; then
         print -- "$OPT_SYNOPSIS"
@@ -109,7 +109,7 @@ command rm -f -- "zsdoc/$ofname"
     print
 
     # FUNCTIONS
-    print "FUNCTIONS"
+    print -- "FUNCTIONS"
     print -- "${(r:9::-:)empty}"
     print
 
@@ -175,22 +175,22 @@ command rm -f -- "zsdoc/$ofname"
     if (( ${#fixed_env_descs} > 0 )); then
         local -A fixed_env_descs_hash
         fixed_env_descs_hash=( "${fixed_env_descs[@]}" )
-        print
-        print "ENVIRONMENT VARIABLES"
+        print 
+        print -- "ENVIRONMENT VARIABLES"
         print -- "${(r:21::-:)empty}"
-        print '[width="80%",cols="4,10"]'
-        print "|======"
+        print -- '[width="80%",cols="4,10"]'
+        print -- "|======"
         local key
         for key in "${(kon)fixed_env_descs_hash[@]}"; do
-            print "|$key|${fixed_env_descs_hash[$key]}"
+            print -- "|$key|${fixed_env_descs_hash[$key]}"
         done
-        print "|======"
+        print -- "|======"
     fi
 
     # DETAILS
     print
-    print "DETAILS"
-    print -- "${(r:7::-:)empty}"
+    print -- "DETAILS"
+    print -- -- "${(r:7::-:)empty}"
     print
 
     # SCRIPT BODY
@@ -221,7 +221,7 @@ command rm -f -- "zsdoc/$ofname"
         features=( "${(@)features#zsdoc/data/features/$name/Script_Body_/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
-            print "Uses feature(s): _${(oj:_, _:)features}_"
+            print -- "Uses feature(s): _${(oj:_, _:)features}_"
             print
         fi
 
@@ -230,7 +230,7 @@ command rm -f -- "zsdoc/$ofname"
         exports=( "${(@)exports#zsdoc/data/exports/$name/Script_Body_/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
-            print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print -- "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
             print
         fi
     }
@@ -254,9 +254,9 @@ command rm -f -- "zsdoc/$ofname"
             arr=( "${(@f)REPLY}" )
             [[ "${arr[-1]}" = [[:space:]]#\#[[:space:]]# ]] && arr[-1]=()
             arr=( "${arr[@]/(#s)/ }" )
-            print ____
+            print -- ____
             print -rl -- "${arr[@]}"
-            print ____
+            print -- ____
             print
         }
 
@@ -279,9 +279,9 @@ command rm -f -- "zsdoc/$ofname"
             print -r -- "${(F)arr}"
         } || {
             if [[ -n "${hooks[(r)$fun]}" ]]; then
-                print "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Doesn't call other functions."
+                print -- "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Doesn't call other functions."
             else
-                print "Has `line_count $body` line(s). Doesn't call other functions."
+                print -- "Has `line_count $body` line(s). Doesn't call other functions."
             fi
         }
         print
@@ -293,7 +293,7 @@ command rm -f -- "zsdoc/$ofname"
         features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
-            print "Uses feature(s): _${(oj:_, _:)features}_"
+            print -- "Uses feature(s): _${(oj:_, _:)features}_"
             print
         fi
 
@@ -308,7 +308,7 @@ command rm -f -- "zsdoc/$ofname"
             fi
             print
         else
-            print "Called by:"
+            print -- "Called by:"
             print
             arr=( "${arr[@]#zsdoc/data/trees/$name/}" )
             arr=( "${arr[@]#zsdoc/data/trees/}" )
@@ -327,7 +327,7 @@ command rm -f -- "zsdoc/$ofname"
         exports=( "${exports[@]#zsdoc/data/exports/$name/$fun/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
-            print "_List of exports (to environment):_ ${(oj: [big]*//* :)exports}"
+            print -- "_List of exports (to environment):_ ${(oj: [big]*//* :)exports}"
             print
         fi
 
@@ -340,13 +340,13 @@ command rm -f -- "zsdoc/$ofname"
         env_uses=( "${env_uses[@]/$name -> /}" )
 
         if [[ "${#env_uses}" -gt 0 ]]; then
-            print "_Environment variables used:_ ${(oj: [big]*//* :)env_uses}"
+            print -- "_Environment variables used:_ ${(oj: [big]*//* :)env_uses}"
             print
         fi
     done
 } >>| "zsdoc/$ofname"
 
-print "AsciiDoc generated under \`zsdoc/$ofname'. Found $env_vars_count env-vars sections${${${empty_env_vars_count:#0}:+ (+$empty_env_vars_count empty ones).}:-.}"
-[[ -z "$OPT_RQUIET" ]] && print "You can run \`asciidoctor $ofname' to generate HTML or commit"
-[[ -z "$OPT_RQUIET" ]] && print "$ofname into GitHub (GitHub does render *.adoc files)."
+print -- "AsciiDoc generated under \`zsdoc/$ofname'. Found $env_vars_count env-vars sections${${${empty_env_vars_count:#0}:+ (+$empty_env_vars_count empty ones).}:-.}"
+[[ -z "$OPT_RQUIET" ]] && print -- "You can run \`asciidoctor $ofname' to generate HTML or commit"
+[[ -z "$OPT_RQUIET" ]] && print -- "$ofname into GitHub (GitHub does render *.adoc files)."
 return 0
