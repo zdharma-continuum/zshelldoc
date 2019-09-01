@@ -190,7 +190,7 @@ command rm -f -- "zsdoc/$ofname"
     # DETAILS
     print
     print -- "DETAILS"
-    print -- -- "${(r:7::-:)empty}"
+    print -- "${(r:7::-:)empty}"
     print
 
     # SCRIPT BODY
