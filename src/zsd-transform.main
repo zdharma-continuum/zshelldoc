@@ -39,7 +39,7 @@ fi
 
 ### Code ###
 
-local name="${1:t}"
+local name="${1:t}" nl=$'\n'
 local doc="$(<$1)" token prev_token="" spaces prev_spaces="" next_token next_spaces
 
 local preamble="" preamble_comment="" fun_name="" hook=""
@@ -260,7 +260,10 @@ for fun_name in "${(ko@)auto_funs}"; do
     print -r -- "$REPLY" >| "zsdoc/data/autoload/$name/$fun_name"
 
     # Appendix of the function to extended body
-    print >>| "zsdoc/data/extended/$name"
+    print "\n" >>| "zsdoc/data/extended/$name"
+    arr=( "${(@f)${(M)REPLY##(#s)([[:space:]]#\#[^$nl]#$nl)##}}" )
+    print -r -- "${(F)arr[1,10]}" >>| \
+                "zsdoc/data/extended/$name"
     print -r -- "${fun_name}() {" >>| "zsdoc/data/extended/$name"
     print -r -- "$REPLY" >>| "zsdoc/data/extended/$name"
     print -r -- "}" >>| "zsdoc/data/extended/$name"
