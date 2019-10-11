@@ -114,9 +114,9 @@ command rm -f -- "zsdoc/$ofname"
     print
 
     local -a funs hooks
-    funs=( zsdoc/data/functions/"$name"/*(N) )
+    funs=( zsdoc/data/functions/"$name"/*(DN) )
     funs=( "${funs[@]:t}" )
-    hooks=( zsdoc/data/hooks/"$name"/*(N) )
+    hooks=( zsdoc/data/hooks/"$name"/*(DN) )
     hooks=( "${hooks[@]:t}" )
 
     # Not hooks, not autoloads
@@ -129,7 +129,7 @@ command rm -f -- "zsdoc/$ofname"
     done
 
     # Autoloads
-    funs=( zsdoc/data/autoload/"$name"/*(N) )
+    funs=( zsdoc/data/autoload/"$name"/*(DN) )
     funs=( "${funs[@]:t}" )
 
     for fun in "${funs[@]}"; do
@@ -217,7 +217,7 @@ command rm -f -- "zsdoc/$ofname"
         print
 
         local -a features
-        features=( zsdoc/data/features/$name/Script_Body_/*(N) )
+        features=( zsdoc/data/features/$name/Script_Body_/*(DN) )
         features=( "${(@)features#zsdoc/data/features/$name/Script_Body_/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
@@ -226,7 +226,7 @@ command rm -f -- "zsdoc/$ofname"
         fi
 
         local -a exports
-        exports=( zsdoc/data/exports/$name/Script_Body_/*(N) )
+        exports=( zsdoc/data/exports/$name/Script_Body_/*(DN) )
         exports=( "${(@)exports#zsdoc/data/exports/$name/Script_Body_/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
@@ -237,7 +237,7 @@ command rm -f -- "zsdoc/$ofname"
 
     # FUNCTIONS
 
-    funs=( zsdoc/data/functions/"$name"/*(N) zsdoc/data/autoload/"$name"/*(N) )
+    funs=( zsdoc/data/functions/"$name"/*(DN) zsdoc/data/autoload/"$name"/*(DN) )
     funs=( "${funs[@]:t}" )
 
     for fun in "${funs[@]}"; do
@@ -289,7 +289,7 @@ command rm -f -- "zsdoc/$ofname"
         ## Features
 
         local -a features
-        features=( zsdoc/data/features/$name/$fun/*(N) )
+        features=( zsdoc/data/features/$name/$fun/*(DN) )
         features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
 
         if [[ "${#features}" -gt 0 ]]; then
@@ -299,7 +299,7 @@ command rm -f -- "zsdoc/$ofname"
 
         ## Reverse call tree
 
-        arr=( zsdoc/data/trees/$name/*/$fun(N) zsdoc/data/trees/*/*/*_-_$fun(N) )
+        arr=( zsdoc/data/trees/$name/*/$fun(DN) zsdoc/data/trees/*/*/*_-_$fun(DN) )
         if [[ "${#arr}" -eq "0" ]]; then
             if [[ -n "$OPT_BASH" ]]; then
                 print -r -- "Not called by script or any function (may be e.g. command_not_found_handle or called indirectly in other way)."
@@ -323,7 +323,7 @@ command rm -f -- "zsdoc/$ofname"
         ## Exports
 
         local -a exports
-        exports=( zsdoc/data/exports/$name/$fun/*(N) )
+        exports=( zsdoc/data/exports/$name/$fun/*(DN) )
         exports=( "${exports[@]#zsdoc/data/exports/$name/$fun/}" )
 
         if [[ "${#exports}" -gt 0 ]]; then
@@ -334,7 +334,7 @@ command rm -f -- "zsdoc/$ofname"
         ## Use of environment variables
 
         local -a env_uses
-        env_uses=( zsdoc/data/env-use/$name/$fun/*/*/*(N) )
+        env_uses=( zsdoc/data/env-use/$name/$fun/*/*/*(DN) )
         env_uses=( "${env_uses[@]#zsdoc/data/env-use/$name/$fun/}" )
         env_uses=( "${env_uses[@]//(#b)([^\/]##)\/[^\/]##\/(*)/${match[1]} -> ${match[2]}}" )
         env_uses=( "${env_uses[@]/$name -> /}" )
