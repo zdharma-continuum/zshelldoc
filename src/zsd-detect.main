@@ -161,7 +161,7 @@ for (( i=1; i<=size; ++ i )); do
         next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
     # Detect top-level prev-function differentiating from anonymous function
     elif [[ "$token" = "()" && ( "$fun_depth" -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
-        if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
+        if [[ "$spaces" = [[:blank:]]#([^\\]|)$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
             next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
         else
             next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
@@ -171,7 +171,7 @@ for (( i=1; i<=size; ++ i )); do
         next_nested_fun=1 nested_fun=0 prev_nested_fun=0
     # Is it a nested prev-function?
     elif [[ "$token" = "()" && "$nested_fun" -eq 0 && "$depth" -gt "$fun_stack_depths[-1]" ]]; then
-        if [[ "$spaces" != *$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [1234] ]]; then
+        if [[ "$spaces" != [[:blank:]]#([^\\]|)$'\n'* && -n "$prev_token" && "${TOKEN_TYPES[$prev_token]}" != [1234] ]]; then
             next_nested_fun=0 nested_fun=0 prev_nested_fun=1
         fi
     elif [[ "$token" = "{" ]]; then
@@ -227,7 +227,7 @@ for (( i=1; i<=size; ++ i )); do
     fi
 
     ### Detect function call
-    if [[ "$spaces" = *$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
+    if [[ "$spaces" = [[:blank:]]#([^\\]|)$'\n'* || -z "$prev_token" || "${TOKEN_TYPES[$prev_token]}" = [1234] ]]; then
         at_command=1
     fi
     if (( at_command )); then
@@ -383,7 +383,7 @@ for (( i=1; i<=size; ++ i )); do
         fun_stack_depths[-1]=()
     # No-function text gathering
     elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ "$next_token" != "()" || "$next_spaces" = *$'\n'* || "${TOKEN_TYPES[$token]}" = [34] ]]; then
+        if [[ "$next_token" != "()" || "$next_spaces" = [[:blank:]]#([^\\]|)$'\n'* || "${TOKEN_TYPES[$token]}" = [34] ]]; then
             [[ "$token" != [[:blank:]]#\#* ]] && preamble+="${spaces}${token}"
         fi
     fi
