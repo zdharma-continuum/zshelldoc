@@ -225,7 +225,7 @@ done
 
 ### OUTPUT: FUNCTIONS
 
-command mkdir -p zsdoc/data/functions/"$name"
+command mkdir -p zsdoc/data/functions/"$name"/"${fun_name:h}"
 
 for fun_name in "${(ko@)funs}"; do
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${funs[$fun_name]}`-line function \`$fg[green]${fun_name}$reset_color'..."
@@ -245,15 +245,15 @@ done
 
 ### OUTPUT: EXTENDED BODY
 
-command mkdir -p zsdoc/data/extended
+command mkdir -p zsdoc/data/extended/"${name:h}"
 command rm -f zsdoc/data/extended/"$name"
 print -r -- "$doc" >| zsdoc/data/extended/"$name"
 
 ### OUTPUT: AUTOLOAD FUNCTIONS AND EXTENDED BODY
 
-command mkdir -p zsdoc/data/autoload/"$name"
-
 for fun_name in "${(ko@)auto_funs}"; do
+    command mkdir -p zsdoc/data/autoload/"$name"/"${fun_name:h}"
+
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${auto_funs[$fun_name]}`-line $fg[red]AUTOLOAD$reset_color function \`$fg[green]${fun_name}$reset_color'..."
     # Autoload function
     zsd-trim-indent "${auto_funs[$fun_name]}"

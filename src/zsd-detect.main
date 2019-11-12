@@ -469,6 +469,7 @@ command mkdir -p "zsdoc/data/descriptions/$name"
 for fun_name in "${(ko@)cfuns}"; do
     [[ -z "${cfuns[$fun_name]}" ]] && continue
     [[ -z "$OPT_QUIET" ]] && print "Extracted `line_count ${cfuns[$fun_name]}`-line comment of \`$fg[green]${fun_name}$reset_color'..."
+    command mkdir -p "zsdoc/data/descriptions/$name/${fun_name:h}"
     echo "${cfuns[$fun_name]}" >| "zsdoc/data/descriptions/$name/$fun_name"
 done
 
