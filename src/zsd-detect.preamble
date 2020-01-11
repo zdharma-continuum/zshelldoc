@@ -30,30 +30,29 @@ usage() {
 # After each call, it first creates directory of the passed node name, and
 # enters it. At exit, it moves to previous parent directory.
 process_node() {
-    local node="$1"
-    if [[ "$node" = "${(q)name}/zsd_script_body" ]]; then
-        command mkdir -p -- "Script_Body_"
-        cd "Script_Body_"
+    local node=$1
+    if [[ $node = ${(q)name}/zsd_script_body ]]; then
+        command mkdir -p -- Script_Body_
+        cd Script_Body_
     else
-        if [[ "${node#${(q)name}}" = "${node}" ]]; then
-            local dir="${node/\//_-_}"
+        if [[ ${node#${(q)name}} = ${node} ]]; then
+            local dir=${node/\//_-_}
         else
-            local dir="${node##*/}"
+            local dir=${node##*/}
         fi
-        command mkdir -p -- "$dir"
-        cd -- "$dir"
-        PROCESSED+=( "$node" )
+        command mkdir -p -- $dir
+        cd -- $dir
+        PROCESSED+=( $node )
     fi
 
-    local subfuns="${call_tree[$node]}"
+    local subfuns=${call_tree[$node]}
     local -a asubfuns
-    asubfuns=( "${(z@)subfuns}" )
+    asubfuns=( ${(z@)subfuns} )
 
     local f
-    for f in "${asubfuns[@]}"; do
-        [[ -z "$f" ]] && continue
-        [[ -n "${PROCESSED[(r)$f]}" ]] && continue
-        process_node "$f"
+    for f in ${asubfuns[@]}; do
+        [[ -n ${PROCESSED[(r)$f]} ]] && continue
+        process_node $f
     done
 
     cd ..
