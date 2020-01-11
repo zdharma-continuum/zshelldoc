@@ -1,8 +1,17 @@
 #!/usr/bin/env zsh
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
+emulate -R zsh
+setopt extendedglob typesetsilent warncreateglobal noshortloops
+
+local MATCH REPLY
+integer MBEGIN MEND
+local -a match mbegin mend reply
+
+local -a ZSD_PB_WORDS ZSD_PB_SPACES ZSD_PB_WORDS_BEGINNINGS
+integer ZSD_PB_SELECTED_WORD
+local ZSD_PB_LEFT ZSD_PB_RIGHT
+
 local -A colors
 autoload colors
 colors 2>/dev/null
-
-setopt extendedglob typesetsilent
