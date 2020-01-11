@@ -7,8 +7,7 @@
 # special characters to ASCII-only
 convert_tree()
 {
-    local IFSBKP="$IFS"
-    IFS=""
+    local IFS="" line
     while read -r line; do
         line="${line//├──/|--}"
         line="${line//└──/\`--}"
@@ -16,7 +15,6 @@ convert_tree()
         line="${line//_-_//}"
         echo "$line"
     done
-    IFS="$IFSBKP"
 }
 
 # Searches for supported tree command,
