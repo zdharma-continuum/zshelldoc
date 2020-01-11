@@ -16,7 +16,9 @@
 emulate -LR zsh
 setopt extendedglob typesetsilent warncreateglobal noshortloops
 
-local MBEGIN MEND MATCH mbegin mend match
+local MATCH
+integer MBEGIN MEND
+local -a mbegin mend match
 
 local buf=${1:-$BUFFER}
 local cursor=${2:-$CURSOR}
