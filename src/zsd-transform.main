@@ -154,10 +154,12 @@ for (( i=1; i<=size; ++ i )); do
     ### Detect function call
     # Check for introduction of autoload function
     if [[ $spaces = *$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-        at_command=1
-        in_autoload=0
-        in_azh=0
-        in_export=0
+        if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
+            at_command=1
+            in_autoload=0
+            in_azh=0
+            in_export=0
+        fi
     fi
     if (( at_command )); then
         at_command=0

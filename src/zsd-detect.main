@@ -270,7 +270,9 @@ for (( i=1; i<=size; ++ i )); do
 
     ### Detect function call
     if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-        at_command=1
+        if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
+            at_command=1
+        fi
     fi
     if (( at_command )); then
         at_command=0
