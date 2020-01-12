@@ -304,21 +304,13 @@ for (( i=1; i<=size; ++ i )); do
 
         # Extract call-tree and reversed call-tree, and also features
         if [[ $cur_fun -eq 0 && $next_token != "()" && -n $found && $fun_stack_depths[-1] -le 0 ]]; then
-            if [[ -z $fun_name ]]; then
-                [[ ${call_tree[${(q)name}/zsd_script_body]} != *[[:blank:]]${(q)found}[[:blank:]]* ]] && {
-                    call_tree[${(q)name}/zsd_script_body]+=" ${(q)found} "
-                }
-                [[ ${rev_call_tree[${(q)found}]} != *[[:blank:]]${needle}[[:blank:]]* ]] && {
-                    rev_call_tree[${(q)found}]+=" ${(q)name}/zsd_script_body "
-                }
-            else
-                [[ ${call_tree[${(q)name}/${(q)fun_name}]} != *[[:blank:]]${(q)found}[[:blank:]]* ]] && {
-                    call_tree[${(q)name}/${(q)fun_name}]+=" ${(q)found} "
-                }
-                [[ ${rev_call_tree[${(q)found}]} != *[[:blank:]]${needle}[[:blank:]]* ]] && {
-                    rev_call_tree[${(q)found}]+=" ${(q)name}/${(q)fun_name} "
-                }
-            fi
+            [[ -z $fun_name ]] && local fukey=zsd_script_body || local fukey=${(q)fun_name}
+            [[ ${call_tree[${(q)name}/$fukey]} != *[[:blank:]]${(q)found}[[:blank:]]* ]] && {
+                call_tree[${(q)name}/$fukey]+=" ${(q)found} "
+            }
+            [[ ${rev_call_tree[${(q)found}]} != *[[:blank:]]${needle}[[:blank:]]* ]] && {
+                rev_call_tree[${(q)found}]+=" ${(q)name}/$fukey "
+            }
         fi
 
         if [[ $cur_fun -eq 0 && $next_token != "()" && $fun_stack_depths[-1] -le 0 ]]; then
