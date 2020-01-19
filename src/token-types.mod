@@ -6,12 +6,20 @@ TOKEN_TYPES=(
 
   # Precommand
 
+  '-'           1
   'builtin'     1
   'command'     1
   'exec'        1
   'nocorrect'   1
   'noglob'      1
   'pkexec'      1
+  'stdbuf'      1
+  'setsid'      1
+  'eatmydata'   1
+  'sudo'        1
+  'doas'        1
+  'nice'        1
+  'ssh-agent'   1
 
   # Control flow
   # Tokens that at "command position" are followed by a command
