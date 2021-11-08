@@ -13,7 +13,7 @@ Call trees support cross-file invocations, i.e. when a script calls functiion de
 
 Written in `Zshell` language.
 
-![image](https://raw.githubusercontent.com/zdharma/zshelldoc/images/env_feat_demo.png)
+![image](https://raw.githubusercontent.com/zdharma-continuum/zshelldoc/images/env_feat_demo.png)
 
 # Usage
 
