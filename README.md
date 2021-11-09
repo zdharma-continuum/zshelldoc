@@ -85,16 +85,16 @@ Other available `make` variables are: `INSTALL` (to customize install command),
 
 # Examples
 
-`Zshelldoc` highly motivates to document code, my other project `Zplugin` gained from this.
-Also, `Zplugin` documentation demonstrates rich cross-file invocations.
-[Check out Zplugin's code documentation](https://github.com/zdharma/zplugin/tree/master/zsdoc).
+`Zshelldoc` highly motivates to document code, `zinit` gained from this.
+Also, `zinit` documentation demonstrates rich cross-file invocations.
+[Check out zinit's code documentation](https://github.com/zdharma-continuum/zplugin/tree/master/zsdoc).
 
 For other, in-place examples see:
-[example 1](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-syntax-highlighting.zsh.adoc),
-[example 2](https://github.com/zdharma/zshelldoc/blob/master/examples/zsh-autosuggestions.zsh.adoc)
+[example 1](https://github.com/zdharma-continuum/zshelldoc/blob/master/examples/zsh-syntax-highlighting.zsh.adoc),
+[example 2](https://github.com/zdharma-continuum/zshelldoc/blob/master/examples/zsh-autosuggestions.zsh.adoc)
 (also in **PDF**:
-[example 1](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-syntax-highlighting.zsh.pdf),
-[example 2](https://raw.githubusercontent.com/zdharma/zshelldoc/master/examples/zsh-autosuggestions.zsh.pdf)).
+[example 1](https://raw.githubusercontent.com/zdharma-continuum/zshelldoc/master/examples/zsh-syntax-highlighting.zsh.pdf),
+[example 2](https://raw.githubusercontent.com/zdharma-continuum/zshelldoc/master/examples/zsh-autosuggestions.zsh.pdf)).
 
 # Few Rules
 
