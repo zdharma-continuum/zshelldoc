@@ -87,7 +87,7 @@ Other available `make` variables are: `INSTALL` (to customize install command),
 
 `Zshelldoc` highly motivates to document code, `zinit` gained from this.
 Also, `zinit` documentation demonstrates rich cross-file invocations.
-[Check out zinit's code documentation](https://github.com/zdharma-continuum/zplugin/tree/master/zsdoc).
+[Check out zinit's code documentation](https://github.com/zdharma-continuum/zinit/tree/master/zsdoc).
 
 For other, in-place examples see:
 [example 1](https://github.com/zdharma-continuum/zshelldoc/blob/master/examples/zsh-syntax-highlighting.zsh.adoc),
