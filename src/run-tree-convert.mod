@@ -1,3 +1,5 @@
+emulate -R zsh
+setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 # vim:ft=zsh
 
 # A module, i.e. it provides multiple functions, not a single one.
@@ -5,8 +7,7 @@
 
 # Converts tree (STDIN input) with possible
 # special characters to ASCII-only
-convert_tree()
-{
+convert_tree () {
     local IFS="" line
     while read -r line; do
         line="${line//├──/|--}"
@@ -16,11 +17,10 @@ convert_tree()
         echo "$line"
     done
 }
-
 # Searches for supported tree command,
 # invokes to-ASCII conversion
-zsd-run-tree-convert() {
-    if type tree 2>/dev/null 1>&2; then
+zsd-run-tree-convert () {
+    if type tree 2> /dev/null >&2; then
         tree -n --charset="utf-8" -- "$1" 2>&1 | convert_tree
     else
         {

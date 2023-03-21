@@ -1,13 +1,15 @@
+emulate -R zsh
+setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
+
 # vim:ft=zsh
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
 local blob="$1"
 local -a lines new_lines match mbegin mend
-lines=( "${(@f)blob}" )
-
-# Measure every line
+lines=("${(@f)blob}")
 local line spaces
 integer indent=-1
+
 for line in "${lines[@]}"; do
     if [[ "$line" = (#b)([[:space:]]#)* && "$line" != [[:space:]]# ]]; then
         spaces="${match[1]}"
@@ -17,18 +19,19 @@ for line in "${lines[@]}"; do
     elif [[ "$line" = [[:space:]]# ]]; then
         :
     else
-        print -u 2 "Bug in Zsh, pattern didn't match"
+        print -u 2 -- "$fg[red]Error: Pattern didn't match$reset_color"
     fi
 done
 
 integer top_spaces=1
+
 for line in "${lines[@]}"; do
     if [[ "$line" != [[:space:]]# ]]; then
         top_spaces=0
     fi
     if (( top_spaces == 0 )); then
         line[1,indent]=""
-        new_lines+=( "$line" )
+        new_lines+=("$line")
     fi
 done
 
