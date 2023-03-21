@@ -1,8 +1,7 @@
-emulate -R zsh
-setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-# This file is double-license
-#
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+emulate -L zsh
+setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 
 # Input:
 # $1 - optional buffer to process (default is $BUFFER)
@@ -80,3 +79,5 @@ ZSD_PB_LEFT=${word[1,diff]}
 ZSD_PB_RIGHT=${word[diff+1,-1]}
 
 return 0
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

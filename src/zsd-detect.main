@@ -1,6 +1,3 @@
-emulate -LR zsh
-setopt extendedglob typesetsilent warncreateglobal noshortloops
-
 ### Options ###
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
 local -A opthash
@@ -28,24 +25,23 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet -cignore
     reset_color=""
 }
 
-[[ -z $OPT_QUIET ]] && print -P -- "$fg[cyan]==>$reset_color zsd-detect 2nd pass - %B%F{green}${1}%f%b"
+[[ -z $OPT_QUIET ]] && print -P -- "%F{cyan}==>%f zsd-detect 2nd pass - %B%F{green}${1}%f%b"
 if [[ -n $OPT_HELP ]]; then
     usage
     return 0
 fi
 
 if [[ $# -le 0 || $* = [[:space:]]## ]]; then
-    print "%F{red}Error:%f Argument needed, see help (-h/--help)"
+    print -P -- "%F{red}Error:%f Argument needed, see help (-h/--help)"
     return 1
 fi
 
 if [[ ! -f $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print "$fg[magenta]File \`$1' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print -P -- "%F{yellow}Warning: File $fname not found, skipping %f"
     return 1
 fi
-
 if [[ ! -r $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print "$fg[magenta]File \`$1' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print -P -- "%F{yellow}Warning: File $fname unreadable, skipping %f"
     return 1
 fi
 
@@ -187,8 +183,8 @@ for ((i=1; i<=size; ++ i )) do
     fi
     if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
         if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-            at_command=1
         fi
+            at_command=1
     fi
     if (( at_command )); then
         at_command=0
@@ -318,17 +314,17 @@ command rm -f zsdoc/data/rev_call_tree.zsd
 for fun_name in "${(ko@)call_tree}"; do
     echo "$fun_name:${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
 done
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed $fg[green]$(basename ${fun_name})$reset_color call tree used by %F${#call_tree}%f functions"
+[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(basename ${fun_name})%f call tree used by %F{green}${#call_tree}%f functions"
 
 for fun_name in "${(ko@)rev_call_tree}"; do
     print Pr -- "${fun_name}: ${rev_call_tree[$fun_name]% }" >>| zsdoc/data/rev_call_tree.zsd
 done
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed $fg[green]$(basename ${fun_name})$reset_color reverse call tree that called $fg[green]${#call_tree}$reset_color functions"
+[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(basename ${fun_name})%f reverse call tree that called %F{green}${#call_tree}%f functions"
 
 command mkdir -p zsdoc/data/descriptions/$name
 for fun_name in "${(ko@)cfuns}"; do
     [[ -z ${cfuns[$fun_name]} ]] && continue
-    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Found %F{green}$(line_count ${cfuns[$fun_name]})%f line comment in %F{green}${fun_name}%f"
+    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Found %F{green}$(line_count $cfuns[$fun_name])%f line comment in %F{green}${fun_name}%f"
     command mkdir -p "zsdoc/data/descriptions/$name/${fun_name:h}"
     echo ${cfuns[$fun_name]} >| zsdoc/data/descriptions/$name/$fun_name
 done
@@ -349,7 +345,7 @@ for fun_name in "${(ko@)call_tree}"; do
     fi
 done
 cd $PWDBKP
-[[ -z $OPT_QUIET ]] && print -lP -- "%F{blue}==>%f Processed $fg[green]${count}$reset_color functions" ""
+[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$count%f functions"
 command mkdir -p zsdoc/data/features/$name
 local -a feats
 local feat holder
@@ -377,3 +373,5 @@ for fun_name in "${(ko@)env_list}"; do
     done
 done
 return 0
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

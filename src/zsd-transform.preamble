@@ -1,4 +1,4 @@
-emulate -R zsh
+emulate -L zsh
 setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 
 local MATCH REPLY
@@ -14,14 +14,19 @@ autoload colors
 colors 2> /dev/null
 
 zsd::transform-usage() {
-    print "ZSD INTERNAL SCRIPT"
-    print "$fg[green]Usage:$reset_color zsd-transform [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] $fg_bold[magenta]{file}$reset_color"
-    print "The $fg_bold[magenta]file$reset_color will be converted into extracted data: functions, script body."
-    print "Supported are Bash and Zsh script files."
-    print
-    print "$fg[green]Options:$reset_color"
-    print -- "$fg[magenta]-h/--help$reset_color      Usage information"
-    print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
-    print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
-    print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
+
+    cat >&2 <<EOF
+    zsd-transform [options] [file ...]
+    Analyze and extract information about the functions, script body, and variables.
+    Supported are Bash and Zsh script files.
+
+    Options:
+        -c, --check       Check if an update is available
+        -v, --verbose     Check if an update is available
+        -h, --help        Output this help text and exit
+        -q, --quiet       Output this help text and exit
+        -n, --noansi      Output this help text and exit
+EOF
 }
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

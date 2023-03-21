@@ -1,7 +1,3 @@
-emulate -R zsh
-setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-
-# vim:ft=zsh:et:sw=4
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
 ### Options ###
@@ -34,18 +30,18 @@ if [[ -n $OPT_HELP ]]; then
     return 0
 fi
 if [[ $# -le 0 || $* = [[:space:]]## ]]; then
-    print -- "$fg[red]Error: Argument needed, see help (-h/--help)$reset_color"
+    print -P -- "%F{red}Error:%f Argument needed, see help (-h/--help)"
     return 1
 fi
 if [[ ! -f $1 ]]; then
     [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
-        print -- "$fg[yellow]Warning: File $1 not found, skipping$reset_color"
+        print -- "%F{yellow}Warning: File $1 not found, skipping %f"
         return 1
     }
 fi
 if [[ ! -r $1 ]]; then
     [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
-        print -- "$fg[yellow]Warning: File $1 unreadable, skipping$reset_color"
+        print -- "%F{yellow}Warning: File $1 unreadable, skipping %f"
         return 1
     }
 fi
@@ -227,7 +223,7 @@ done
 command mkdir -p zsdoc/data/bodies
 print -r -- $preamble >| zsdoc/data/bodies/${name}
 print -r -- $preamble_comment >| zsdoc/data/bodies/${name}.comments
-[[ -z $OPT_QUIET ]] && print -lP -- "%F{blue}==>%f Processed %F{green}$(line_count ${preamble})%f lines in ${name}" ""
+[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(line_count ${preamble})%f lines in ${name}"
 command mkdir -p zsdoc/data/exports/$name
 local -a exps
 local exp holder
@@ -244,3 +240,5 @@ for fun_name in "${(ko@)myexports}"; do
     done
 done
 return 0
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

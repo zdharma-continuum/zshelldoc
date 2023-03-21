@@ -1,10 +1,5 @@
-emulate -R zsh
+emulate -L zsh
 setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-
-# vim:ft=zsh
-#
-#
-# emulate -L zsh
 
 typeset -gA TOKEN_TYPES
 TOKEN_TYPES=(
@@ -48,3 +43,5 @@ TOKEN_TYPES=(
     ';' 4
     '|&' 4
 )
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

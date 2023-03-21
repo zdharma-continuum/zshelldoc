@@ -1,4 +1,4 @@
-emulate -R zsh
+emulate -L zsh
 setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 
 local MATCH REPLY
@@ -12,3 +12,5 @@ local ZSD_PB_LEFT ZSD_PB_RIGHT
 local -A colors
 autoload colors
 colors 2>/dev/null
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:

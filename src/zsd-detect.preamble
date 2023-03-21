@@ -1,4 +1,4 @@
-emulate -R zsh
+emulate -L zsh
 setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 
 integer MBEGIN MEND
@@ -58,3 +58,5 @@ process_node () {
     cd ..
     PROCESSED[-1]=()
 }
+
+# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:
