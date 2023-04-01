@@ -1,6 +1,4 @@
-emulate -L zsh
-setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-
+#!/usr/bin/env sh
 # -*- Mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
 # vim:ft=zsh:sw=2:sts=2:et
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
