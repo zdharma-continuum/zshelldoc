@@ -1,17 +1,14 @@
-nested.zsh(1)
-=============
-:compat-mode!:
+= nested.zsh(1)
 
 NAME
-----
+
 nested.zsh - a shell script
 
 SYNOPSIS
---------
+
 Documentation automatically generated with `zshelldoc'
 
-FUNCTIONS
----------
+== FUNCTIONS
 
  dummy
  test1
@@ -21,19 +18,18 @@ FUNCTIONS
  test5
  test6
 
-DETAILS
--------
+=== DETAILS
 
-Script Body
-~~~~~~~~~~~
+==== Script Body
 
 Has 6 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
-dummy
-~~~~~
+==== dummy
 
 ____
+
  # Dummy function
+
 ____
 
 Has 1 line(s). Doesn't call other functions.
@@ -42,11 +38,12 @@ Called by:
 
  test6
 
-test1
-~~~~~
+==== test1
 
 ____
+
  # Test1 function
+
 ____
 
 Has 1 line(s). Calls functions:
@@ -63,11 +60,12 @@ Has 1 line(s). Calls functions:
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-test2
-~~~~~
+==== test2
 
 ____
+
  # Test2 function
+
 ____
 
 Has 2 line(s). Calls functions:
@@ -83,11 +81,12 @@ Called by:
 
  test1
 
-test3
-~~~~~
+==== test3
 
 ____
+
  # Test3 function
+
 ____
 
 Has 1 line(s). Calls functions:
@@ -102,11 +101,12 @@ Called by:
 
  test2
 
-test4
-~~~~~
+==== test4
 
 ____
+
  # Test4 function
+
 ____
 
 Has 1 line(s). Calls functions:
@@ -120,11 +120,12 @@ Called by:
 
  test3
 
-test5
-~~~~~
+==== test5
 
 ____
+
  # Test5 function
+
 ____
 
 Has 8 line(s). Calls functions:
@@ -137,11 +138,12 @@ Called by:
 
  test4
 
-test6
-~~~~~
+==== test6
 
 ____
+
  # Test6 function
+
 ____
 
 Has 2 line(s). Calls functions:
