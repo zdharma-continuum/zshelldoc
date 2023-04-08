@@ -1,10 +1,11 @@
+MAKEFLAGS += --silent
 NAME=zshelldoc
 
 INSTALL?=install -c
 PREFIX?=/usr/local
 BIN_DIR?=$(DESTDIR)$(PREFIX)/bin
-SHARE_DIR?=$(DESTDIR)$(PREFIX)/share/$(NAME)
 DOC_DIR?=$(DESTDIR)$(PREFIX)/share/doc/$(NAME)
+SHARE_DIR?=$(DESTDIR)$(PREFIX)/share/$(NAME)
 
 all: build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc
 
@@ -15,6 +16,7 @@ build/zsd: src/zsd.preamble src/zsd.main
 	echo "" >> build/zsd
 	cat src/zsd.main >> build/zsd
 	chmod +x build/zsd
+	$(info zsd built)
 
 build/zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-process-buffer src/zsd-trim-indent
 	mkdir -p build
@@ -33,6 +35,7 @@ build/zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-p
 	echo "" >> build/zsd-transform
 	cat src/zsd-transform.main >> build/zsd-transform
 	chmod +x build/zsd-transform
+	$(info zsd-transform built)
 
 build/zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-buffer src/run-tree-convert.mod src/token-types.mod
 	mkdir -p build
@@ -49,6 +52,7 @@ build/zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-bu
 	echo "" >> build/zsd-detect
 	cat src/zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
+	$(info zsd-detect built)
 
 build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-indent
 	mkdir -p build
@@ -61,14 +65,15 @@ build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-in
 	echo "" >> build/zsd-to-adoc
 	cat src/zsd-to-adoc.main >> build/zsd-to-adoc
 	chmod +x build/zsd-to-adoc
+	$(info zsd-to-adoc built)
 
 install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 	$(INSTALL) -d $(SHARE_DIR)
 	$(INSTALL) -d $(DOC_DIR)
 	$(INSTALL) -d $(BIN_DIR)
 	cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc $(BIN_DIR)
-	cp README.md NEWS LICENSE $(DOC_DIR)
 	cp zsd.config $(SHARE_DIR)
+	$(info zshelldoc installed in $(BIN_DIR))
 
 uninstall:
 	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect $(BIN_DIR)/zsd-to-adoc
@@ -78,6 +83,7 @@ uninstall:
 
 clean:
 	rm -rf build/*
+	$(info cleaned zshelldoc artifacts)
 
 test:
 	make -C test test
