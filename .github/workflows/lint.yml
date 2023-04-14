@@ -10,6 +10,6 @@ on:
 
 jobs:
   commit:
-    uses: zdharma-continuum/.github/.github/workflows/commit-job.yml@master
+    uses: zdharma-continuum/.github/.github/workflows/commit-job.yml@main
   lint:
-    uses: zdharma-continuum/.github/.github/workflows/lint-job.yml@master
+    uses: zdharma-continuum/.github/.github/workflows/lint-job.yml@main
