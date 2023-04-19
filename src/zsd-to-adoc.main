@@ -264,12 +264,8 @@ command rm -f -- zsdoc/$ofname
             [[ -n $OPT_SCOMM ]] && REPLY="${REPLY//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
             arr=( "${(@f)REPLY}" )
             [[ ${arr[-1]} = [[:space:]]#\#[[:space:]]# ]] && arr[-1]=()
-            arr=( "${arr[@]/(#s)/ }" )
-            print
-            print -- ____
+            arr=(' ' ____ "${arr[@]/(#s)/ }" ' ' ____)
             print -rl -- "${arr[@]}"
-            print
-            print -- ____
         }
 
         ## Number of lines information and call tree

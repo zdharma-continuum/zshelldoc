@@ -1,9 +1,16 @@
+#!/usr/bin/env zsh
 ### Options ###
+#
+err(){ print -Pr -- "%F{red}Error:%f $@"; }
+info(){ print -Pr -- "%F{blue}==>%f $@"; }
+msg(){ print -Pr -- "%F{cyan}==>%f $@"; }
+warn(){ print -Pr -- "%F{yellow}Warning:%f $@"; }
+
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE
 local -A opthash
 
 zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet -cignore: n -noansi || {
-    echo "Improper options given, see help (-h/--help)"
+    err 'Improper options given, see help (-h/--help)'
     return 1
 }
 (( ${+opthash[-h]} + ${+opthash[--help]} )) && OPT_HELP=-h
@@ -25,23 +32,24 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet -cignore
     reset_color=""
 }
 
-[[ -z $OPT_QUIET ]] && print -P -- "%F{cyan}==>%f zsd-detect 2nd pass - %B%F{green}${1}%f%b"
+if [[ $# -le 0 || $* = [[:space:]]## ]]; then
+  err 'Argument needed, see help (-h/--help)'
+  return 1
+fi
+
 if [[ -n $OPT_HELP ]]; then
     usage
     return 0
 fi
 
-if [[ $# -le 0 || $* = [[:space:]]## ]]; then
-    print -P -- "%F{red}Error:%f Argument needed, see help (-h/--help)"
-    return 1
-fi
+[[ -z $OPT_QUIET ]] && msg "zsd-detect 2nd pass - %B%F{green}${1}%f%b"
 
 if [[ ! -f $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print -P -- "%F{yellow}Warning: File $fname not found, skipping %f"
+    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && warn "File $fname not found, skipping"
     return 1
 fi
 if [[ ! -r $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && print -P -- "%F{yellow}Warning: File $fname unreadable, skipping %f"
+    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && warn "File $fname unreadable, skipping"
     return 1
 fi
 
@@ -77,8 +85,8 @@ line_count () {
     local -a list
     list=("${(@f)1}")
     local count=${#list}
-    [[ $1 = *$'\n' ]] && (( -- count ))
-    print -r -- "${(l:3:: :)count}"
+    [[ $1 = *$'\n' ]] && (( --count ))
+    print -Pr -- "${(l:3:: :)count}"
 }
 
 # Finds variables in given string, returns their names.
@@ -100,6 +108,7 @@ find-variables () {
     local _mybuf=$1
     local -a reply=()
     while [[ $_mybuf = (#b)[^\$\\]#((\$([a-zA-Z_:][a-zA-Z0-9_:]#|[0-9]##)(#B)(\[[^\]]#\])(#c0,1))|(\$[{](#B)([#+\!^=~](#c1,2))(#c0,1)(#B)(\([a-zA-Z0-9_:@%#]##\))(#c0,1)(#b)([a-zA-Z0-9_]##)(\[[^\]]#\])(#c0,1)(#B)([:+?^*=%#|/*-]##|[}]))|\$|[\\][\'\"\$]|[\\](#b)(*))(*) ]]; do
+      #'
         [[ -n ${match[7]} ]] && {
             _mybuf=${match[7]:1}
         } || {
@@ -112,6 +121,7 @@ find-variables () {
 
 #
 # Main code
+#
 #
 
 zsd-process-buffer $doc 1
@@ -129,73 +139,100 @@ for ((i=1; i<=size; ++ i )) do
     (( next_nested_fun )) && {
         next_nested_fun=0 nested_fun=1 prev_nested_fun=0
     }
-    if [[ $token = function && ( $fun_depth -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
+    if [[ $token = function && $fun_depth -lt 0 && $anon_depth -lt 0 ]]
+    then
         next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
-    elif [[ $token = "()" && ( $fun_depth -lt 0 ) && ( $anon_depth -lt 0 ) ]]; then
-        if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
+    elif [[ $token = "()" && $fun_depth -lt 0 && $anon_depth -lt 0 ]]
+    then
+        if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+        then
             next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
         else
             next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
         fi
-    elif [[ $token = function ]]; then
+    elif [[ $token = function ]]
+    then
         next_nested_fun=1 nested_fun=0 prev_nested_fun=0
-    elif [[ $token = "()" && $nested_fun -eq 0 && $depth -gt $fun_stack_depths[-1] ]]; then
-        if [[ $spaces != [[:blank:]]#([^\\]|)$'\n'* && -n $prev_token && ${TOKEN_TYPES[$prev_token]} != [1234] ]]; then
+    elif [[ $token = "()" && $nested_fun -eq 0 && $depth -gt $fun_stack_depths[-1] ]]
+    then
+        if [[ $spaces != [[:blank:]]#([^\\]|)$'\n'* && -n $prev_token && ${TOKEN_TYPES[$prev_token]} != [1234] ]]
+        then
             next_nested_fun=0 nested_fun=0 prev_nested_fun=1
         fi
-    elif [[ $token = "{" ]]; then
+    elif [[ $token = "{" ]]
+    then
         (( ++ depth ))
-    elif [[ $token = "}" ]]; then
+    elif [[ $token = "}" ]]
+    then
         (( -- depth ))
     fi
-    if (( cur_fun )); then
+    if (( cur_fun ))
+    then
         fun_name=$token
         fun_depth=$depth
         fun_stack_depths+=($depth)
-    elif (( prev_fun )); then
+    elif (( prev_fun ))
+    then
         fun_name=$prev_token
         fun_depth=$depth
         fun_stack_depths+=($depth)
     fi
-    if (( nested_fun + prev_nested_fun )); then
+    if (( nested_fun + prev_nested_fun ))
+    then
         fun_stack_depths+=($depth)
     fi
-    if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ $token = "{" ]]; then
+    if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ $token = "{" ]]
+    then
         :
-    elif (( fun_depth >= 0 && depth > fun_depth )); then
-        if [[ $token != [[:blank:]]#\#* ]]; then
+    elif (( fun_depth >= 0 && depth > fun_depth ))
+    then
+        if [[ $token != [[:blank:]]#\#* ]]
+        then
             funs[$fun_name]+=${spaces}${token}
         fi
-        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 ))
+        then
             fun_stack_depths[-1]=()
         fi
-    elif (( anon_depth >= 0 && depth > anon_depth )); then
-        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
+    elif (( anon_depth >= 0 && depth > anon_depth ))
+    then
+        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 ))
+        then
             fun_stack_depths[-1]=()
         fi
-    elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 )); then
+    elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 ))
+    then
         descentff=1
-    elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 )); then
+    elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 ))
+    then
         descentfa=1
     fi
-    if (( anon_depth >= 0 && fun_depth < 0 )); then
+    if (( anon_depth >= 0 && fun_depth < 0 ))
+    then
         [[ $token != [[:blank:]]#\#* ]] && preamble+=${spaces}${token}
     fi
-    if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-        if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
+    if [[ $spaces = [[:blank:]]#([^\\]|)$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+    then
+        if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+        then
+
         fi
-            at_command=1
+        at_command=1
     fi
-    if (( at_command )); then
+    if (( at_command ))
+    then
         at_command=0
         local tokenEx=${(q)name}/${(q)token}
         local found=${known_functions[(r)$tokenEx]} candidate="" last_candidate=""
         integer nth=1
-        if [[ -z $found ]]; then
+        if [[ -z $found ]]
+        then
             tokenEx="*/${(q)token}"
-            while (( 1 )); do
+            while (( 1 ))
+            do
                 candidate=${known_functions[(rn:nth:)$tokenEx]}
-                if [[ -n $candidate ]]; then
+                if [[ -n $candidate ]]
+                then
                     last_candidate=$candidate
                     found=${sourced_files[(r)*${candidate:h}*]}
                     [[ -n $found ]] && break
@@ -206,12 +243,14 @@ for ((i=1; i<=size; ++ i )) do
             done
             found=$last_candidate
         fi
-        if [[ -z $fun_name ]]; then
+        if [[ -z $fun_name ]]
+        then
             local needle=${(q)name}/zsd_script_body
         else
             local needle=${(q)name}/${(q)fun_name}
         fi
-        if [[ $cur_fun -eq 0 && $next_token != "()" && -n $found && $fun_stack_depths[-1] -le 0 ]]; then
+        if [[ $cur_fun -eq 0 && $next_token != "()" && -n $found && $fun_stack_depths[-1] -le 0 ]]
+        then
             [[ -z $fun_name ]] && local fukey=zsd_script_body  || local fukey=${(q)fun_name}
             [[ ${call_tree[${(q)name}/$fukey]} != *[[:blank:]]${(q)found}[[:blank:]]* ]] && {
                 call_tree[${(q)name}/$fukey]+=" ${(q)found} "
@@ -220,31 +259,38 @@ for ((i=1; i<=size; ++ i )) do
                 rev_call_tree[${(q)found}]+=" ${(q)name}/$fukey "
             }
         fi
-        if [[ $cur_fun -eq 0 && $next_token != "()" && $fun_stack_depths[-1] -le 0 ]]; then
-            if [[ $token = ${(~j:|:)feature_list} ]]; then
-                [[ -z $fun_name ]] && local fkey=zsd_script_body || local fkey=$fun_name
+        if [[ $cur_fun -eq 0 && $next_token != "()" && $fun_stack_depths[-1] -le 0 ]]
+        then
+            if [[ $token = ${(~j:|:)feature_list} ]]
+            then
+                [[ -z $fun_name ]] && local fkey=zsd_script_body  || local fkey=$fun_name
                 [[ ${features[$fkey]} != *[[:blank:]]${token}[[:blank:]]* ]] && features[$fkey]+=" $token "
                 [[ $token = source ]] && sourced_files+=($next_token)
             fi
         fi
-        if [[ $token = [[:space:]]#\#* ]]; then
-            if [[ $spaces = [[:space:]]#$'\n'[[:space:]]#$'\n'* ]]; then
+        if [[ $token = [[:space:]]#\#* ]]
+        then
+            if [[ $spaces = [[:space:]]#$'\n'[[:space:]]#$'\n'* ]]
+            then
                 [[ -n "${cproposal%%$'\n'##}" && -n $given_fun_name ]] && {
                     cfuns[$given_fun_name]="${${cproposal//$~pattern_give_function_name/}%%$'\n'##}"
                     given_fun_name=""
                 }
-                if [[ -n $OPT_CIGNORE && $token = ${~OPT_CIGNORE} ]]; then
+                if [[ -n $OPT_CIGNORE && $token = ${~OPT_CIGNORE} ]]
+                then
                     cproposal=""
                 else
                     cproposal=$token$next_spaces
                 fi
                 given_fun_name=""
             else
-                if [[ -z $OPT_CIGNORE || $token != ${~OPT_CIGNORE} ]]; then
+                if [[ -z $OPT_CIGNORE || $token != ${~OPT_CIGNORE} ]]
+                then
                     cproposal+=$token$next_spaces
                 fi
             fi
-            if [[ $token = (#b)*${~pattern_give_function_name}* ]]; then
+            if [[ $token = (#b)*${~pattern_give_function_name}* ]]
+            then
                 given_fun_name=${match[1]}
             fi
         else
@@ -252,22 +298,27 @@ for ((i=1; i<=size; ++ i )) do
                 cfuns[$given_fun_name]="${${cproposal//$~pattern_give_function_name/}%%$'\n'##}"
                 given_fun_name=""
             }
-            if [[ $token != function && ( $next_token != "()" || $next_spaces = *$'\n'* ) ]]; then
+            if [[ $token != function && ( $next_token != "()" || $next_spaces = *$'\n'* ) ]]
+            then
                 cproposal=""
             fi
         fi
     fi
     reply=()
     [[ $token != [[:blank:]]#\#* ]] && find-variables $token
-    for env_var in "${reply[@]}"; do
+    for env_var in "${reply[@]}"
+    do
         local env_var_Ext=${(q)name}/${(q)env_var}
         local found=${known_env[(r)$env_var_Ext]} candidate="" last_candidate=""
         integer nth=1
-        if [[ -z $found ]]; then
+        if [[ -z $found ]]
+        then
             env_var_Ext="*/${(q)env_var}"
-            while (( 1 )); do
+            while (( 1 ))
+            do
                 candidate=${known_env[(rn:nth:)$env_var_Ext]}
-                if [[ -n $candidate ]]; then
+                if [[ -n $candidate ]]
+                then
                     last_candidate=$candidate
                     found=${sourced_files[(r)*${candidate:h:h}*]}
                     [[ -n $found ]] && break
@@ -279,7 +330,8 @@ for ((i=1; i<=size; ++ i )) do
             found=$last_candidate
         fi
         [[ -n $found ]] && {
-            if [[ -z $fun_name ]]; then
+            if [[ -z $fun_name ]]
+            then
                 [[ ${env_list[${(q)name}/zsd_script_body]} != *[[:blank:]]${(q)found}[[:blank:]]* ]] && {
                     env_list[${(q)name}/zsd_script_body]+=" ${(q)found} "
                 }
@@ -290,17 +342,22 @@ for ((i=1; i<=size; ++ i )) do
             fi
         }
     done
-    if (( cur_fun + prev_fun )); then
+    if (( cur_fun + prev_fun ))
+    then
         [[ -n "${cproposal%%$'\n'##}" ]] && cfuns[$fun_name]="${cproposal%%$'\n'##}"
     fi
-    if (( descentfa )); then
+    if (( descentfa ))
+    then
         anon_depth=-1
-    elif (( descentff )); then
+    elif (( descentff ))
+    then
         fun_name=""
         fun_depth=-1
         fun_stack_depths[-1]=()
-    elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ $next_token != "()" || $next_spaces = [[:blank:]]#([^\\]|)$'\n'* || ${TOKEN_TYPES[$token]} = [34] ]]; then
+    elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 ))
+    then
+        if [[ $next_token != "()" || $next_spaces = [[:blank:]]#([^\\]|)$'\n'* || ${TOKEN_TYPES[$token]} = [34] ]]
+        then
             [[ $token != [[:blank:]]#\#* ]] && preamble+=${spaces}${token}
         fi
     fi
@@ -311,20 +368,21 @@ done
 command mkdir -p zsdoc/data
 command rm -f zsdoc/data/call_tree.zsd
 command rm -f zsdoc/data/rev_call_tree.zsd
-for fun_name in "${(ko@)call_tree}"; do
+for fun_name in "${(ko@)call_tree}"
+do
     echo "$fun_name:${call_tree[$fun_name]% }" >>| zsdoc/data/call_tree.zsd
 done
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(basename ${fun_name})%f call tree used by %F{green}${#call_tree}%f functions"
-
-for fun_name in "${(ko@)rev_call_tree}"; do
+[[ -z $OPT_QUIET ]] && info "Processed %F{green}$(basename ${fun_name})%f call tree used by %F{green}${#call_tree}%f functions"
+for fun_name in "${(ko@)rev_call_tree}"
+do
     print Pr -- "${fun_name}: ${rev_call_tree[$fun_name]% }" >>| zsdoc/data/rev_call_tree.zsd
 done
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(basename ${fun_name})%f reverse call tree that called %F{green}${#call_tree}%f functions"
-
+[[ -z $OPT_QUIET ]] && info "Processed %F{green}$(basename ${fun_name})%f reverse call tree that called %F{green}${#call_tree}%f functions"
 command mkdir -p zsdoc/data/descriptions/$name
-for fun_name in "${(ko@)cfuns}"; do
+for fun_name in "${(ko@)cfuns}"
+do
     [[ -z ${cfuns[$fun_name]} ]] && continue
-    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Found %F{green}$(line_count $cfuns[$fun_name])%f line comment in %F{green}${fun_name}%f"
+    [[ -z $OPT_QUIET ]] && info "Found %F{green}$(line_count $cfuns[$fun_name])%f line comment in %F{green}${fun_name}%f"
     command mkdir -p "zsdoc/data/descriptions/$name/${fun_name:h}"
     echo ${cfuns[$fun_name]} >| zsdoc/data/descriptions/$name/$fun_name
 done
@@ -333,41 +391,48 @@ local PWDBKP=$PWD
 cd zsdoc/data/trees/$name
 integer count=0
 local -a PROCESSED
-for fun_name in "${(ko@)call_tree}"; do
+for fun_name in "${(ko@)call_tree}"
+do
     (( ++ count ))
     PROCESSED=()
     process_node $fun_name
     local fun=${fun_name##*/}
-    if [[ $fun = zsd_script_body ]]; then
+    if [[ $fun = zsd_script_body ]]
+    then
         zsd-run-tree-convert Script_Body_ > Script_Body_.tree
     else
         zsd-run-tree-convert $fun > ${fun}.tree
     fi
 done
 cd $PWDBKP
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$count%f functions"
+[[ -z $OPT_QUIET ]] && info "Processed %F{green}$count%f functions"
 command mkdir -p zsdoc/data/features/$name
 local -a feats
 local feat holder
-for fun_name in "${(ko@)features}"; do
-    if [[ $fun_name = zsd_script_body ]]; then
+for fun_name in "${(ko@)features}"
+do
+    if [[ $fun_name = zsd_script_body ]]
+    then
         holder=zsdoc/data/features/$name/Script_Body_
     else
         holder=zsdoc/data/features/$name/$fun_name
     fi
     command mkdir -p $holder
     feats=("${(z@)features[$fun_name]}")
-    for feat in "${(o)feats[@]}"; do
+    for feat in "${(o)feats[@]}"
+    do
         echo >| $holder/$feat
     done
 done
 command mkdir -p zsdoc/data/env-use/$name
 local -a used_envs
 local myenv
-for fun_name in "${(ko@)env_list}"; do
+for fun_name in "${(ko@)env_list}"
+do
     used_envs=("${(z@)env_list[$fun_name]}")
     [[ -z ${used_envs[1]} ]] && continue
-    for myenv in "${used_envs[@]}"; do
+    for myenv in "${used_envs[@]}"
+    do
         command mkdir -p "zsdoc/data/env-use/$name/${fun_name:t}/${myenv:h}"
         command touch "zsdoc/data/env-use/$name/${fun_name:t}/$myenv"
     done
