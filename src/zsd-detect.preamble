@@ -1,21 +1,18 @@
+#!/usr/bin/env zsh
+
 emulate -L zsh
 setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
 
 integer MBEGIN MEND
 integer ZSD_PB_SELECTED_WORD
+typeset -a ZSD_PB_WORDS ZSD_PB_SPACES ZSD_PB_WORDS_BEGINNINGS
+typeset -a match mbegin mend reply
+MATCH= REPLY=
+ZSD_PB_LEFT= ZSD_PB_RIGHT=
 
-local -A colors
-
-local -a ZSD_PB_WORDS ZSD_PB_SPACES ZSD_PB_WORDS_BEGINNINGS
-local -a match mbegin mend reply
-
-local MATCH REPLY
-local ZSD_PB_LEFT ZSD_PB_RIGHT
-
-autoload -Uz colors && colors 2> /dev/null
-
-zsd::detect-usage(){
-    print "ZSD INTERNAL SCRIPT"
+zsd-detect-usage () {
+    local -A colors
+    autoload -Uz colors && colors 2> /dev/null
     print "$fg[green]Usage:$reset_color zsd-detect [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] [--cignore <pattern>] $fg_bold[magenta]{file}$reset_color"
     print "The $fg_bold[magenta]file$reset_color will be processed to gather function comments and call trees."
     print "Data extracted by \`zsd-transform' is needed. Supported are Bash and Zsh scripts."
@@ -32,7 +29,7 @@ zsd::detect-usage(){
     print -- "--cignore '(\\#*FUNCTION:*{{{*|\\#*FUN:*{{{*)'   - also ignore comments like: $fg[green]# FUN: usage {{{$reset_color"
 }
 
-process_node () {
+zsd-detect-process-node () {
     local node=$1
     if [[ $node = ${(q)name}/zsd_script_body ]]; then
         command mkdir -p -- Script_Body_
@@ -53,7 +50,7 @@ process_node () {
     local f
     for f in ${asubfuns[@]}; do
         [[ -n ${PROCESSED[(r)$f]} ]] && continue
-        process_node $f
+        zsd-detect-process-node $f
     done
     cd ..
     PROCESSED[-1]=()

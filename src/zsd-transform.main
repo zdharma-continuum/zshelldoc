@@ -1,244 +1,313 @@
+#!/usr/bin/env zsh
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
 ### Options ###
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
-local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet n -noansi || {
-    print -P -- "%F{red}Error:%f Improper options given, see help (-h/--help)"
-    return 1
-}
-(( ${+opthash[-h]} + ${+opthash[--help]} )) && OPT_HELP=-h
-(( ${+opthash[-v]} + ${+opthash[--verbose]} )) && OPT_VERBOSE=-v
-(( ${+opthash[-q]} + ${+opthash[--quiet]} )) && OPT_QUIET=-q
-(( ${+opthash[-r]} + ${+opthash[--really-quiet]} )) && {
-    OPT_QUIET=-q
-    OPT_RQUIET=-r
-}
-(( ${+opthash[-n]} + ${+opthash[--noansi]} )) && OPT_NOANSI=-n
-[[ -n $OPT_NOANSI ]] && {
-    colors=()
-    fg=()
-    bg=()
-    fg_bold=()
-    bg_bold=()
-    reset_color=
-}
-[[ -z $OPT_QUIET ]] && print -P -- "%F{cyan}==>%f zsd-transform  1st pass - %B%F{green}${1}%f%b"
-if [[ -n $OPT_HELP ]]; then
-    zsd::transform-usage
-    return 0
-fi
-if [[ $# -le 0 || $* = [[:space:]]## ]]; then
-    print -P -- "%F{red}Error:%f Argument needed, see help (-h/--help)"
-    return 1
-fi
-if [[ ! -f $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
-        print -- "%F{yellow}Warning: File $1 not found, skipping %f"
-        return 1
-    }
-fi
-if [[ ! -r $1 ]]; then
-    [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
-        print -- "%F{yellow}Warning: File $1 unreadable, skipping %f"
-        return 1
-    }
-fi
-local name=${1:t} nl=$'\n'
-local doc="$(<$1)" token prev_token= spaces prev_spaces= next_token next_spaces
-local preamble= preamble_comment= fun_name= hook=
-local -A funs auto_funs myhooks myexports
-local -a arr
-integer at_command=1 in_autoload=0 in_azh=0 in_export=0
-integer next_fun=0 cur_fun=0 prev_fun=0
-integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
-integer nested_fun=0 next_nested_fun=0 prev_nested_fun=0
-local -a fun_stack_depths
-
-line_count() {
+line-count() {
     local -a list
-    list=( "${(@f)1}" )
+    list=("${(@f)1}")
     local count=${#list}
     [[ $1 = *$"\n" ]] && (( -- count ))
     print -r -- "${(l:3:: :)count}"
 }
 
-zsd-process-buffer $doc 1
-integer i size=${#ZSD_PB_WORDS}
-for ((i=1; i<=size; ++ i )) do
-    token=${ZSD_PB_WORDS[i]}
-    spaces=${ZSD_PB_SPACES[i]}
-    next_token=${ZSD_PB_WORDS[i+1]}
-    next_spaces=${ZSD_PB_SPACES[i+1]}
-    cur_fun=0 prev_fun=0 descentff=0 descentfa=0
-    nested_fun=0 prev_nested_fun=0
-    (( next_fun )) && {
-        next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1
+zsd-transform() {
+
+    emulate -L zsh
+    setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
+
+    local MATCH REPLY
+    integer MBEGIN MEND
+    local -a match mbegin mend reply
+
+    local -a ZSD_PB_WORDS ZSD_PB_SPACES ZSD_PB_WORDS_BEGINNINGS
+    integer ZSD_PB_SELECTED_WORD
+    local ZSD_PB_LEFT ZSD_PB_RIGHT
+
+    local -A colors
+    autoload colors
+    colors 2> /dev/null
+
+    local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI
+    local -A opthash
+    zparseopts -E -D -A opthash h -help v -verbose q -quiet r -really-quiet n -noansi || {
+        print -P -- "%F{red}Error:%f Improper options given, see help (-h/--help)"
+        return 1
     }
-    (( next_nested_fun )) && {
-        next_nested_fun=0 nested_fun=1 prev_nested_fun=0
+    (( ${+opthash[-h]} + ${+opthash[--help]} )) && OPT_HELP=-h
+    (( ${+opthash[-v]} + ${+opthash[--verbose]} )) && OPT_VERBOSE=-v
+    (( ${+opthash[-q]} + ${+opthash[--quiet]} )) && OPT_QUIET=-q
+    (( ${+opthash[-r]} + ${+opthash[--really-quiet]} )) && {
+        OPT_QUIET=-q
+        OPT_RQUIET=-r
     }
-    if [[ $token = function && $fun_depth -lt 0 && $anon_depth -lt 0 ]]; then
-        next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
-    elif [[ $token = "()" && $fun_depth -lt 0 && $anon_depth -lt 0 ]]; then
-        if [[ $spaces = *$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-            next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
-        else
-            next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
-        fi
-    elif [[ $token = function ]]; then
-        next_nested_fun=1 nested_fun=0 prev_nested_fun=0
-    elif [[ $token = "()" && $nested_fun -eq 0 && $depth -gt $fun_stack_depths[-1] ]]; then
-        if [[ $spaces != *$'\n'* && -n $prev_token && ${TOKEN_TYPES[$prev_token]} != [1234] ]]; then
-            next_nested_fun=0 nested_fun=0 prev_nested_fun=1
-        fi
-    elif [[ $token = "{" ]]; then
-        (( ++ depth ))
-    elif [[ $token = "}" ]]; then
-        (( -- depth ))
+    (( ${+opthash[-n]} + ${+opthash[--noansi]} )) && OPT_NOANSI=-n
+    [[ -n $OPT_NOANSI ]] && {
+        colors=()
+        fg=()
+        bg=()
+        fg_bold=()
+        bg_bold=()
+        reset_color=
+    }
+    [[ -z $OPT_QUIET ]] && print -P -- "%F{cyan}==>%f zsd-transform  1st pass - %B%F{green}${1}%f%b"
+    if [[ -n $OPT_HELP ]]
+    then
+        zsd::transform-usage
+        return 0
     fi
-    if (( cur_fun )); then
-        fun_name=$token
-        fun_depth=$depth
-        fun_stack_depths+=($depth)
-    elif (( prev_fun )); then
-        fun_name=$prev_token
-        fun_depth=$depth
-        fun_stack_depths+=($depth)
+    if [[ $# -le 0 || $* = [[:space:]]## ]]
+    then
+        print -P -- "%F{red}Error:%f Argument needed, see help (-h/--help)"
+        return 1
     fi
-    if (( nested_fun + prev_nested_fun )); then
-        fun_stack_depths+=($depth)
+    if [[ ! -f $1 ]]
+    then
+        [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
+            print -- "%F{yellow}Warning: File $1 not found, skipping %f"
+            return 1
+        }
     fi
-    if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ $token = "{" ]]; then
-        :
-    elif (( fun_depth >= 0 && depth > fun_depth )); then
-        if [[ $token != [[:blank:]]#\#* ]]; then
-            funs[$fun_name]+=${spaces}${token}
-        fi
-        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
-            fun_stack_depths[-1]=()
-        fi
-    elif (( anon_depth >= 0 && depth > anon_depth )); then
-        if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 )); then
-            fun_stack_depths[-1]=()
-        fi
-    elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 )); then
-        descentff=1
-    elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 )); then
-        descentfa=1
+    if [[ ! -r $1 ]]
+    then
+        [[ -z $OPT_QUIET || -n $OPT_VERBOSE ]] && {
+            print -- "%F{yellow}Warning: File $1 unreadable, skipping %f"
+            return 1
+        }
     fi
-    if (( anon_depth >= 0 && fun_depth < 0 )); then
-        [[ $token != [[:blank:]]#\#* ]] && preamble+=${spaces}${token}  || preamble_comment+=${spaces}${token}
-    fi
-    if [[ $spaces = *$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-        if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]; then
-            at_command=1
-            in_autoload=0
-            in_azh=0
-            in_export=0
-        fi
-    fi
-    if (( at_command )); then
-        at_command=0
-        if [[ $cur_fun -eq 0 && $next_token != "()" && $fun_stack_depths[-1] -le 0 ]]; then
-            if [[ $token = autoload ]]; then
-                in_autoload=1
-            elif [[ $token = add-zsh-hook ]]; then
-                in_azh=1
-            elif [[ $token = export ]]; then
-                in_export=1
-            fi
-        fi
-    elif (( in_autoload )); then
-        if [[ $token = -- ]]; then
-            in_autoload=2
-        elif [[ $token != -* || $in_autoload -eq 2 ]]; then
-            arr=($^fpath/$token(N))
-            if [[ ${#arr} -ge 1 ]]; then
-                auto_funs[$token]="$(<${arr[1]})"
-            fi
-        fi
-    elif (( in_azh )); then
-        if (( in_azh == 1 )); then
-            if [[ $token = -- ]]; then
-                :
-            elif [[ $token = -* ]]; then
-                in_azh=0
+    local name=${1:t} nl=$'\n'
+    local doc="$(<$1)" token prev_token= spaces prev_spaces= next_token next_spaces
+    local preamble= preamble_comment= fun_name= hook=
+    local -A funs auto_funs myhooks myexports
+    local -a arr
+    integer at_command=1 in_autoload=0 in_azh=0 in_export=0
+    integer next_fun=0 cur_fun=0 prev_fun=0
+    integer depth=0 prev_depth=0 fun_depth=-1 anon_depth=-1 descentff=0 descentfa=0
+    integer nested_fun=0 next_nested_fun=0 prev_nested_fun=0
+    local -a fun_stack_depths
+    zsd-process-buffer $doc 1
+    integer i size=${#ZSD_PB_WORDS}
+    for ((i=1; i<=size; ++ i )) do
+        token=${ZSD_PB_WORDS[i]}
+        spaces=${ZSD_PB_SPACES[i]}
+        next_token=${ZSD_PB_WORDS[i+1]}
+        next_spaces=${ZSD_PB_SPACES[i+1]}
+        cur_fun=0 prev_fun=0 descentff=0 descentfa=0
+        nested_fun=0 prev_nested_fun=0
+        (( next_fun )) && {
+            next_fun=0 cur_fun=1 prev_fun=0 anon_depth=-1
+        }
+        (( next_nested_fun )) && {
+            next_nested_fun=0 nested_fun=1 prev_nested_fun=0
+        }
+        if [[ $token = function && $fun_depth -lt 0 && $anon_depth -lt 0 ]]
+        then
+            next_fun=1 cur_fun=0 prev_fun=0 anon_depth=-1
+        elif [[ $token = "()" && $fun_depth -lt 0 && $anon_depth -lt 0 ]]
+        then
+            if [[ $spaces = *$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+            then
+                next_fun=0 cur_fun=0 prev_fun=0 anon_depth=$depth
             else
-                in_azh=2
+                next_fun=0 cur_fun=0 prev_fun=1 anon_depth=-1
             fi
-        else
-            myhooks[${token%$'\r'}]=$prev_token
-            in_azh=0
+        elif [[ $token = function ]]
+        then
+            next_nested_fun=1 nested_fun=0 prev_nested_fun=0
+        elif [[ $token = "()" && $nested_fun -eq 0 && $depth -gt $fun_stack_depths[-1] ]]
+        then
+            if [[ $spaces != *$'\n'* && -n $prev_token && ${TOKEN_TYPES[$prev_token]} != [1234] ]]
+            then
+                next_nested_fun=0 nested_fun=0 prev_nested_fun=1
+            fi
+        elif [[ $token = "{" ]]
+        then
+            (( ++ depth ))
+        elif [[ $token = "}" ]]
+        then
+            (( -- depth ))
         fi
-    elif (( in_export )); then
-        if [[ $token = (#b)([a-zA-Z_][a-zA-Z0-9_]#)(=(*))(#c0,1) ]]; then
-            [[ -z $fun_name ]] && local fkey=zsd_script_body  || local fkey=$fun_name
-            [[ ${myexports[$fkey]} != *[[:blank:]]${match[1]}[[:blank:]]* ]] && myexports[$fkey]+=" ${match[1]} "
+        if (( cur_fun ))
+        then
+            fun_name=$token
+            fun_depth=$depth
+            fun_stack_depths+=($depth)
+        elif (( prev_fun ))
+        then
+            fun_name=$prev_token
+            fun_depth=$depth
+            fun_stack_depths+=($depth)
         fi
-    fi
-    if (( descentfa )); then
-        anon_depth=-1
-    elif (( descentff )); then
-        fun_name=
-        fun_depth=-1
-        fun_stack_depths[-1]=()
-    elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 )); then
-        if [[ $next_token != "()" || $next_spaces = *$'\n'* || ${TOKEN_TYPES[$token]} = [34] ]]; then
+        if (( nested_fun + prev_nested_fun ))
+        then
+            fun_stack_depths+=($depth)
+        fi
+        if (( fun_depth >= 0 && depth == (fun_depth + 1) )) && [[ $token = "{" ]]
+        then
+            :
+        elif (( fun_depth >= 0 && depth > fun_depth ))
+        then
+            if [[ $token != [[:blank:]]#\#* ]]
+            then
+                funs[$fun_name]+=${spaces}${token}
+            fi
+            if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 ))
+            then
+                fun_stack_depths[-1]=()
+            fi
+        elif (( anon_depth >= 0 && depth > anon_depth ))
+        then
+            if (( ${#fun_stack_depths} > 0 && depth == fun_stack_depths[-1] && prev_depth == fun_stack_depths[-1] + 1 ))
+            then
+                fun_stack_depths[-1]=()
+            fi
+        elif (( fun_depth >= 0 && depth == fun_depth && prev_depth == fun_depth + 1 ))
+        then
+            descentff=1
+        elif (( anon_depth >= 0 && depth == anon_depth && prev_depth == anon_depth + 1 ))
+        then
+            descentfa=1
+        fi
+        if (( anon_depth >= 0 && fun_depth < 0 ))
+        then
             [[ $token != [[:blank:]]#\#* ]] && preamble+=${spaces}${token}  || preamble_comment+=${spaces}${token}
         fi
-    fi
-    prev_depth=$depth
-    prev_token=$token
-    prev_spaces=$spaces
-done
-command mkdir -p zsdoc/data/functions/$name/${fun_name:h}
-for fun_name in "${(ko@)funs}"; do
-    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Extracted %F{green}$(line_count $funs[$fun_name])%f line function"
-    {
-        zsd-trim-indent ${funs[$fun_name]}
-        print -r -- $REPLY
-    } >| zsdoc/data/functions/$name/$fun_name
-done
-command mkdir -p zsdoc/data/hooks/$name
-for hook in "${(k)myhooks[@]}"; do
-    print -r -- ${myhooks[$hook]} >| zsdoc/data/hooks/$name/$hook
-done
-command mkdir -p zsdoc/data/extended/${name:h}
-command rm -f zsdoc/data/extended/$name
-print -r -- $doc >| zsdoc/data/extended/$name
-for fun_name in "${(ko@)auto_funs}"; do
-    command mkdir -p zsdoc/data/autoload/$name/${fun_name:h}
-    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Extracted %F{green}$(line_count $auto_funs[$fun_name])%f line autoload function"
-    zsd-trim-indent ${auto_funs[$fun_name]}
-    print -r -- $REPLY >| zsdoc/data/autoload/$name/$fun_name
-    print "\n" >>| zsdoc/data/extended/$name
-    arr=("${(@f)${(M)REPLY##(#s)([[:space:]]#\#[^$nl]#$nl)##}}")
-    print -r -- ${(F)arr[1,10]} >>| zsdoc/data/extended/$name
-    print -r -- "${fun_name}() {" >>| zsdoc/data/extended/$name
-    print -r -- $REPLY >>| zsdoc/data/extended/$name
-    print -r -- "}" >>| zsdoc/data/extended/$name
-done
-command mkdir -p zsdoc/data/bodies
-print -r -- $preamble >| zsdoc/data/bodies/${name}
-print -r -- $preamble_comment >| zsdoc/data/bodies/${name}.comments
-[[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(line_count ${preamble})%f lines in ${name}"
-command mkdir -p zsdoc/data/exports/$name
-local -a exps
-local exp holder
-for fun_name in "${(ko@)myexports}"; do
-    if [[ $fun_name = zsd_script_body ]]; then
-        holder=zsdoc/data/exports/$name/Script_Body_
-    else
-        holder=zsdoc/data/exports/$name/$fun_name
-    fi
-    command mkdir -p $holder
-    exps=("${(z@)myexports[$fun_name]}")
-    for exp in "${(o)exps[@]}"; do
-        print >| $holder/$exp
+        if [[ $spaces = *$'\n'* || -z $prev_token || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+        then
+            if [[ $spaces != [[:blank:]]#"\\"(|$'\r')$'\n'[[:blank:]]# || ${TOKEN_TYPES[$prev_token]} = [1234] ]]
+            then
+                at_command=1
+                in_autoload=0
+                in_azh=0
+                in_export=0
+            fi
+        fi
+        if (( at_command ))
+        then
+            at_command=0
+            if [[ $cur_fun -eq 0 && $next_token != "()" && $fun_stack_depths[-1] -le 0 ]]
+            then
+                if [[ $token = autoload ]]
+                then
+                    in_autoload=1
+                elif [[ $token = add-zsh-hook ]]
+                then
+                    in_azh=1
+                elif [[ $token = export ]]
+                then
+                    in_export=1
+                fi
+            fi
+        elif (( in_autoload ))
+        then
+            if [[ $token = -- ]]
+            then
+                in_autoload=2
+            elif [[ $token != -* || $in_autoload -eq 2 ]]
+            then
+                arr=($^fpath/$token(N))
+                if [[ ${#arr} -ge 1 ]]
+                then
+                    auto_funs[$token]="$(<${arr[1]})"
+                fi
+            fi
+        elif (( in_azh ))
+        then
+            if (( in_azh == 1 ))
+            then
+                if [[ $token = -- ]]
+                then
+                    :
+                elif [[ $token = -* ]]
+                then
+                    in_azh=0
+                else
+                    in_azh=2
+                fi
+            else
+                myhooks[${token%$'\r'}]=$prev_token
+                in_azh=0
+            fi
+        elif (( in_export ))
+        then
+            if [[ $token = (#b)([a-zA-Z_][a-zA-Z0-9_]#)(=(*))(#c0,1) ]]
+            then
+                [[ -z $fun_name ]] && local fkey=zsd_script_body  || local fkey=$fun_name
+                [[ ${myexports[$fkey]} != *[[:blank:]]${match[1]}[[:blank:]]* ]] && myexports[$fkey]+=" ${match[1]} "
+            fi
+        fi
+        if (( descentfa ))
+        then
+            anon_depth=-1
+        elif (( descentff ))
+        then
+            fun_name=
+            fun_depth=-1
+            fun_stack_depths[-1]=()
+        elif (( next_fun == 0 && cur_fun == 0 && prev_fun == 0 && anon_depth < 0 && fun_depth < 0 ))
+        then
+            if [[ $next_token != "()" || $next_spaces = *$'\n'* || ${TOKEN_TYPES[$token]} = [34] ]]
+            then
+                [[ $token != [[:blank:]]#\#* ]] && preamble+=${spaces}${token}  || preamble_comment+=${spaces}${token}
+            fi
+        fi
+        prev_depth=$depth
+        prev_token=$token
+        prev_spaces=$spaces
     done
-done
-return 0
+    command mkdir -p zsdoc/data/functions/$name/${fun_name:h}
+    for fun_name in "${(ko@)funs}"
+    do
+        [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Extracted %F{green}$(line-count $funs[$fun_name])%f line function"
+        {
+            zsd-trim-indent ${funs[$fun_name]}
+            print -r -- $REPLY
+        } >| zsdoc/data/functions/$name/$fun_name
+    done
+    command mkdir -p zsdoc/data/hooks/$name
+    for hook in "${(k)myhooks[@]}"
+    do
+        print -r -- ${myhooks[$hook]} >| zsdoc/data/hooks/$name/$hook
+    done
+    command mkdir -p zsdoc/data/extended/${name:h}
+    command rm -f zsdoc/data/extended/$name
+    print -r -- $doc >| zsdoc/data/extended/$name
+    for fun_name in "${(ko@)auto_funs}"
+    do
+        command mkdir -p zsdoc/data/autoload/$name/${fun_name:h}
+        [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Extracted %F{green}$(line-count $auto_funs[$fun_name])%f line autoload function"
+        zsd-trim-indent ${auto_funs[$fun_name]}
+        print -r -- $REPLY >| zsdoc/data/autoload/$name/$fun_name
+        print "\n" >>| zsdoc/data/extended/$name
+        arr=("${(@f)${(M)REPLY##(#s)([[:space:]]#\#[^$nl]#$nl)##}}")
+        print -r -- ${(F)arr[1,10]} >>| zsdoc/data/extended/$name
+        print -r -- "${fun_name}() {" >>| zsdoc/data/extended/$name
+        print -r -- $REPLY >>| zsdoc/data/extended/$name
+        print -r -- "}" >>| zsdoc/data/extended/$name
+    done
+    command mkdir -p zsdoc/data/bodies
+    print -r -- $preamble >| zsdoc/data/bodies/${name}
+    print -r -- $preamble_comment >| zsdoc/data/bodies/${name}.comments
+    [[ -z $OPT_QUIET ]] && print -P -- "%F{blue}==>%f Processed %F{green}$(line-count ${preamble})%f lines in ${name}"
+    command mkdir -p zsdoc/data/exports/$name
+    local -a exps
+    local exp holder
+    for fun_name in "${(ko@)myexports}"
+    do
+        if [[ $fun_name = zsd_script_body ]]
+        then
+            holder=zsdoc/data/exports/$name/Script_Body_
+        else
+            holder=zsdoc/data/exports/$name/$fun_name
+        fi
+        command mkdir -p $holder
+        exps=("${(z@)myexports[$fun_name]}")
+        for exp in "${(o)exps[@]}"
+        do
+            print >| $holder/$exp
+        done
+    done
+    return 0
+}
 
 # vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:

@@ -1,83 +1,55 @@
+#!/usr/bin/env zsh
 # This file is double-licensed under GPLv3 and MIT (see LICENSE file)
 
-emulate -L zsh
-setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-
-# Input:
-# $1 - optional buffer to process (default is $BUFFER)
-# $2 - optional parameter containing cursor (default is $CURSOR)
-#
-# Output:
-# ZSD_PB_WORDS - split of "$1" into shell words; array
-# ZSD_PB_WORDS_BEGINNINGS - indexes of first letters of corresponding words in ZSD_PB_WORDS
-# ZSD_PB_SPACES - white spaces before corresponding words in ZSD_PB_WORDS
-# ZSD_PB_SELECTED_WORD - index in ZSD_PB_WORDS pointing to word activated by cursor position
-# ZSD_PB_LEFT - left part of active word
-# ZSD_PB_RIGHT - right part of active word
-#
-
-emulate -LR zsh
-setopt extendedglob typesetsilent warncreateglobal noshortloops
-
-integer MBEGIN MEND
-
-local -a mbegin mend match
-
-local MATCH
-
-local buf=${1:-$BUFFER}
-local cursor=${2:-$CURSOR}
-
-ZSD_PB_WORDS=(${(Z+cn+)buf})
-ZSD_PB_SPACES=()
-ZSD_PB_WORDS_BEGINNINGS=()
-ZSD_PB_SELECTED_WORD=-1
-ZSD_PB_LEFT=""
-ZSD_PB_RIGHT=""
-
-if [[ $buf = ( |$'\t')# ]]; then
-    ZSD_PB_WORDS=()
-    integer nwords=0
-else
-    integer nwords=${#ZSD_PB_WORDS}
-fi
-
-local i word wordlen tword
-integer char_count=0
-
-for ((i=1; i<=nwords; i++ )); do
-    ZSD_PB_WORDS[i]=${ZSD_PB_WORDS[i]%% ##}
-    word=${ZSD_PB_WORDS[i]}
-    wordlen=${#word}
-    buf=${buf##(#m)[^$word[1]]#}
-    char_count=char_count+${#MATCH}
-    ZSD_PB_WORDS_BEGINNINGS[i]=$(( char_count + 1 ))
-    ZSD_PB_SPACES[i]=$MATCH
-    tword=${buf[1,wordlen]}
-
-    [[ $tword != $word && ${#word} != ${#tword} ]] && {
-        print -- "$fg[red]Error Encountered unhandled error. Expected ${buf[1,wordlen]} Recieved: $word"
-        return 1
-    }
-
-    buf=${buf[wordlen+1,-1]}
-    [[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -gt $cursor ]] && ZSD_PB_SELECTED_WORD=$(( i-1 ))
-
-    char_count=char_count+${#word}
-    [[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -ge $cursor ]] && ZSD_PB_SELECTED_WORD=$i
-done
-
-char_count=char_count+${#buf}
-ZSD_PB_SPACES[i]=$buf
-
-[[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -ge $cursor ]] && ZSD_PB_SELECTED_WORD=$(( i-1 ))
-
-integer diff=$(( cursor - ZSD_PB_WORDS_BEGINNINGS[ZSD_PB_SELECTED_WORD] + 1 ))
-
-word=${ZSD_PB_WORDS[ZSD_PB_SELECTED_WORD]}
-ZSD_PB_LEFT=${word[1,diff]}
-ZSD_PB_RIGHT=${word[diff+1,-1]}
-
-return 0
+zsd-process-buffer () {
+    emulate -L zsh
+    setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
+    integer MBEGIN MEND
+    local -a mbegin mend match
+    local MATCH
+    local buf=${1:-$BUFFER}
+    local cursor=${2:-$CURSOR}
+    ZSD_PB_WORDS=(${(Z+cn+)buf})
+    ZSD_PB_SPACES=()
+    ZSD_PB_WORDS_BEGINNINGS=()
+    ZSD_PB_SELECTED_WORD=-1
+    ZSD_PB_LEFT=""
+    ZSD_PB_RIGHT=""
+    if [[ $buf = ( |$'\t')# ]]
+    then
+        ZSD_PB_WORDS=()
+        integer nwords=0
+    else
+        integer nwords=${#ZSD_PB_WORDS}
+    fi
+    local i word wordlen tword
+    integer char_count=0
+    for ((i=1; i<=nwords; i++ )) do
+        ZSD_PB_WORDS[i]=${ZSD_PB_WORDS[i]%% ##}
+        word=${ZSD_PB_WORDS[i]}
+        wordlen=${#word}
+        buf=${buf##(#m)[^$word[1]]#}
+        char_count=char_count+${#MATCH}
+        ZSD_PB_WORDS_BEGINNINGS[i]=$(( char_count + 1 ))
+        ZSD_PB_SPACES[i]=$MATCH
+        tword=${buf[1,wordlen]}
+        [[ $tword != $word && ${#word} != ${#tword} ]] && {
+            print -- "$fg[red]Error Encountered unhandled error. Expected ${buf[1,wordlen]} Recieved: $word"
+            return 1
+        }
+        buf=${buf[wordlen+1,-1]}
+        [[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -gt $cursor ]] && ZSD_PB_SELECTED_WORD=$(( i-1 ))
+        char_count=char_count+${#word}
+        [[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -ge $cursor ]] && ZSD_PB_SELECTED_WORD=$i
+    done
+    char_count=char_count+${#buf}
+    ZSD_PB_SPACES[i]=$buf
+    [[ $ZSD_PB_SELECTED_WORD -eq -1 && $char_count -ge $cursor ]] && ZSD_PB_SELECTED_WORD=$(( i-1 ))
+    integer diff=$(( cursor - ZSD_PB_WORDS_BEGINNINGS[ZSD_PB_SELECTED_WORD] + 1 ))
+    word=${ZSD_PB_WORDS[ZSD_PB_SELECTED_WORD]}
+    ZSD_PB_LEFT=${word[1,diff]}
+    ZSD_PB_RIGHT=${word[diff+1,-1]}
+    return 0
+}
 
 # vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:

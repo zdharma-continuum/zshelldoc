@@ -14,7 +14,6 @@ autoload colors
 colors 2> /dev/null
 
 zsd::transform-usage() {
-
     cat >&2 <<EOF
     zsd-transform [options] [file ...]
     Analyze and extract information about the functions, script body, and variables.

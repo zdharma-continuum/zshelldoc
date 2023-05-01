@@ -1,39 +1,34 @@
-# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+#!/usr/bin/env zsh
 
-# emulate -L zsh
-# setopt extended_glob no_octal_zeroes no_short_loops null_glob typeset_silent warn_create_global
-
-local blob="$1"
-local -a lines new_lines match mbegin mend
-lines=("${(@f)blob}")
-local line spaces
-integer indent=-1
-
-for line in "${lines[@]}"; do
-    if [[ "$line" = (#b)([[:space:]]#)* && "$line" != [[:space:]]# ]]; then
-        spaces="${match[1]}"
-        if [[ "${#spaces}" -lt "$indent" || "$indent" = "-1" ]]; then
-            indent="${#spaces}"
+zsd-trim-indent () {
+    local blob="$1"
+    local -a lines new_lines match mbegin mend
+    lines=("${(@f)blob}")
+    local line spaces
+    integer indent=-1
+    for line in "${lines[@]}"; do
+        if [[ "$line" = (#b)([[:space:]]#)* && "$line" != [[:space:]]# ]]; then
+            spaces="${match[1]}"
+            if [[ "${#spaces}" -lt "$indent" || "$indent" = "-1" ]]; then
+                indent="${#spaces}"
+            fi
+        elif [[ "$line" = [[:space:]]# ]]; then
+            :
+        else
+            print -P -u 2 -- "%F{red}Error: Pattern didn't match %f"
         fi
-    elif [[ "$line" = [[:space:]]# ]]; then
-        :
-    else
-        print -P -u 2 -- "%F{red}Error: Pattern didn't match %f"
-    fi
-done
-
-integer top_spaces=1
-
-for line in "${lines[@]}"; do
-    if [[ "$line" != [[:space:]]# ]]; then
-        top_spaces=0
-    fi
-    if (( top_spaces == 0 )); then
-        line[1,indent]=""
-        new_lines+=("$line")
-    fi
-done
-
-REPLY="${(F)new_lines}"
+    done
+    integer top_spaces=1
+    for line in "${lines[@]}"; do
+        if [[ "$line" != [[:space:]]# ]]; then
+            top_spaces=0
+        fi
+        if (( top_spaces == 0 )); then
+            line[1,indent]=""
+            new_lines+=("$line")
+        fi
+    done
+    REPLY="${(F)new_lines}"
+}
 
 # vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:
