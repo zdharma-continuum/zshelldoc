@@ -374,4 +374,4 @@ for fun_name in "${(ko@)env_list}"; do
 done
 return 0
 
-# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:
+# vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:

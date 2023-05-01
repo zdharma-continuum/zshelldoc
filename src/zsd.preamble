@@ -83,3 +83,5 @@ zsd::usage () {
         ' "Change the default brace block-delimeters with --blocka, --blockb. Block body should be AsciiDoc")
     print -Prl -- $usage
 }
+
+# vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:

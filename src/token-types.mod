@@ -44,4 +44,4 @@ TOKEN_TYPES=(
     '|&' 4
 )
 
-# vim: set expandtab filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2:
+# vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:
