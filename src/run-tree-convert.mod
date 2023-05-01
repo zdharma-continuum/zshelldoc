@@ -31,3 +31,5 @@ zsd-run-tree-convert () {
         } >&2
     fi
 }
+
+# vim: set expandtab filetype=zsh shiftwidth=4 softtabstop=4 tabstop=4:
