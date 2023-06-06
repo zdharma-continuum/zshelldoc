@@ -1,5 +1,3 @@
-SHELL = bash
-.ONESHELL:
 MAKEFLAGS += --silent
 NAME=zshelldoc
 
@@ -13,53 +11,61 @@ all: build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc
 
 build/zsd: src/zsd.preamble src/zsd.main
 	mkdir -p build
-	cat /dev/null > build/zsd
-	echo '#!/usr/bin/env zsh' >> build/zsd
-	cat src/zsd.preamble | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd
-	cat src/zsd.main | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd
+	rm -f build/zsd
+	cat src/zsd.preamble > build/zsd
+	echo "" >> build/zsd
+	cat src/zsd.main >> build/zsd
 	chmod +x build/zsd
-	$(info generated zsd)
+	$(info zsd built)
 
 build/zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-process-buffer src/zsd-trim-indent
 	mkdir -p build
-	cat /dev/null > build/zsd-transform
-	echo "#!/usr/bin/env zsh" >> build/zsd-transform
-	cat src/zsd-transform.preamble| grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-transform
+	rm -f build/zsd-transform
+	cat src/zsd-transform.preamble > build/zsd-transform
+	echo "" >> build/zsd-transform
 	echo "zsd-process-buffer() {" >> build/zsd-transform
-	cat src/zsd-process-buffer | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-transform
-	echo -e "}\nzsd-trim-indent() {" >> build/zsd-transform
-	cat src/zsd-trim-indent | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-transform
+	cat src/zsd-process-buffer >> build/zsd-transform
 	echo "}" >> build/zsd-transform
-	cat src/token-types.mod | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-transform
-	cat src/zsd-transform.main | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-transform
+	echo "" >> build/zsd-transform
+	echo "zsd-trim-indent() {" >> build/zsd-transform
+	cat src/zsd-trim-indent >> build/zsd-transform
+	echo "}" >> build/zsd-transform
+	echo "" >> build/zsd-transform
+	cat src/token-types.mod >> build/zsd-transform
+	echo "" >> build/zsd-transform
+	cat src/zsd-transform.main >> build/zsd-transform
 	chmod +x build/zsd-transform
-	$(info generated zsd-transform)
+	$(info zsd-transform built)
 
 build/zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-buffer src/run-tree-convert.mod src/token-types.mod
 	mkdir -p build
-	cat /dev/null > build/zsd-detect
-	echo "#!/usr/bin/env zsh" >> build/zsd-detect
-	cat src/zsd-detect.preamble | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-detect
+	rm -f build/zsd-detect
+	cat src/zsd-detect.preamble > build/zsd-detect
+	echo "" >> build/zsd-detect
 	echo "zsd-process-buffer() {" >> build/zsd-detect
-	cat src/zsd-process-buffer | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-detect
+	cat src/zsd-process-buffer >> build/zsd-detect
 	echo "}" >> build/zsd-detect
-	cat src/run-tree-convert.mod | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-detect
-	cat src/token-types.mod | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-detect
-	cat src/zsd-detect.main | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-detect
+	echo "" >> build/zsd-detect
+	cat src/run-tree-convert.mod >> build/zsd-detect
+	echo "" >> build/zsd-detect
+	cat src/token-types.mod >> build/zsd-detect
+	echo "" >> build/zsd-detect
+	cat src/zsd-detect.main >> build/zsd-detect
 	chmod +x build/zsd-detect
-	$(info generated zsd-detect)
+	$(info zsd-detect built)
 
 build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-indent
 	mkdir -p build
-	cat /dev/null > build/zsd-to-adoc
-	echo "#!/usr/bin/env zsh" >> build/zsd-to-adoc
-	cat src/zsd-to-adoc.preamble | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-to-adoc
+	rm -f build/zsd-to-adoc
+	cat src/zsd-to-adoc.preamble > build/zsd-to-adoc
+	echo "" >> build/zsd-to-adoc
 	echo "zsd-trim-indent() {" >> build/zsd-to-adoc
-	cat src/zsd-trim-indent | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-to-adoc
+	cat src/zsd-trim-indent >> build/zsd-to-adoc
 	echo "}" >> build/zsd-to-adoc
-	cat src/zsd-to-adoc.main | grep -v -E '^(\s*#.*[^"]|\s*)$$' >> build/zsd-to-adoc
+	echo "" >> build/zsd-to-adoc
+	cat src/zsd-to-adoc.main >> build/zsd-to-adoc
 	chmod +x build/zsd-to-adoc
-	$(info generated zsd-to-adoc)
+	$(info zsd-to-adoc built)
 
 install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
 	$(INSTALL) -d $(SHARE_DIR)
@@ -83,5 +89,3 @@ test:
 	make -C test test
 
 .PHONY: all install uninstall test clean
-
-# vim: set expandtab filetype=make shiftwidth=4 softtabstop=4 tabstop=4:
