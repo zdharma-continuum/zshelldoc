@@ -62,17 +62,17 @@ test:
 	$(MAKE) -C test test
 
 install:
-	mkdir -p $(bindir) $(datadir)
+	mkdir -p $(bindir) $(datadir)/zshelldoc
 	cp $(bin_PROGRAMS) $(bindir)
-	cp zsd.config $(datadir)/zshelldoc
+	cp zsd.config $(datadir)/zshelldoc/
 
 uninstall:
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
 		files=`for p in $$list; do echo "$$p"; done`; \
 		test -n "$$list" || exit 0; \
-		echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
-		cd "$(DESTDIR)$(bindir)" && rm -f $$files
+		echo " ( cd '$(bindir)' && rm -f" $$files ")"; \
+		cd "$(bindir)" && rm -f $$files
 	rm -rf $(datadir)/zshelldoc
 
-.PHONY: all install uninstall test clean 
+.PHONY: all install uninstall test clean
 .NOEXPORT:
