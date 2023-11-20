@@ -1,91 +1,88 @@
-MAKEFLAGS += --silent
-NAME=zshelldoc
+.PHONY: all install uninstall test clean
 
-INSTALL?=install -c
-PREFIX?=/usr/local
-BIN_DIR?=$(DESTDIR)$(PREFIX)/bin
-DOC_DIR?=$(DESTDIR)$(PREFIX)/share/doc/$(NAME)
-SHARE_DIR?=$(DESTDIR)$(PREFIX)/share/$(NAME)
+# Please notice that to follow modern standards and ease third-party
+# package creation, binaries are now installed under BINDIR, and DESTDIR
+# is reserved for the installation pathname prefix.
 
-all: build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc
+##
+##  START OF CONFIGURATION SECTION
+##
+# Don't change this even if your shell is different. The only reason for changing this is if sh is not in the same place.
+SHELL = /bin/sh
+prefix	= /usr/local
+bindir	= $(prefix)/bin
+datadir = $(prefix)/share
+srcdir= .
+##
+##  END OF CONFIGURATION SECTION
+##
 
-build/zsd: src/zsd.preamble src/zsd.main
-	mkdir -p build
-	rm -f build/zsd
-	cat src/zsd.preamble > build/zsd
-	echo "" >> build/zsd
-	cat src/zsd.main >> build/zsd
-	chmod +x build/zsd
-	$(info zsd built)
+VERSION	= 0.1.0
+bin_PROGRAMS	= zsd zsd-transform zsd-detect zsd-to-adoc
 
-build/zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-process-buffer src/zsd-trim-indent
-	mkdir -p build
-	rm -f build/zsd-transform
-	cat src/zsd-transform.preamble > build/zsd-transform
-	echo "" >> build/zsd-transform
-	echo "zsd-process-buffer() {" >> build/zsd-transform
-	cat src/zsd-process-buffer >> build/zsd-transform
-	echo "}" >> build/zsd-transform
-	echo "" >> build/zsd-transform
-	echo "zsd-trim-indent() {" >> build/zsd-transform
-	cat src/zsd-trim-indent >> build/zsd-transform
-	echo "}" >> build/zsd-transform
-	echo "" >> build/zsd-transform
-	cat src/token-types.mod >> build/zsd-transform
-	echo "" >> build/zsd-transform
-	cat src/zsd-transform.main >> build/zsd-transform
-	chmod +x build/zsd-transform
-	$(info zsd-transform built)
+all: $(bin_PROGRAMS)
 
-build/zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-buffer src/run-tree-convert.mod src/token-types.mod
-	mkdir -p build
-	rm -f build/zsd-detect
-	cat src/zsd-detect.preamble > build/zsd-detect
-	echo "" >> build/zsd-detect
-	echo "zsd-process-buffer() {" >> build/zsd-detect
-	cat src/zsd-process-buffer >> build/zsd-detect
-	echo "}" >> build/zsd-detect
-	echo "" >> build/zsd-detect
-	cat src/run-tree-convert.mod >> build/zsd-detect
-	echo "" >> build/zsd-detect
-	cat src/token-types.mod >> build/zsd-detect
-	echo "" >> build/zsd-detect
-	cat src/zsd-detect.main >> build/zsd-detect
-	chmod +x build/zsd-detect
-	$(info zsd-detect built)
+zsd: src/zsd.preamble src/zsd.main
+	cat src/zsd.preamble > zsd
+	echo "" >> zsd
+	cat src/zsd.main >> zsd
+	chmod +x zsd
 
-build/zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-indent
-	mkdir -p build
-	rm -f build/zsd-to-adoc
-	cat src/zsd-to-adoc.preamble > build/zsd-to-adoc
-	echo "" >> build/zsd-to-adoc
-	echo "zsd-trim-indent() {" >> build/zsd-to-adoc
-	cat src/zsd-trim-indent >> build/zsd-to-adoc
-	echo "}" >> build/zsd-to-adoc
-	echo "" >> build/zsd-to-adoc
-	cat src/zsd-to-adoc.main >> build/zsd-to-adoc
-	chmod +x build/zsd-to-adoc
-	$(info zsd-to-adoc built)
+zsd-transform: src/zsd-transform.preamble src/zsd-transform.main src/zsd-process-buffer src/zsd-trim-indent
+	cat src/zsd-transform.preamble > zsd-transform
+	echo "" >> zsd-transform
+	echo "zsd-process-buffer() {" >> zsd-transform
+	cat src/zsd-process-buffer >> zsd-transform
+	echo "}" >> zsd-transform
+	echo "" >> zsd-transform
+	echo "zsd-trim-indent() {" >> zsd-transform
+	cat src/zsd-trim-indent >> zsd-transform
+	echo "}" >> zsd-transform
+	echo "" >> zsd-transform
+	cat src/token-types.mod >> zsd-transform
+	echo "" >> zsd-transform
+	cat src/zsd-transform.main >> zsd-transform
+	chmod +x zsd-transform
 
-install: build/zsd build/zsd-detect build/zsd-transform build/zsd-to-adoc
-	$(INSTALL) -d $(SHARE_DIR)
-	$(INSTALL) -d $(DOC_DIR)
-	$(INSTALL) -d $(BIN_DIR)
-	cp build/zsd build/zsd-transform build/zsd-detect build/zsd-to-adoc $(BIN_DIR)
-	cp zsd.config $(SHARE_DIR)
-	$(info zshelldoc installed in $(BIN_DIR))
+zsd-detect: src/zsd-detect.preamble src/zsd-detect.main src/zsd-process-buffer src/run-tree-convert.mod src/token-types.mod
+	cat src/zsd-detect.preamble > zsd-detect
+	echo "" >> zsd-detect
+	echo "zsd-process-buffer() {" >> zsd-detect
+	cat src/zsd-process-buffer >> zsd-detect
+	echo "}" >> zsd-detect
+	echo "" >> zsd-detect
+	cat src/run-tree-convert.mod >> zsd-detect
+	echo "" >> zsd-detect
+	cat src/token-types.mod >> zsd-detect
+	echo "" >> zsd-detect
+	cat src/zsd-detect.main >> zsd-detect
+	chmod +x zsd-detect
 
-uninstall:
-	rm -f $(BIN_DIR)/zsd $(BIN_DIR)/zsd-transform $(BIN_DIR)/zsd-detect $(BIN_DIR)/zsd-to-adoc
-	rm -f $(SHARE_DIR)/zsd.config $(DOC_DIR)/README.md $(DOC_DIR)/NEWS $(DOC_DIR)/LICENSE
-	[ -d $(DOC_DIR) ] && rmdir $(DOC_DIR) || true
-	[ -d $(SHARE_DIR) ] && rmdir $(SHARE_DIR) || true
+zsd-to-adoc: src/zsd-to-adoc.preamble src/zsd-to-adoc.main src/zsd-trim-indent
+	cat src/zsd-to-adoc.preamble > zsd-to-adoc
+	echo "" >> zsd-to-adoc
+	echo "zsd-trim-indent() {" >> zsd-to-adoc
+	cat src/zsd-trim-indent >> zsd-to-adoc
+	echo "}" >> zsd-to-adoc
+	echo "" >> zsd-to-adoc
+	cat src/zsd-to-adoc.main >> zsd-to-adoc
+	chmod +x zsd-to-adoc
 
 clean:
-	rm -rf build/*
-	$(info cleaned zshelldoc artifacts)
+	rm -f $(bin_PROGRAMS)
 
 test:
-	make -C test test
+	$(MAKE) -C test test
 
-.PHONY: all install uninstall test clean
+install: all
+	mkdir -p $(bindir) $(datadir)
+	cp $(bin_PROGRAMS) $(bindir)
+	cp zsd.config $(datadir)/zshelldoc
+
+uninstall:
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+		files=`for p in $$list; do echo "$$p"; done`; \
+		test -n "$$list" || exit 0; \
+		echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+		cd "$(DESTDIR)$(bindir)" && rm -f $$files
+	rm -rf $(datadir)/zshelldoc
