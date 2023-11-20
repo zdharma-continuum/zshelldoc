@@ -61,7 +61,7 @@ clean:
 test:
 	$(MAKE) -C test test
 
-install: all
+install:
 	mkdir -p $(bindir) $(datadir)
 	cp $(bin_PROGRAMS) $(bindir)
 	cp zsd.config $(datadir)/zshelldoc
